@@ -1,12 +1,12 @@
 services:
-  psm-postgres:
+  pms-postgres:
     image: postgres:16-alpine
     container_name: pms-postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${DB_USER:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
-      POSTGRES_DB: ${DB_NAME:-construction-manager}
+      POSTGRES_DB: ${DB_NAME:-pms}
     ports:
       - "${DB_PORT:-5432}:5432"
     volumes:
@@ -19,12 +19,12 @@ services:
     networks:
       - app-network
 
-  psm-api:
+  pms-api:
     build:
       context: ./backend
       dockerfile: Dockerfile
       target: development
-    image: psm-api
+    image: pms-api
     container_name: api
     restart: unless-stopped
     environment:
@@ -33,7 +33,7 @@ services:
       DB_PORT: 5432
       DB_USER: ${DB_USER:-postgres}
       DB_PASSWORD: ${DB_PASSWORD:-postgres}
-      DB_NAME: ${DB_NAME:-construction-manager}
+      DB_NAME: ${DB_NAME:-pms}
       PORT: ${BACKEND_PORT:-3000}
     ports:
       - "${BACKEND_PORT:-3000}:3000"
@@ -42,18 +42,18 @@ services:
       - /app/node_modules
       - /app/dist
     depends_on:
-      psm-postgres:
+      pms-postgres:
         condition: service_healthy
     command: npm run dev
     networks:
       - app-network
 
-  psm-client:
+  pms-client:
     build:
       context: ./frontend
       dockerfile: Dockerfile
       target: development
-    image: psm-client
+    image: pms-client
     container_name: client
     restart: unless-stopped
     environment:
@@ -64,7 +64,7 @@ services:
       - ./frontend:/app
       - /app/node_modules
     depends_on:
-      - psm-api
+      - pms-api
     command: npm run dev -- --host
     networks:
       - app-network
