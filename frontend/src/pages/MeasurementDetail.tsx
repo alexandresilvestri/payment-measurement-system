@@ -13,14 +13,7 @@ import {
   Input,
 } from '../components/UI'
 import { formatCurrency } from '../utils'
-import {
-  ArrowLeft,
-  CheckCircle,
-  XCircle,
-  Download,
-  Send,
-  Printer
-} from 'lucide-react'
+import { ArrowLeft, CheckCircle, XCircle, Download, Send } from 'lucide-react'
 
 export const MeasurementDetail = () => {
   const { id } = useParams()
@@ -36,7 +29,7 @@ export const MeasurementDetail = () => {
   const isDirector = currentUser?.role === 'DIRETOR'
   const isPending = measurement.status === 'PENDENTE'
   const isApproved = measurement.status === 'APROVADA'
-
+  /*
   const generatePDF = (autoDownload = true) => {
     const doc = new jsPDF()
     const primaryColor = '#2D7E4A'
@@ -161,7 +154,7 @@ export const MeasurementDetail = () => {
 
     return doc // Return doc for potential email attachment simulation
   }
-
+*/
   const handleApprove = () => {
     if (
       window.confirm(
@@ -172,7 +165,7 @@ export const MeasurementDetail = () => {
       updateMeasurementStatus(measurement.id, 'APROVADA', directorNote)
 
       // 2. Gera o PDF (Download automático)
-      generatePDF(true)
+      // generatePDF(true)
 
       // 3. Redireciona imediatamente para o Dashboard
       // O Contexto atualiza o estado global, então ao carregar o Dashboard,
@@ -213,13 +206,12 @@ export const MeasurementDetail = () => {
             </p>
           </div>
         </div>
-
         {isApproved && (
           <div className="flex gap-2">
             <Button onClick={handleSendToFinance} variant="ghost">
               <Send className="w-4 h-4 mr-2" /> Enviar p/ Financeiro
             </Button>
-            <Button onClick={() => generatePDF(true)} variant="secondary">
+            <Button onClick={() => '' /* PDF */} variant="secondary">
               <Download className="w-4 h-4 mr-2" /> Baixar PDF
             </Button>
           </div>
@@ -351,7 +343,7 @@ export const MeasurementDetail = () => {
                     : 'bg-green-50 text-green-800'
                 }`}
               >
-                "{measurement.directorObservation}"
+                &quot;{measurement.directorObservation}&quot;
               </p>
             </Card>
           )}

@@ -17,7 +17,7 @@ import { ConstructionSite } from '../types'
 
 export const NewSite = () => {
   const navigate = useNavigate()
-  const { sites, addSite, currentUser } = useAppContext()
+  const { sites, addSite /*currentUser*/ } = useAppContext()
 
   // Modal State
   const [showModal, setShowModal] = useState(false)
@@ -27,7 +27,7 @@ export const NewSite = () => {
   const [address, setAddress] = useState('')
   const [contractor, setContractor] = useState('')
 
-  const isDirector = currentUser?.role === 'DIRETOR'
+  // const isDirector = currentUser?.role === 'DIRETOR'
 
   const handleSave = () => {
     if (!name || !address || !contractor) {

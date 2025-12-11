@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAppContext } from '../context/AppContext'
 import { Card, Table, Thead, Th, Tr, Td, Button } from '../components/UI'
@@ -45,12 +45,6 @@ export const NewMeasurement = () => {
 
   const selectedContract = contracts.find((c) => c.id === selectedContractId)
   // Re-fetch site and supplier to ensure we display correct info regardless of context
-  const selectedSupplier = selectedContract
-    ? suppliers.find((s) => s.id === selectedContract.supplierId)
-    : null
-  const selectedSite = selectedContract
-    ? sites.find((s) => s.id === selectedContract.constructionSiteId)
-    : null
 
   // Compute logic for the table (Previous accumulated, Balance, etc.)
   const contractMath = useMemo(() => {
