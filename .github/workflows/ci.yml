@@ -17,7 +17,7 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: psm-test
+          POSTGRES_DB: pms-test
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -58,7 +58,7 @@ jobs:
           DB_PORT: 5432
           DB_USER: postgres
           DB_PASSWORD: postgres
-          DB_NAME: psm-test
+          DB_NAME: pms-test
 
       - name: Run tests with coverage
         working-directory: ./backend
@@ -69,7 +69,7 @@ jobs:
           DB_PORT: 5432
           DB_USER: postgres
           DB_PASSWORD: postgres
-          DB_NAME: psm-test
+          DB_NAME: pms-test
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v4
@@ -134,7 +134,7 @@ jobs:
           context: ./backend
           file: ./backend/Dockerfile
           push: false
-          tags: psm-api:${{ github.sha }}
+          tags: pms-api:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -144,7 +144,7 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: false
-          tags: psm-client:${{ github.sha }}
+          tags: pms-client:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
