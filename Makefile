@@ -48,6 +48,10 @@ help:
 	@echo "🗄️  Database:"
 	@echo "  make db-shell         Open PostgreSQL shell"
 	@echo "  make db-reset         Reset database (⚠️  deletes all data!)"
+	@echo "  make migrate-latest   Run pending migrations"
+	@echo "  make migrate-rollback Rollback last migration"
+	@echo "  make migrate-status   Check migration status"
+	@echo "  make migrate-make     Create new migration (use: name=migration_name)"
 	@echo ""
 	@echo "🧹 Cleanup:"
 	@echo "  make clean            Stop and remove containers"
@@ -156,6 +160,7 @@ db-reset:
 	docker compose up -d pms-postgres
 	@sleep 5
 	docker compose up -d
+	@echo "ℹ️  Migrations will run automatically on startup..."
 	@echo "✅ Database reset complete!"
 
 # 🧹 CLEANUP COMMANDS

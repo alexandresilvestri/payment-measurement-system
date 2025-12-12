@@ -97,14 +97,6 @@ else
     echo -e "${YELLOW}⏳ postgres starting...${NC}"
 fi
 
-# Run Migrate
-if docker compose exec -T pms-api npm run migrate:latest; then
-    echo -e '${GREEN} Migrations completed successfully${NC}'
-else
-    echo -e '${RED} Error running migrations${NC}'
-    echo -e '${YELLOW}⚠️  Check the logs with: docker compose logs pms-api${NC}'
-fi
-
 echo ""
 echo -e "${GREEN}"
 echo "╔═══════════════════════════╗"

@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
+    "dev:migrate": "npm run migrate:latest && npm run dev",
     "build": "tsc",
     "start": "node dist/index.js",
     "prepare": "cd .. && git config core.hooksPath backend/.husky 2>/dev/null || true",
