@@ -4,6 +4,11 @@ export type User = {
   passwordHash: string
 }
 
+export type UserResponse = {
+  id: string
+  email: string
+}
+
 export type UserDatabaseRow = {
   id: string
   email: string

@@ -7,7 +7,6 @@ import usersRoutes from './routes/users'
 
 const app = express()
 
-// Middleware
 app.use(helmet())
 app.use(cors())
 app.use(morgan('dev'))
@@ -20,18 +19,6 @@ app.get('/health', (req: Request, res: Response) => {
     status: 'ok',
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
-  })
-})
-
-// API routes
-app.get('/api', (req: Request, res: Response) => {
-  res.json({
-    message: 'Construction Manager API',
-    version: '1.0.0',
-    endpoints: {
-      health: '/health',
-      api: '/api',
-    },
   })
 })
 
