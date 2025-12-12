@@ -256,7 +256,7 @@ migrate-latest:
 
 migrate-rollback:
 	@echo "⬇️  Rolling back last migration..."
-	@docker compose exec backend npm run migrate:rollback
+	@docker compose exec pms-api npm run migrate:rollback
 	@echo "✅ Rollback complete!"
 
 migrate-status:
