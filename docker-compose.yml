@@ -44,7 +44,7 @@ services:
     depends_on:
       pms-postgres:
         condition: service_healthy
-    command: npm run dev
+    command: npm run dev:migrate
     networks:
       - app-network
 
