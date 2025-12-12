@@ -55,6 +55,7 @@ class UserRepository {
       id: register.id,
       email: register.email,
       password: register.password,
+      type_user_id: register.type_user_id,
     }
   }
 
@@ -63,6 +64,7 @@ class UserRepository {
       id: row.id,
       email: row.email,
       passwordHash: row.password,
+      userType: row.type_user_id,
     }
   }
 }

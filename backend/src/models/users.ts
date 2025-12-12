@@ -2,13 +2,12 @@ export type User = {
   id: string
   email: string
   passwordHash: string
-  userType: UserTypes
+  userType: string
 }
 
 export type UserTypes = {
   id: string
   name: string
-  description?: string
   permission: Permission[]
 }
 
@@ -32,4 +31,10 @@ export type UserDatabaseRow = {
   id: string
   email: string
   password: string
+  type_user_id: string
+}
+
+export type UserTypeDatabaseRow = {
+  id: string
+  name: string
 }

@@ -13,6 +13,7 @@ describe('create user', () => {
   const createUserParams: CreateUserParams = {
     email: 'alexandre@mail.com',
     password: 'Alexa123',
+    type_user_id: '"9f093b25-9178-46f3-8886-d68b8a6bfd97"',
   }
 
   beforeEach(() => {
@@ -25,6 +26,7 @@ describe('create user', () => {
         id: expect.any(String),
         email: createUserParams.email,
         passwordHash: expect.any(String),
+        userType: expect.any(String),
       }
 
       vi.mocked(userRepository.createUser).mockResolvedValue(undefined)

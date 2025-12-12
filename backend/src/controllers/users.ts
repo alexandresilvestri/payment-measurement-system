@@ -3,7 +3,7 @@ import { createUser } from '../services/createUser'
 import { userRepository } from '../repository/users'
 import { serializeUser } from '../serializers/users'
 
-export async function createdUserRequest(
+export async function createUserRequest(
   req: Request,
   res: Response
 ): Promise<void> {

@@ -6,6 +6,7 @@ import { hashPassword } from './passwordHash'
 export type CreateUserParams = {
   email: string
   password: string
+  type_user_id: string
 }
 
 export async function createUser(
@@ -15,6 +16,7 @@ export async function createUser(
     id: randomUUID(),
     email: params.email,
     password: await hashPassword(params.password),
+    type_user_id: params.type_user_id,
   }
 
   await userRepository.createUser(createUserIntent)
