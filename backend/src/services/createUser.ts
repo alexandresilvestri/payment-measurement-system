@@ -17,7 +17,7 @@ export async function createUser(
     password: await hashPassword(params.password),
   }
 
-  await userRepository.saveUser(createUserIntent)
+  await userRepository.createUser(createUserIntent)
   const createdUser = await userRepository.findById(createUserIntent.id)
 
   if (!createdUser) throw new Error('Failed to create user')

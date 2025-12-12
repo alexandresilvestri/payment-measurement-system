@@ -2,22 +2,14 @@ import type { User, UserDatabaseRow } from '../models/users'
 import { db } from '../database/db'
 
 class UserRepository {
-  async saveUser(user: UserDatabaseRow): Promise<void> {
-    const existingUser = await this.findById(user.id)
-
-    if (existingUser) {
-      await db('users').where({ id: user.id }).update(this.userToTableRow(user))
-
-      return
-    }
-
+  async createUser(user: UserDatabaseRow): Promise<void> {
     try {
       await db('users').insert(this.userToTableRow(user))
     } catch (err) {
       if (
         err instanceof Error &&
         err.message.includes(
-          'insert into "users" ("email", "id", "password") values ($1, $2, $3) - duplicate key value violates unique constraint "users_email_unique"'
+          'duplicate key value violates unique constraint "users_email_unique"'
         )
       ) {
         throw new Error('Email already exists')
@@ -25,8 +17,17 @@ class UserRepository {
 
       throw err
     }
+  }
 
-    return
+  async updateUser(
+    id: string,
+    updates: Partial<Omit<UserDatabaseRow, 'id'>>
+  ): Promise<void> {
+    const result = await db('users').where({ id }).update(updates)
+
+    if (result === 0) {
+      throw new Error('User not found')
+    }
   }
 
   async findByEmail(email: string): Promise<User | null> {
