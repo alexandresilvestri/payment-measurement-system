@@ -13,7 +13,7 @@ const config: { [key: string]: Knex.Config } = {
       host: process.env.DB_HOST || 'localhost',
       user: process.env.DB_USER || 'postgres',
       password: process.env.DB_PASSWORD || 'postgres',
-      database: process.env.DB_NAME || 'pms',
+      database: process.env.DB_NAME || 'conf',
       port: Number(process.env.DB_PORT) || 5432,
     },
     pool: {
@@ -35,7 +35,7 @@ const config: { [key: string]: Knex.Config } = {
       host: process.env.DB_HOST || 'localhost',
       user: process.env.DB_USER || 'postgres',
       password: process.env.DB_PASSWORD || 'postgres',
-      database: process.env.DB_NAME || 'pms-test',
+      database: process.env.DB_NAME || 'conf-test',
       port: Number(process.env.DB_PORT) || 5432,
     },
     pool: {

@@ -116,12 +116,12 @@ install: install-backend install-frontend
 
 install-backend:
 	@echo "📦 Installing backend dependencies..."
-	docker compose exec pms-api npm install
+	docker compose exec conf-api npm install
 	@echo "✅ Backend dependencies installed!"
 
 install-frontend:
 	@echo "📦 Installing frontend dependencies..."
-	docker compose exec pms-client npm install
+	docker compose exec conf-client npm install
 	@echo "✅ Frontend dependencies installed!"
 
 # 🧪 TESTING COMMANDS
@@ -131,16 +131,16 @@ test: test-backend
 
 test-backend:
 	@echo "🧪 Running backend tests..."
-	docker compose exec pms-api npm test
+	docker compose exec conf-api npm test
 
 test-watch:
 	@echo "🧪 Running tests in watch mode..."
 	@echo "Press Ctrl+C to stop"
-	docker compose exec pms-api npm run test:watch
+	docker compose exec conf-api npm run test:watch
 
 test-coverage:
 	@echo "🧪 Running tests with coverage..."
-	docker compose exec pms-api npm run test:coverage
+	docker compose exec conf-api npm run test:coverage
 	@echo ""
 	@echo "📊 Coverage report generated in backend/coverage/"
 
@@ -149,7 +149,7 @@ test-coverage:
 db-shell:
 	@echo "🐘 Opening PostgreSQL shell..."
 	@echo "Type '\q' to exit"
-	docker compose exec pms-postgres psql -U postgres -d pms
+	docker compose exec conf-postgres psql -U postgres -d conf
 
 # Reset database (WARNING: deletes all data!)
 db-reset:
@@ -157,7 +157,7 @@ db-reset:
 	@echo -n "Are you sure? Type 'yes' to continue: " && read answer && [ "$$answer" = "yes" ]
 	@echo "🗑️  Resetting database..."
 	docker compose down -v
-	docker compose up -d pms-postgres
+	docker compose up -d conf-postgres
 	@sleep 5
 	docker compose up -d
 	@echo "ℹ️  Migrations will run automatically on startup..."
@@ -179,48 +179,48 @@ clean-all: clean
 
 shell-backend:
 	@echo "🐚 Opening backend shell..."
-	docker compose exec pms-api sh
+	docker compose exec conf-api sh
 
 shell-frontend:
 	@echo "🐚 Opening frontend shell..."
-	docker compose exec pms-client sh
+	docker compose exec conf-client sh
 
 # 🎨 CODE QUALITY COMMANDS
 
 lint:
 	@echo "🔍 Running ESLint on all code..."
 	@echo "Backend:"
-	@docker compose exec pms-api npm run lint
+	@docker compose exec conf-api npm run lint
 	@echo ""
 	@echo "Frontend:"
-	@docker compose exec pms-client npm run lint
+	@docker compose exec conf-client npm run lint
 	@echo "✅ Linting complete!"
 
 lint-fix:
 	@echo "🔧 Running ESLint with auto-fix..."
 	@echo "Backend:"
-	@docker compose exec pms-api npm run lint:fix
+	@docker compose exec conf-api npm run lint:fix
 	@echo ""
 	@echo "Frontend:"
-	@docker compose exec pms-client npm run lint:fix
+	@docker compose exec conf-client npm run lint:fix
 	@echo "✅ Auto-fix complete!"
 
 format:
 	@echo "🎨 Formatting code with Prettier..."
 	@echo "Backend:"
-	@docker compose exec pms-api npm run format
+	@docker compose exec conf-api npm run format
 	@echo ""
 	@echo "Frontend:"
-	@docker compose exec pms-client npm run format
+	@docker compose exec conf-client npm run format
 	@echo "✅ Formatting complete!"
 
 format-check:
 	@echo "🔍 Checking code formatting..."
 	@echo "Backend:"
-	@docker compose exec pms-api npm run format:check
+	@docker compose exec conf-api npm run format:check
 	@echo ""
 	@echo "Frontend:"
-	@docker compose exec pms-client npm run format:check
+	@docker compose exec conf-client npm run format:check
 	@echo "✅ Format check complete!"
 
 pre-commit: format-check lint
@@ -230,7 +230,7 @@ pre-commit: format-check lint
 
 lint-backend:
 	@echo "🔍 Linting backend code..."
-	docker compose exec pms-api npm run lint
+	docker compose exec conf-api npm run lint
 
 health:
 	@echo "🏥 Checking service health..."
@@ -250,23 +250,23 @@ migrate-make:
 		exit 1; \
 	fi
 	@echo "📝 Creating migration: $(name)..."
-	@docker compose exec pms-api npm run migrate:make $(name)
-	@docker compose exec pms-api chown -R node:node /app/src/database/migrations
+	@docker compose exec conf-api npm run migrate:make $(name)
+	@docker compose exec conf-api chown -R node:node /app/src/database/migrations
 	@echo "✅ Migration created!"
 
 migrate-latest:
 	@echo "⬆️  Running migrations..."
-	@docker compose exec pms-api npm run migrate:latest
+	@docker compose exec conf-api npm run migrate:latest
 	@echo "✅ Migrations complete!"
 
 migrate-rollback:
 	@echo "⬇️  Rolling back last migration..."
-	@docker compose exec pms-api npm run migrate:rollback
+	@docker compose exec conf-api npm run migrate:rollback
 	@echo "✅ Rollback complete!"
 
 migrate-status:
 	@echo "📊 Migration status:"
-	@docker compose exec pms-api npm run migrate:status
+	@docker compose exec conf-api npm run migrate:status
 
 seed-make:
 	@if [ -z "$(name)" ]; then \
@@ -275,12 +275,12 @@ seed-make:
 		exit 1; \
 	fi
 	@echo "📝 Creating seed: $(name)..."
-	@docker compose exec pms-api npm run seed:make $(name)
+	@docker compose exec conf-api npm run seed:make $(name)
 	@echo "🔧 Fixing file permissions..."
-	@docker compose exec pms-api chown -R node:node /app/src/database/seeds
+	@docker compose exec conf-api chown -R node:node /app/src/database/seeds
 	@echo "✅ Seed created!"
 
 seed-run:
 	@echo "🌱 Running seeds..."
-	@docker compose exec pms-api npm run seed:run
+	@docker compose exec conf-api npm run seed:run
 	@echo "✅ Seeds complete!"

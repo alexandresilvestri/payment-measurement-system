@@ -1,12 +1,12 @@
 services:
-  pms-postgres:
+  conf-postgres:
     image: postgres:16-alpine
-    container_name: pms-postgres
+    container_name: conf-postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${DB_USER:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
-      POSTGRES_DB: ${DB_NAME:-pms}
+      POSTGRES_DB: ${DB_NAME:-conf}
     ports:
       - "${DB_PORT:-5432}:5432"
     volumes:
@@ -19,21 +19,21 @@ services:
     networks:
       - app-network
 
-  pms-api:
+  conf-api:
     build:
       context: ./backend
       dockerfile: Dockerfile
       target: development
-    image: pms-api
-    container_name: api
+    image: conf-api
+    container_name: conf-api
     restart: unless-stopped
     environment:
       NODE_ENV: development
-      DB_HOST: pms-postgres
+      DB_HOST: conf-postgres
       DB_PORT: 5432
       DB_USER: ${DB_USER:-postgres}
       DB_PASSWORD: ${DB_PASSWORD:-postgres}
-      DB_NAME: ${DB_NAME:-pms}
+      DB_NAME: ${DB_NAME:-conf}
       PORT: ${BACKEND_PORT:-3000}
     ports:
       - "${BACKEND_PORT:-3000}:3000"
@@ -42,19 +42,19 @@ services:
       - /app/node_modules
       - /app/dist
     depends_on:
-      pms-postgres:
+      conf-postgres:
         condition: service_healthy
     command: npm run dev:migrate
     networks:
       - app-network
 
-  pms-client:
+  conf-client:
     build:
       context: ./frontend
       dockerfile: Dockerfile
       target: development
-    image: pms-client
-    container_name: client
+    image: conf-client
+    container_name: conf-client
     restart: unless-stopped
     environment:
       VITE_API_URL: http://localhost:${BACKEND_PORT:-3000}
@@ -64,7 +64,7 @@ services:
       - ./frontend:/app
       - /app/node_modules
     depends_on:
-      - pms-api
+      - conf-api
     command: npm run dev -- --host
     networks:
       - app-network

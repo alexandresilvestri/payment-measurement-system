@@ -1,5 +1,5 @@
 {
-  "name": "pms-backend",
+  "name": "conf-backend",
   "version": "1.0.0",
   "description": "Construction Manager ERP - Backend API",
   "main": "dist/index.js",
