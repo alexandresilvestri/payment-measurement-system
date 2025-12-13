@@ -1,4 +1,4 @@
-# Payment Measurement System (PMS)
+# ERP Conferir Engenharia
 
 A full-stack web application for managing construction project contracts, measurements, and payment tracking.
 
@@ -60,11 +60,6 @@ payment-measurement-system/
 
 ## Features
 
-### User Management
-- User creation with secure password hashing
-- Role-based user types and permissions system
-- User authentication and authorization
-
 ### Contract Management
 - Create and manage construction contracts
 - Track contract items and pricing
@@ -75,14 +70,10 @@ payment-measurement-system/
 - Track measurement status (Draft, Pending, Approved, Rejected)
 - Director approval workflow with observations
 
-### Construction Site Management
-- Create and manage construction sites
-- Assign contractors to sites
-- Track site-specific operations
-
-### Role-Based Dashboards
-- **Director Dashboard:** Overall management and approvals
-- **Site Dashboard:** Field operations and measurements
+### Purchasing and invoice management
+- Add Tax Invoices
+- Extract data to create filter reports
+- Track budget (Draft, Pending, Approved/Reject, Transport, Received)
 
 ## Getting Started
 
@@ -143,41 +134,9 @@ make migrate-up   # Run pending migrations
 make migrate-down # Rollback last migration
 ```
 
-### API Endpoints
-
-#### Users
-- `POST /api/users` - Create new user
-- `GET /api/users/:id` - Get user by ID
-
-#### User Types
-- `POST /api/user-types` - Create user type
-- `GET /api/user-types/:id` - Get user type by ID
-
-#### System
-- `GET /api/system/health` - Health check endpoint
-
-### Default Ports
-
-- **Frontend:** http://localhost:5173
-- **Backend API:** http://localhost:3000
-- **PostgreSQL:** localhost:5432
-
 ## Database
 
 The application uses PostgreSQL with Knex.js for migrations. Migrations run automatically when the API container starts.
-
-### Manual Migration Commands
-
-```bash
-# Create a new migration
-make migrate-make name=migration_name
-
-# Run migrations
-make migrate-up
-
-# Rollback migrations
-make migrate-down
-```
 
 ## Testing
 
