@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use('/api', usersRoutes)
 app.use('/api', userTypesRoutes)
 
-app.use(errorHandler)
 app.use('/health', healthTest)
+app.use(errorHandler)
 
 export default app
