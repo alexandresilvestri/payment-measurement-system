@@ -27,6 +27,11 @@ class UserTypeRepository {
     return typeUser
   }
 
+  async findAll(): Promise<UserTypeDatabaseRow[]> {
+    const userTypes = await db('user_types').select('*')
+    return userTypes
+  }
+
   private userTypeToTableRow(
     register: UserTypeDatabaseRow
   ): UserTypeDatabaseRow {
