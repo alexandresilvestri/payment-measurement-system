@@ -1,24 +1,21 @@
 import type { Knex } from 'knex'
-import dotenv from 'dotenv'
+import { config as appConfig } from './config'
 
-dotenv.config({ path: '../../../.env' })
+const dbConfig = appConfig.database;
 
-/**
- * @type { Object.<string, import("knex").Knex.Config> }
- */
-const config: { [key: string]: Knex.Config } = {
+const knexConfig: { [key: string]: Knex.Config } = {
   development: {
     client: 'pg',
     connection: {
-      host: process.env.DB_HOST || 'localhost',
-      user: process.env.DB_USER || 'postgres',
-      password: process.env.DB_PASSWORD || 'postgres',
-      database: process.env.DB_NAME || 'conf',
-      port: Number(process.env.DB_PORT) || 5432,
+      host: dbConfig.host,
+      port: dbConfig.port,
+      user: dbConfig.user,
+      password: dbConfig.password,
+      database: dbConfig.database,
     },
     pool: {
-      min: 2,
-      max: 10,
+      min: dbConfig.poolMin,
+      max: dbConfig.poolMax,
     },
     migrations: {
       directory: './migrations',
@@ -32,15 +29,37 @@ const config: { [key: string]: Knex.Config } = {
   test: {
     client: 'pg',
     connection: {
-      host: process.env.DB_HOST || 'localhost',
-      user: process.env.DB_USER || 'postgres',
-      password: process.env.DB_PASSWORD || 'postgres',
-      database: process.env.DB_NAME || 'conf-test',
-      port: Number(process.env.DB_PORT) || 5432,
+      host: dbConfig.host,
+      port: dbConfig.port,
+      user: dbConfig.user,
+      password: dbConfig.password,
+      database: `${dbConfig.database}-test`,
     },
     pool: {
-      min: 2,
-      max: 10,
+      min: dbConfig.poolMin,
+      max: dbConfig.poolMax,
+    },
+    migrations: {
+      directory: './migrations',
+      extension: 'ts',
+    },
+    seeds: {
+      directory: './seeds',
+    },
+  },
+
+  production: {
+    client: 'pg',
+    connection: {
+      host: dbConfig.host,
+      port: dbConfig.port,
+      user: dbConfig.user,
+      password: dbConfig.password,
+      database: dbConfig.database,
+    },
+    pool: {
+      min: dbConfig.poolMin,
+      max: dbConfig.poolMax,
     },
     migrations: {
       directory: './migrations',
@@ -52,4 +71,4 @@ const config: { [key: string]: Knex.Config } = {
   },
 }
 
-export default config
+export default knexConfig

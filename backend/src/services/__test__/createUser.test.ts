@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { createUser, CreateUserParams } from '../createUser'
+import { UserService, CreateUserParams } from '../createUser'
 import { userRepository } from '../../repository/users'
 import { userTypeRepository } from '../../repository/userTypes'
 import { MOCK_USER_ADMIN } from './mocks/user.mocks'
@@ -27,8 +27,11 @@ describe('create user', () => {
     typeUser: MOCK_USER_TYPE_ADMIN.id,
   }
 
+  let userService: UserService
+
   beforeEach(() => {
     vi.clearAllMocks()
+    userService = new UserService(userRepository, userTypeRepository)
   })
 
   describe('when the user doesnt not exists', () => {
@@ -38,7 +41,7 @@ describe('create user', () => {
       vi.mocked(userTypeRepository.findById).mockResolvedValue(
         MOCK_USER_TYPE_ADMIN
       )
-      const createdUser = await createUser(createUserParams)
+      const createdUser = await userService.createUser(createUserParams)
 
       expect(userRepository.createUser).toHaveBeenCalledWith(
         expect.objectContaining({

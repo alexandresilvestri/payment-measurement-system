@@ -1,30 +1,47 @@
 import { randomUUID } from 'node:crypto'
 import type { UserTypeDatabaseRow } from '../models/users/userDatabase/userTypes'
-import { userTypeRepository } from '../repository/userTypes'
+import type { IUserTypeRepository } from '../repository/userTypes'
+import { NotFoundError } from '../errors'
 
 export type CreateUserTypeParams = {
   name: string
 }
 
-export async function createUserType(
-  params: CreateUserTypeParams
-): Promise<UserTypeDatabaseRow> {
-  const createUserTypeIntent: UserTypeDatabaseRow = {
-    id: randomUUID(),
-    name: params.name,
+/**
+ * UserType Service with Dependency Injection
+ * Handles all business logic for user type operations
+ */
+export class UserTypeService {
+  constructor(private userTypeRepo: IUserTypeRepository) {}
+
+  async createUserType(
+    params: CreateUserTypeParams
+  ): Promise<UserTypeDatabaseRow> {
+    const createUserTypeIntent: UserTypeDatabaseRow = {
+      id: randomUUID(),
+      name: params.name,
+    }
+
+    await this.userTypeRepo.createUserType(createUserTypeIntent)
+    const createdUserType = await this.userTypeRepo.findById(
+      createUserTypeIntent.id
+    )
+
+    if (!createdUserType) throw new NotFoundError('Failed to create user type')
+
+    const userResponse: UserTypeDatabaseRow = {
+      id: createUserTypeIntent.id,
+      name: createUserTypeIntent.name,
+    }
+
+    return userResponse
   }
 
-  await userTypeRepository.createUserType(createUserTypeIntent)
-  const createdUserType = await userTypeRepository.findById(
-    createUserTypeIntent.id
-  )
-
-  if (!createdUserType) throw new Error('Failed to create user')
-
-  const userResponse: UserTypeDatabaseRow = {
-    id: createUserTypeIntent.id,
-    name: createUserTypeIntent.name,
+  async getUserTypeById(id: string): Promise<UserTypeDatabaseRow | null> {
+    return await this.userTypeRepo.findById(id)
   }
 
-  return userResponse
+  async getAllUserTypes(): Promise<UserTypeDatabaseRow[]> {
+    return await this.userTypeRepo.findAll()
+  }
 }

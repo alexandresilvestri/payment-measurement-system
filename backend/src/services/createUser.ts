@@ -1,9 +1,10 @@
 import { randomUUID } from 'node:crypto'
 import type { UserResponse } from '../models/users/users'
 import type { User } from '../models/users/users'
-import { userRepository } from '../repository/users'
+import type { IUserRepository } from '../repository/users'
+import type { IUserTypeRepository } from '../repository/userTypes'
 import { hashPassword } from './passwordHash'
-import { userTypeRepository } from '../repository/userTypes'
+import { ValidationError, NotFoundError } from '../errors'
 
 export type CreateUserParams = {
   firstName: string
@@ -17,23 +18,23 @@ function validateName(name: string, fieldName: string): void {
   const trimmed = name.trim()
 
   if (!trimmed || trimmed.length === 0) {
-    throw new Error(`${fieldName} is required`)
+    throw new ValidationError(`${fieldName} is required`)
   }
 
   if (trimmed.length < 2 || trimmed.length > 50) {
-    throw new Error(`${fieldName} must be between 2 and 50 characters`)
+    throw new ValidationError(`${fieldName} must be between 2 and 50 characters`)
   }
 
   if (/["'`<>\\;]/.test(trimmed)) {
-    throw new Error(`${fieldName} contains invalid characters`)
+    throw new ValidationError(`${fieldName} contains invalid characters`)
   }
 
   if (/\d/.test(trimmed)) {
-    throw new Error(`${fieldName} cannot contain numbers`)
+    throw new ValidationError(`${fieldName} cannot contain numbers`)
   }
 
   if (!/^[a-zA-ZÀ-ÿ\s'-]+$/.test(trimmed)) {
-    throw new Error(`${fieldName} contains invalid characters`)
+    throw new ValidationError(`${fieldName} contains invalid characters`)
   }
 }
 
@@ -41,100 +42,113 @@ function validateEmail(email: string): void {
   const trimmed = email.trim()
 
   if (!trimmed || trimmed.length === 0) {
-    throw new Error('Email is required')
+    throw new ValidationError('Email is required')
   }
 
   if (trimmed.length > 100) {
-    throw new Error('Email must be at most 100 characters')
+    throw new ValidationError('Email must be at most 100 characters')
   }
 
   if (trimmed.includes("'") || trimmed.includes('"') || trimmed.includes('`')) {
-    throw new Error('Email cannot contain quotes')
+    throw new ValidationError('Email cannot contain quotes')
   }
 
   if (/[<>\\;()[\]{}|~!#$%^&*=+]/.test(trimmed)) {
-    throw new Error('Email contains invalid characters')
+    throw new ValidationError('Email contains invalid characters')
   }
 
   if (/\s/.test(trimmed)) {
-    throw new Error('Email cannot contain spaces')
+    throw new ValidationError('Email cannot contain spaces')
   }
 
   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
   if (!emailRegex.test(trimmed)) {
-    throw new Error('Invalid email format')
+    throw new ValidationError('Invalid email format')
   }
 
   if (trimmed.includes('..')) {
-    throw new Error('Email cannot contain consecutive dots')
+    throw new ValidationError('Email cannot contain consecutive dots')
   }
 }
 
 function validatePassword(password: string): void {
   if (!password || password.length === 0) {
-    throw new Error('Password is required')
+    throw new ValidationError('Password is required')
   }
 
   if (password.length < 8 || password.length > 100) {
-    throw new Error('Password must be between 8 and 100 characters')
+    throw new ValidationError('Password must be between 8 and 100 characters')
   }
 
   if (!/[a-z]/.test(password)) {
-    throw new Error('Password must contain at least one lowercase letter')
+    throw new ValidationError('Password must contain at least one lowercase letter')
   }
 
   if (!/[A-Z]/.test(password)) {
-    throw new Error('Password must contain at least one uppercase letter')
+    throw new ValidationError('Password must contain at least one uppercase letter')
   }
 
   if (!/\d/.test(password)) {
-    throw new Error('Password must contain at least one number')
+    throw new ValidationError('Password must contain at least one number')
   }
 
   if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
-    throw new Error('Password must contain at least one special character')
+    throw new ValidationError('Password must contain at least one special character')
   }
 
   if (/\s/.test(password)) {
-    throw new Error('Password cannot contain spaces')
+    throw new ValidationError('Password cannot contain spaces')
   }
 }
 
-export async function createUser(
-  params: CreateUserParams
-): Promise<UserResponse> {
-  validateName(params.firstName, 'First name')
-  validateName(params.lastName, 'Last name')
-  validateEmail(params.email)
-  validatePassword(params.password)
+export class UserService {
+  constructor(
+    private userRepo: IUserRepository,
+    private userTypeRepo: IUserTypeRepository
+  ) {}
 
-  if (!params.typeUser || params.typeUser.trim().length === 0) {
-    throw new Error('User type is required')
+  async createUser(params: CreateUserParams): Promise<UserResponse> {
+    validateName(params.firstName, 'First name')
+    validateName(params.lastName, 'Last name')
+    validateEmail(params.email)
+    validatePassword(params.password)
+
+    if (!params.typeUser || params.typeUser.trim().length === 0) {
+      throw new ValidationError('User type is required')
+    }
+
+    const createUserIntent: User = {
+      id: randomUUID(),
+      firstName: params.firstName.trim(),
+      lastName: params.lastName.trim(),
+      email: params.email.trim().toLowerCase(),
+      passwordHash: await hashPassword(params.password),
+      userType: params.typeUser,
+    }
+
+    await this.userRepo.createUser(createUserIntent)
+    const createdUser = await this.userRepo.findById(createUserIntent.id)
+
+    if (!createdUser) throw new NotFoundError('Failed to create user')
+
+    const userTypeId = createUserIntent.userType
+    const fullName: string = `${createUserIntent.firstName} ${createUserIntent.lastName}`
+
+    const userResponse: UserResponse = {
+      id: createUserIntent.id,
+      fullName: fullName,
+      email: createUserIntent.email,
+      userType: await this.userTypeRepo.findById(userTypeId),
+    }
+
+    return userResponse
   }
 
-  const createUserIntent: User = {
-    id: randomUUID(),
-    firstName: params.firstName.trim(),
-    lastName: params.lastName.trim(),
-    email: params.email.trim().toLowerCase(),
-    passwordHash: await hashPassword(params.password),
-    userType: params.typeUser,
+  async getUserById(id: string): Promise<User | null> {
+    return await this.userRepo.findById(id)
   }
 
-  await userRepository.createUser(createUserIntent)
-  const createdUser = await userRepository.findById(createUserIntent.id)
-
-  if (!createdUser) throw new Error('Failed to create user')
-
-  const userTypeId = createUserIntent.userType
-  const fullName: string = `${createUserIntent.firstName} ${createUserIntent.lastName}`
-
-  const userResponse: UserResponse = {
-    id: createUserIntent.id,
-    fullName: fullName,
-    email: createUserIntent.email,
-    userType: await userTypeRepository.findById(userTypeId),
+  async getUserByEmail(email: string): Promise<User | null> {
+    return await this.userRepo.findByEmail(email)
   }
-
-  return userResponse
 }

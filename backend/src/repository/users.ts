@@ -1,8 +1,15 @@
 import type { User } from '../models/users/users'
 import type { UserDatabaseRow } from '../models/users/userDatabase/users'
 import { db } from '../database/db'
+import { ConflictError, NotFoundError } from '../errors'
+export interface IUserRepository {
+  createUser(user: User): Promise<void>
+  updateUser(id: string, updates: Partial<Omit<UserDatabaseRow, 'id'>>): Promise<void>
+  findByEmail(email: string): Promise<User | null>
+  findById(id: string): Promise<User | null>
+}
 
-class UserRepository {
+class UserRepository implements IUserRepository {
   async createUser(user: User): Promise<void> {
     try {
       await db('users').insert(this.userToTableRow(user))
@@ -13,7 +20,7 @@ class UserRepository {
           'duplicate key value violates unique constraint "users_email_unique"'
         )
       ) {
-        throw new Error('Email already exists')
+        throw new ConflictError('Email already exists')
       }
 
       throw err
@@ -27,7 +34,7 @@ class UserRepository {
     const result = await db('users').where({ id }).update(updates)
 
     if (result === 0) {
-      throw new Error('User not found')
+      throw new NotFoundError('User not found')
     }
   }
 
