@@ -1,0 +1,31 @@
+import { Request, Response } from 'express'
+import { createUserType } from '../../services/users/createUserType'
+import { userTypeRepository } from '../../repository/users/userTypes'
+
+export async function createUserTypeRequest(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const userTypeParams = req.body
+  try {
+    const userType = await createUserType(userTypeParams)
+    res.status(201).json(userType)
+  } catch (err) {
+    res.status(500)
+    console.error(err)
+  }
+}
+
+export async function getUserType(req: Request, res: Response): Promise<void> {
+  const id = req.params.id
+  try {
+    const userType = await userTypeRepository.findById(id)
+
+    if (!userType) throw new Error('User not found')
+
+    res.status(200).json(userType)
+  } catch (err) {
+    res.status(500)
+    console.error(err)
+  }
+}
