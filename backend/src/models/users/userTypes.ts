@@ -5,3 +5,8 @@ export type UserType = {
   name: string
   // permission: Permission[]
 }
+
+export type UserTypeDatabaseRow = {
+  id: string
+  name: string
+}

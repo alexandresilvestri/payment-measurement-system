@@ -4,10 +4,10 @@ import helmet from 'helmet'
 import morgan from 'morgan'
 
 import { errorHandler } from './middleware/errorHandler'
-import { healthTest } from './routes/system'
 
-import usersRoutes from './routes/users'
-import userTypesRoutes from './routes/userTypes'
+import usersRoutes from './routes/users/users'
+import userTypesRoutes from './routes/users/userTypes'
+import worksRoutes from './routes/works/works'
 
 const app = express()
 
@@ -19,8 +19,8 @@ app.use(express.urlencoded({ extended: true }))
 
 app.use('/api', usersRoutes)
 app.use('/api', userTypesRoutes)
+app.use('/api', worksRoutes)
 
-app.use('/health', healthTest)
 app.use(errorHandler)
 
 export default app
