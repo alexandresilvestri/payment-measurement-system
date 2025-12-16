@@ -5,7 +5,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    setupFiles: ['./src/test/setup.ts'],
+    setupFiles: ['./src/test-helpers/setup.ts'],
     fileParallelism: false,
     env: {
       NODE_ENV: 'test',
@@ -18,7 +18,8 @@ export default defineConfig({
         'dist/',
         '**/*.config.ts',
         '**/*.d.ts',
-        'src/test/**',
+        'src/test-helpers/**',
+        'src/**/__tests__/**',
         'src/database/migrations/**',
         'src/database/seeds/**',
       ],

@@ -1,14 +1,12 @@
 import dotenv from 'dotenv'
 import app from './app'
-import { config } from './database/config'
 
 dotenv.config()
 
-const PORT = config.server.port
+const PORT = process.env.PORT || 3000
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-  console.log(`Environment: ${config.environment}`)
-  console.log(`Database: ${config.database.database}`)
-  console.log(`Database host: ${config.database.host}:${config.database.port}`)
+  console.log(`🚀 Server running on port ${PORT}`)
+  console.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`)
+  console.log(`🗄️ Database: ${process.env.DB_NAME}`)
 })

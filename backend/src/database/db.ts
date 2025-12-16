@@ -2,7 +2,7 @@ import knex from 'knex'
 import knexfile from './knexfile'
 
 const environment = process.env.NODE_ENV || 'development'
-const config = knexfile[environment as keyof typeof knexfile]
+const config = knexfile[environment]
 
 if (!config) {
   throw new Error(

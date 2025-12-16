@@ -5,9 +5,9 @@ import morgan from 'morgan'
 
 import { errorHandler, notFoundHandler } from './middleware/errorHandler'
 
-import usersRoutes from './routes/users/users'
-import userTypesRoutes from './routes/users/userTypes'
-import worksRoutes from './routes/works/works'
+import usersRoutes from './routes/users'
+import userTypesRoutes from './routes/userTypes'
+import worksRoutes from './routes/works'
 
 const app = express()
 

@@ -19,16 +19,16 @@
     "db:reset": "npm run migrate:rollback:all && npm run migrate:latest && npm run seed:run",
     "db:test:setup": "NODE_ENV=test npm run migrate:test:latest",
     "db:test:reset": "NODE_ENV=test npm run migrate:test:rollback:all && npm run migrate:test:latest",
-    "migrate:make": "knex migrate:make --knexfile src/database/knexfile.ts -x ts",
-    "migrate:latest": "knex migrate:latest --knexfile src/database/knexfile.ts",
-    "migrate:rollback": "knex migrate:rollback --knexfile src/database/knexfile.ts",
-    "migrate:rollback:all": "knex migrate:rollback --all --knexfile src/database/knexfile.ts",
-    "migrate:status": "knex migrate:status --knexfile src/database/knexfile.ts",
-    "migrate:test:latest": "NODE_ENV=test knex migrate:latest --knexfile src/database/knexfile.ts",
-    "migrate:test:rollback": "NODE_ENV=test knex migrate:rollback --knexfile src/database/knexfile.ts",
-    "migrate:test:rollback:all": "NODE_ENV=test knex migrate:rollback --all --knexfile src/database/knexfile.ts",
-    "seed:make": "knex seed:make --knexfile src/database/knexfile.ts -x ts",
-    "seed:run": "knex seed:run --knexfile src/database/knexfile.ts"
+    "migrate:make": "tsx node_modules/knex/bin/cli.js migrate:make --knexfile src/database/knexfile.ts -x ts",
+    "migrate:latest": "tsx node_modules/knex/bin/cli.js migrate:latest --knexfile src/database/knexfile.ts",
+    "migrate:rollback": "tsx node_modules/knex/bin/cli.js migrate:rollback --knexfile src/database/knexfile.ts",
+    "migrate:rollback:all": "tsx node_modules/knex/bin/cli.js migrate:rollback --all --knexfile src/database/knexfile.ts",
+    "migrate:status": "tsx node_modules/knex/bin/cli.js migrate:status --knexfile src/database/knexfile.ts",
+    "migrate:test:latest": "NODE_ENV=test tsx node_modules/knex/bin/cli.js migrate:latest --knexfile src/database/knexfile.ts",
+    "migrate:test:rollback": "NODE_ENV=test tsx node_modules/knex/bin/cli.js migrate:rollback --knexfile src/database/knexfile.ts",
+    "migrate:test:rollback:all": "NODE_ENV=test tsx node_modules/knex/bin/cli.js migrate:rollback --all --knexfile src/database/knexfile.ts",
+    "seed:make": "tsx node_modules/knex/bin/cli.js seed:make --knexfile src/database/knexfile.ts -x ts",
+    "seed:run": "tsx node_modules/knex/bin/cli.js seed:run --knexfile src/database/knexfile.ts"
   },
   "lint-staged": {
     "*.ts": [
@@ -49,7 +49,6 @@
   "license": "ISC",
   "dependencies": {
     "argon2": "^0.44.0",
-    "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
@@ -57,7 +56,8 @@
     "jsonwebtoken": "^9.0.3",
     "knex": "^3.1.0",
     "morgan": "^1.10.0",
-    "pg": "^8.11.3"
+    "pg": "^8.11.3",
+    "zod": "^4.2.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
@@ -78,8 +78,6 @@
     "nodemon": "^3.1.11",
     "prettier": "^3.7.4",
     "supertest": "^6.3.3",
-    "ts-node": "^10.9.2",
-    "ts-node-dev": "^2.0.0",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3",
     "vitest": "^4.0.15"

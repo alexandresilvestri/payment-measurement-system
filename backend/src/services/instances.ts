@@ -1,9 +1,9 @@
-import { userRepository } from '../repository/users/users'
-import { userTypeRepository } from '../repository/users/userTypes'
-import { workRepository } from '../repository/works/works'
-import { UserService } from './users/createUser'
-import { UserTypeService } from './users/createUserType'
-import { WorkService } from './works/works'
+import { userRepository } from '../repository/users'
+import { userTypeRepository } from '../repository/userTypes'
+import { workRepository } from '../repository/works'
+import { UserService } from './User'
+import { UserTypeService } from './UserType'
+import { WorkService } from './Work'
 
 export const userService = new UserService(userRepository, userTypeRepository)
 
