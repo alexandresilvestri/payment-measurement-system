@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto'
-import type { Work, CreateWorkRequest, UpdateWorkRequest } from '../types/works'
+import type { Work } from '../types/works'
+import type { CreateWorkRequest, UpdateWorkRequest } from '../types/api/works'
 import type { IWorkRepository } from '../repository/works'
 
 export class WorkService {

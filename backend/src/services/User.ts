@@ -1,9 +1,10 @@
 import { randomUUID } from 'node:crypto'
-import type { UserResponse } from '../types/users'
+import { UserResponse, UpdateUserRequest } from '../types/api/users'
 import type { User } from '../types/users'
 import type { IUserRepository } from '../repository/users'
 import type { IUserTypeRepository } from '../repository/userTypes'
 import { hashPassword } from '../utils/passwordHash'
+import { mapUpdateUserRequestToDb } from '../utils/userMapper'
 import { NotFoundError } from '../errors'
 
 export type CreateUserParams = {
@@ -54,5 +55,47 @@ export class UserService {
 
   async getUserByEmail(email: string): Promise<User | null> {
     return await this.userRepo.findByEmail(email)
+  }
+
+  async updateUser(
+    id: string,
+    updates: UpdateUserRequest
+  ): Promise<UserResponse | null> {
+    const dbUpdates = await mapUpdateUserRequestToDb(updates)
+
+    // Only update if there are actual changes
+    if (Object.keys(dbUpdates).length === 0) {
+      const row = await this.userRepo.findById(id)
+      if (!row) return null
+
+      return {
+        id: row.id,
+        fullName: `${row.firstName} ${row.lastName}`,
+        email: row.email,
+        userType: await this.userTypeRepo.findById(row.userType),
+      }
+    }
+
+    try {
+      await this.userRepo.update(id, dbUpdates)
+    } catch (error) {
+      if (error instanceof NotFoundError) {
+        return null
+      }
+      throw error
+    }
+
+    const row = await this.userRepo.findById(id)
+
+    if (!row) return null
+
+    const userReponse = {
+      id: row.id,
+      fullName: `${row.firstName} ${row.lastName}`,
+      email: row.email,
+      userType: await this.userTypeRepo.findById(row.userType),
+    }
+
+    return userReponse
   }
 }

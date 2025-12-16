@@ -41,9 +41,15 @@ class UserRepository
   async findByEmail(email: string): Promise<User | null> {
     const row = await this.db('users').where({ email }).first<UserDatabaseRow>()
 
-    if (!row) {
-      return null
-    }
+    if (!row) return null
+
+    return this.toDomain(row)
+  }
+
+  async findById(id: string): Promise<User | null> {
+    const row = await this.db('users').where({ id }).first<UserDatabaseRow>()
+
+    if (!row) return null
 
     return this.toDomain(row)
   }
