@@ -38,3 +38,15 @@ export const updateUserHandler = asyncHandler(
     res.status(200).json(user)
   }
 )
+
+export const deleteUserHandler = asyncHandler(
+  async (req: Request, res: Response) => {
+    const id = req.params.id
+    await userService.deleteUser(id)
+    const user = await userService.getUserById(id)
+
+    if (user) throw new Error('Failed to delete work')
+
+    res.status(204).send()
+  }
+)

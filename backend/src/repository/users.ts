@@ -9,6 +9,7 @@ export interface IUserRepository {
     id: string,
     updates: Partial<Omit<UserDatabaseRow, 'id'>>
   ): Promise<void>
+  delete(id: string): Promise<void>
   findByEmail(email: string): Promise<User | null>
   findById(id: string): Promise<User | null>
 }
@@ -56,6 +57,10 @@ class UserRepository
 
       throw err
     }
+  }
+
+  async delete(id: string): Promise<void> {
+    await super.delete(id)
   }
 
   async findByEmail(email: string): Promise<User | null> {

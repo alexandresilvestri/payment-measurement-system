@@ -97,4 +97,8 @@ export class UserService {
 
     return userReponse
   }
+
+  async deleteUser(id: string): Promise<void> {
+    await this.userRepo.delete(id)
+  }
 }
