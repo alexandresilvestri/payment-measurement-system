@@ -1,9 +1,16 @@
 import { randomUUID } from 'node:crypto'
-import type { UserTypeDatabaseRow } from '../types/userTypes'
+import type {
+  UserTypeDatabaseRow,
+  UpdateUserTypeRequest,
+} from '../types/userTypes'
 import type { IUserTypeRepository } from '../repository/userTypes'
 import { NotFoundError } from '../errors'
 
 export type CreateUserTypeParams = {
+  name: string
+}
+
+export type UpdateUserTypeParams = {
   name: string
 }
 
@@ -39,5 +46,14 @@ export class UserTypeService {
 
   async getAllUserTypes(): Promise<UserTypeDatabaseRow[]> {
     return await this.userTypeRepo.findAll()
+  }
+
+  async updateUserType(
+    id: string,
+    update: UpdateUserTypeRequest
+  ): Promise<UserTypeDatabaseRow | null> {
+    await this.userTypeRepo.update(id, update)
+
+    return await this.userTypeRepo.findById(id)
   }
 }

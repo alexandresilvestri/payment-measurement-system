@@ -3,11 +3,13 @@ import {
   createUserTypeHandler,
   getUserTypeHandler,
   getAllUserTypesHandler,
+  updateUserTypeHandler,
 } from '../controllers/userTypes'
 import { validate } from '../validation/middleware'
 import {
   createUserTypeSchema,
   getUserTypeSchema,
+  updateUserTypeSchema,
 } from '../validation/schemas/userTypes'
 
 const router = express.Router()
@@ -19,5 +21,10 @@ router.post(
 )
 router.get('/user-types', getAllUserTypesHandler)
 router.get('/user-types/:id', validate(getUserTypeSchema), getUserTypeHandler)
+router.put(
+  '/user-types/:id',
+  validate(updateUserTypeSchema),
+  updateUserTypeHandler
+)
 
 export default router

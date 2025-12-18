@@ -6,6 +6,10 @@ export interface IUserTypeRepository {
   create(userType: UserTypeDatabaseRow): Promise<void>
   findById(id: string): Promise<UserTypeDatabaseRow | null>
   findAll(): Promise<UserTypeDatabaseRow[]>
+  update(
+    id: string,
+    updates: Partial<Omit<UserTypeDatabaseRow, 'id'>>
+  ): Promise<void>
 }
 
 class UserTypeRepository

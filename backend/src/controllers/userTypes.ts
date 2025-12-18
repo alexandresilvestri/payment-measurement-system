@@ -30,3 +30,15 @@ export const getAllUserTypesHandler = asyncHandler(
     res.status(200).json(userTypes)
   }
 )
+
+export const updateUserTypeHandler = asyncHandler(
+  async (req: Request, res: Response) => {
+    const id = req.params.id
+    const update = req.body
+    const updatedUserType = await userTypeService.updateUserType(id, update)
+
+    if (!updatedUserType) throw new NotFoundError('User type not found')
+
+    res.status(200).json(updatedUserType)
+  }
+)
