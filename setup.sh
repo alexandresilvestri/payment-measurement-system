@@ -78,6 +78,7 @@ check_port() {
 check_port 3000 "Backend"
 check_port 5173 "Frontend"
 check_port 5432 "PostgreSQL"
+check_port 5433 "PostgreSQL Test"
 
 # 7. Start containers
 if docker compose up -d --build; then
@@ -90,20 +91,30 @@ fi
 echo -e "${YELLOW}Awaiting services starts...${NC}"
 sleep 5
 
-# Verify postgres
+# 8. Verify postgres services
 if docker compose ps conf-postgres | grep -q "healthy"; then
-    echo -e "${GREEN}✅ postgres ready${NC}"
+    echo -e "${GREEN}✅ Development database ready${NC}"
 else
-    echo -e "${YELLOW}⏳ postgres starting...${NC}"
+    echo -e "${YELLOW}⏳ Development database starting...${NC}"
     sleep 3
 fi
 
-# 8. Wait for API container to create test database and run migrations
-echo -e "${BLUE}⏳ Waiting for API container to initialize databases...${NC}"
-sleep 3
+if docker compose ps conf-postgres-test | grep -q "healthy"; then
+    echo -e "${GREEN}✅ Test database ready${NC}"
+else
+    echo -e "${YELLOW}⏳ Test database starting...${NC}"
+    sleep 3
+fi
 
-echo -e "${GREEN}✅ Test database will be created automatically by the API container${NC}"
-echo -e "${BLUE}ℹ️  To manually setup test database, run: cd backend && npm run db:test:setup${NC}"
+# 9. Run migrations on test database
+echo -e "${BLUE}⚙️  Running migrations on test database...${NC}"
+cd backend
+if NODE_ENV=test npm run migrate:latest 2>/dev/null; then
+    echo -e "${GREEN}✅ Test database migrations completed${NC}"
+else
+    echo -e "${YELLOW}⚠️  Could not run migrations on test database (run 'npm run db:test:setup' later)${NC}"
+fi
+cd ..
 
 echo ""
 echo -e "${GREEN}"
@@ -113,9 +124,10 @@ echo "╚═══════════════════════�
 echo -e "${NC}"
 
 echo -e "${BLUE}📍 Access URLs:${NC}"
-echo "   • Frontend:  http://localhost:5173"
-echo "   • Backend:   http://localhost:3000"
-echo "   • PostgreSQL: localhost:5432"
+echo "   • Frontend:       http://localhost:5173"
+echo "   • Backend:        http://localhost:3000"
+echo "   • PostgreSQL:     localhost:5432"
+echo "   • PostgreSQL Test: localhost:5433"
 echo ""
 
 echo -e "${BLUE}📚 Documentação:${NC}"

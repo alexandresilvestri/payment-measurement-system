@@ -23,6 +23,13 @@ export const getWorkHandler = asyncHandler(
   }
 )
 
+export const getAllWorksHandler = asyncHandler(
+  async (req: Request, res: Response) => {
+    const works = await workService.getAllWorks()
+    res.status(200).json(works)
+  }
+)
+
 export const updateWorkHandler = asyncHandler(
   async (req: Request, res: Response) => {
     const id = req.params.id

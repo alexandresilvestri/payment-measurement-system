@@ -10,7 +10,6 @@ COPY . .
 
 EXPOSE 3000
 
-# Start development server
 CMD ["npm", "run", "dev"]
 
 FROM node:20-alpine AS build
@@ -24,8 +23,6 @@ RUN npm install
 COPY . .
 
 RUN npm run build
-
-# Production
 
 FROM node:20-alpine AS production
 

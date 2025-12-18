@@ -134,7 +134,7 @@ describe('createWork - Integration Tests', () => {
         workService.updateWork(nonExistentId, {
           name: 'Updated Name',
         })
-      ).rejects.toThrow('Work not found')
+      ).rejects.toThrow('works not found')
     })
   })
 
