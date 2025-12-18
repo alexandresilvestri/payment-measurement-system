@@ -42,3 +42,13 @@ export const updateUserTypeHandler = asyncHandler(
     res.status(200).json(updatedUserType)
   }
 )
+
+export const deleteUserTypeHandler = asyncHandler(
+  async (req: Request, res: Response) => {
+    const id = req.params.id
+
+    await userTypeService.deleteUserType(id)
+
+    res.status(204).send()
+  }
+)

@@ -4,6 +4,7 @@ import {
   getUserTypeHandler,
   getAllUserTypesHandler,
   updateUserTypeHandler,
+  deleteUserTypeHandler,
 } from '../controllers/userTypes'
 import { validate } from '../validation/middleware'
 import {
@@ -11,6 +12,7 @@ import {
   getUserTypeSchema,
   updateUserTypeSchema,
 } from '../validation/schemas/userTypes'
+import { deleteUserSchema } from '../validation/schemas/users'
 
 const router = express.Router()
 
@@ -25,6 +27,11 @@ router.put(
   '/user-types/:id',
   validate(updateUserTypeSchema),
   updateUserTypeHandler
+)
+router.delete(
+  '/user-types/:id',
+  validate(deleteUserSchema),
+  deleteUserTypeHandler
 )
 
 export default router

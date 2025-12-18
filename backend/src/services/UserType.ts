@@ -56,4 +56,8 @@ export class UserTypeService {
 
     return await this.userTypeRepo.findById(id)
   }
+
+  async deleteUserType(id: string): Promise<void> {
+    await this.userTypeRepo.delete(id)
+  }
 }

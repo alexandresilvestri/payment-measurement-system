@@ -66,4 +66,20 @@ describe('User Type - crud integration tests', () => {
       })
     })
   })
+
+  describe('when delete user type', () => {
+    it('deletes user type', async () => {
+      const userType = {
+        name: 'Diretor',
+      }
+
+      const createdUserType = await userTypeService.createUserType(userType)
+
+      await userTypeService.deleteUserType(createdUserType.id)
+
+      expect(await userTypeService.getUserTypeById(createdUserType.id)).toEqual(
+        null
+      )
+    })
+  })
 })

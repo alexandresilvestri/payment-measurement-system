@@ -10,6 +10,7 @@ export interface IUserTypeRepository {
     id: string,
     updates: Partial<Omit<UserTypeDatabaseRow, 'id'>>
   ): Promise<void>
+  delete(id: string): Promise<void>
 }
 
 class UserTypeRepository
