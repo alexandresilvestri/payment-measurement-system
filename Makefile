@@ -7,7 +7,7 @@
 # =============================================================================
 
 # .PHONY tells make these aren't actual files, just command names
-.PHONY: help dev up down restart logs ps clean install test lint format migrate-make migrate-latest migrate-rollback migrate-status seed-make seed-run
+.PHONY: help dev up down restart logs ps clean install test lint format migrate-make migrate-latest migrate-rollback migrate-status seed-make seed-run db-shell-test logs-db-test
 
 # Default target - runs when you just type 'make'
 .DEFAULT_GOAL := help
@@ -30,6 +30,7 @@ help:
 	@echo "  make logs-backend     View backend logs"
 	@echo "  make logs-frontend    View frontend logs"
 	@echo "  make logs-db          View database logs"
+	@echo "  make logs-db-test     View test database logs"
 	@echo "  make ps               Show running containers"
 	@echo ""
 	@echo "🧪 Testing:"
@@ -46,7 +47,8 @@ help:
 	@echo "  make pre-commit       Run all checks before commit"
 	@echo ""
 	@echo "🗄️  Database:"
-	@echo "  make db-shell         Open PostgreSQL shell"
+	@echo "  make db-shell         Open PostgreSQL shell (dev DB)"
+	@echo "  make db-shell-test    Open PostgreSQL shell (test DB)"
 	@echo "  make db-reset         Reset database (⚠️  deletes all data!)"
 	@echo "  make migrate-latest   Run pending migrations"
 	@echo "  make migrate-rollback Rollback last migration"
@@ -67,9 +69,10 @@ up:
 	@echo "✅ Services started!"
 	@echo ""
 	@echo "📍 Access your application:"
-	@echo "   Frontend:  http://localhost:5173"
-	@echo "   Backend:   http://localhost:3000"
-	@echo "   Database:  localhost:5432"
+	@echo "   Frontend:      http://localhost:5173"
+	@echo "   Backend:       http://localhost:3000"
+	@echo "   Database:      localhost:5432"
+	@echo "   Test Database: localhost:5433"
 	@echo ""
 	@echo "💡 Use 'make logs' to view logs"
 
@@ -103,7 +106,10 @@ logs-frontend:
 	docker compose logs -f frontend
 
 logs-db:
-	docker compose logs -f postgres
+	docker compose logs -f conf-postgres
+
+logs-db-test:
+	docker compose logs -f conf-postgres-test
 
 ps:
 	docker compose ps
@@ -131,7 +137,7 @@ test: test-backend
 
 test-backend:
 	@echo "🧪 Running backend tests..."
-	docker compose exec -e DB_TEST_HOST=conf-postgres conf-api npm test
+	docker compose exec -e DB_TEST_HOST=conf-postgres-test conf-api npm test
 
 test-watch:
 	@echo "🧪 Running tests in watch mode..."
@@ -147,21 +153,26 @@ test-coverage:
 # 🗄️  DATABASE COMMANDS
 
 db-shell:
-	@echo "🐘 Opening PostgreSQL shell..."
+	@echo "🐘 Opening PostgreSQL shell (development)..."
 	@echo "Type '\q' to exit"
 	docker compose exec conf-postgres psql -U postgres -d conf
 
+db-shell-test:
+	@echo "🐘 Opening PostgreSQL shell (test)..."
+	@echo "Type '\q' to exit"
+	docker compose exec conf-postgres-test psql -U postgres -d conf_test
+
 # Reset database (WARNING: deletes all data!)
 db-reset:
-	@echo "⚠️  WARNING: This will delete ALL data in the database!"
+	@echo "⚠️  WARNING: This will delete ALL data in both dev and test databases!"
 	@echo -n "Are you sure? Type 'yes' to continue: " && read answer && [ "$$answer" = "yes" ]
-	@echo "🗑️  Resetting database..."
+	@echo "🗑️  Resetting databases..."
 	docker compose down -v
-	docker compose up -d conf-postgres
+	docker compose up -d conf-postgres conf-postgres-test
 	@sleep 5
 	docker compose up -d
 	@echo "ℹ️  Migrations will run automatically on startup..."
-	@echo "✅ Database reset complete!"
+	@echo "✅ Databases reset complete!"
 
 # 🧹 CLEANUP COMMANDS
 

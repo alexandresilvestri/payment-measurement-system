@@ -78,6 +78,7 @@ check_port() {
 check_port 3000 "Backend"
 check_port 5173 "Frontend"
 check_port 5432 "PostgreSQL"
+check_port 5433 "PostgreSQL Test"
 
 # 7. Start containers
 if docker compose up -d --build; then
@@ -90,25 +91,19 @@ fi
 echo -e "${YELLOW}Awaiting services starts...${NC}"
 sleep 5
 
-# Verify postgres
+# 8. Verify postgres services
 if docker compose ps conf-postgres | grep -q "healthy"; then
-    echo -e "${GREEN}✅ postgres ready${NC}"
+    echo -e "${GREEN}✅ Development database ready${NC}"
 else
-    echo -e "${YELLOW}⏳ postgres starting...${NC}"
+    echo -e "${YELLOW}⏳ Development database starting...${NC}"
     sleep 3
 fi
 
-# 8. Create test database
-echo -e "${BLUE}⚙️  Creating test database...${NC}"
-docker exec -i conf-postgres psql -U postgres -d postgres <<-EOSQL
-    SELECT 'CREATE DATABASE conf_test'
-    WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'conf_test')\gexec
-EOSQL
-
-if [ $? -eq 0 ]; then
-    echo -e "${GREEN}✅ Test database 'conf_test' created${NC}"
+if docker compose ps conf-postgres-test | grep -q "healthy"; then
+    echo -e "${GREEN}✅ Test database ready${NC}"
 else
-    echo -e "${YELLOW}⚠️  Test database may already exist${NC}"
+    echo -e "${YELLOW}⏳ Test database starting...${NC}"
+    sleep 3
 fi
 
 # 9. Run migrations on test database
@@ -129,9 +124,10 @@ echo "╚═══════════════════════�
 echo -e "${NC}"
 
 echo -e "${BLUE}📍 Access URLs:${NC}"
-echo "   • Frontend:  http://localhost:5173"
-echo "   • Backend:   http://localhost:3000"
-echo "   • PostgreSQL: localhost:5432"
+echo "   • Frontend:       http://localhost:5173"
+echo "   • Backend:        http://localhost:3000"
+echo "   • PostgreSQL:     localhost:5432"
+echo "   • PostgreSQL Test: localhost:5433"
 echo ""
 
 echo -e "${BLUE}📚 Documentação:${NC}"
