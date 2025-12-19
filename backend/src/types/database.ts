@@ -22,3 +22,13 @@ export type WorkDatabaseRow = {
   created_at?: Date
   updated_at?: Date
 }
+
+export type SupplierDatabaseRow = {
+  id: string
+  name: string
+  type_person: 'FISICA' | 'JURIDICA'
+  document: string
+  pix?: string
+  created_at?: Date
+  updated_at?: Date
+}
