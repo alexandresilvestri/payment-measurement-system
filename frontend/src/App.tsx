@@ -76,7 +76,7 @@ const AppRoutes = () => {
       />
 
       <Route
-        path="/new-site"
+        path="/works"
         element={
           <ProtectedRoute>
             <Works />

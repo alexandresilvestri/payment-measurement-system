@@ -19,8 +19,10 @@ export interface ConstructionSite {
   name: string
   code?: string // Optional now, generated or unnecessary
   address: string
-  contractor: string // New field: Contratante
-  status: 'ATIVO' | 'CONCLUIDO'
+  contractor?: string // New field: Contratante
+  status: 'ATIVA' | 'CONCLUIDA'
+  createdAt?: string
+  updatedAt?: string
 }
 
 export interface Supplier {

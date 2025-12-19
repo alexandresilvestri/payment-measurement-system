@@ -1,6 +1,6 @@
 export type CreateWorkRequest = {
   name: string
-  code?: string
+  code: number
   address: string
   contractor?: string
   status?: 'ATIVA' | 'CONCLUIDA'
@@ -8,7 +8,6 @@ export type CreateWorkRequest = {
 
 export type UpdateWorkRequest = {
   name?: string
-  code?: string | null
   address?: string
   contractor?: string | null
   status?: 'ATIVA' | 'CONCLUIDA'
@@ -17,7 +16,7 @@ export type UpdateWorkRequest = {
 export type WorkResponse = {
   id: string
   name: string
-  code: string | null
+  code: number
   address: string
   contractor: string | null
   status: 'ATIVA' | 'CONCLUIDA'

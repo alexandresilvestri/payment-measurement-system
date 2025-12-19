@@ -57,7 +57,7 @@ export const createUserSchema = z.object({
     lastName: nameSchema,
     email: emailSchema,
     password: passwordSchema,
-    typeUser: z.string().trim().min(1, 'User type is required'),
+    userType: z.string().trim().min(1, 'User type is required'),
   }),
 })
 
@@ -76,7 +76,7 @@ export const updateUserSchema = z.object({
     lastName: nameSchema.optional(),
     email: emailSchema.optional(),
     password: passwordSchema.optional(),
-    typeUser: z.string().trim().min(1, 'User type is required').optional(),
+    userType: z.string().trim().min(1, 'User type is required').optional(),
   }),
 })
 

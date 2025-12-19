@@ -15,7 +15,7 @@ export type UserTypeDatabaseRow = {
 export type WorkDatabaseRow = {
   id: string
   name: string
-  code: string | null
+  code: number
   address: string
   contractor: string | null
   status: 'ATIVA' | 'CONCLUIDA'

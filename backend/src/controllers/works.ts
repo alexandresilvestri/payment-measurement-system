@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { workService } from '../services/instances'
 import { NotFoundError } from '../errors'
 import { asyncHandler } from '../utils/asyncHandler'
+import { UpdateWorkRequest } from '../types/api/works'
 
 export const createWorkHandler = asyncHandler(
   async (req: Request, res: Response) => {
@@ -31,7 +32,9 @@ export const getAllWorksHandler = asyncHandler(
 
 export const updateWorkHandler = asyncHandler(
   async (req: Request, res: Response) => {
-    const work = await workService.updateWork(req.params.id, req.body)
+    const id = req.params.id
+    const updates = req.body as UpdateWorkRequest
+    const work = await workService.updateWork(id, updates)
 
     if (!work) {
       throw new NotFoundError(`Work with id ${req.params.id} does not exist`)

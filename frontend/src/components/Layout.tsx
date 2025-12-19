@@ -58,9 +58,9 @@ export const Layout = ({ children }: { children?: React.ReactNode }) => {
           </Link>
 
           <Link
-            to="/new-site"
+            to="/works"
             className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${
-              location.pathname.includes('/new-site')
+              location.pathname.includes('/works')
                 ? 'bg-surfaceHighlight text-primary'
                 : 'text-textSec hover:bg-gray-50 hover:text-textMain'
             }`}

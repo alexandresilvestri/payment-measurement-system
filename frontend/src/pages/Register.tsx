@@ -193,7 +193,7 @@ const registerSchema = z
       }
     }),
     confirmPassword: z.string().min(1, 'A confirmação de senha é obrigatória'),
-    typeUser: z.string().min(1, 'O campo Tipo de Usuário é obrigatório'),
+    userType: z.string().min(1, 'O campo Tipo de Usuário é obrigatório'),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'As senhas não coincidem',
@@ -215,7 +215,7 @@ export const Register = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    typeUser: '',
+    userType: '',
   })
   const [errors, setErrors] = useState<
     Partial<Record<keyof RegisterFormData, string>>
@@ -278,7 +278,7 @@ export const Register = () => {
         lastName: validatedData.lastName.trim(),
         email: validatedData.email.trim().toLowerCase(),
         password: validatedData.password,
-        typeUser: validatedData.typeUser,
+        userType: validatedData.userType,
       }
       await axios.post(`${API_BASE_URL}/users`, submitData)
 
@@ -292,7 +292,7 @@ export const Register = () => {
         email: '',
         password: '',
         confirmPassword: '',
-        typeUser: '',
+        userType: '',
       })
 
       setTimeout(() => {
@@ -490,9 +490,9 @@ export const Register = () => {
               label="Tipo de Usuário"
               placeholder="Selecione o tipo de usuário"
               options={userTypeOptions}
-              value={formData.typeUser}
-              onChange={(e) => handleChange('typeUser', e.target.value)}
-              error={errors.typeUser}
+              value={formData.userType}
+              onChange={(e) => handleChange('userType', e.target.value)}
+              error={errors.userType}
               disabled={isLoading}
             />
 

@@ -29,7 +29,7 @@ export const SITES: ConstructionSite[] = [
     code: 'OB-001',
     address: 'Av. Paulista, 1000',
     contractor: 'Incorporadora A',
-    status: 'ATIVO',
+    status: 'ATIVA',
   },
   {
     id: 's2',
@@ -37,7 +37,7 @@ export const SITES: ConstructionSite[] = [
     code: 'OB-002',
     address: 'Rua Funchal, 500',
     contractor: 'Investimentos B',
-    status: 'ATIVO',
+    status: 'ATIVA',
   },
 ]
 

@@ -9,6 +9,7 @@ export interface IUserRepository {
     id: string,
     updates: Partial<Omit<UserDatabaseRow, 'id'>>
   ): Promise<void>
+  delete(id: string): Promise<void>
   findByEmail(email: string): Promise<User | null>
   findById(id: string): Promise<User | null>
 }
@@ -38,12 +39,42 @@ class UserRepository
     }
   }
 
+  async update(
+    id: string,
+    updates: Partial<Omit<UserDatabaseRow, 'id'>>
+  ): Promise<void> {
+    try {
+      await super.update(id, updates)
+    } catch (err) {
+      if (
+        err instanceof Error &&
+        err.message.includes(
+          'duplicate key value violates unique constraint "users_email_unique"'
+        )
+      ) {
+        throw new ConflictError('Email already exists')
+      }
+
+      throw err
+    }
+  }
+
+  async delete(id: string): Promise<void> {
+    await super.delete(id)
+  }
+
   async findByEmail(email: string): Promise<User | null> {
     const row = await this.db('users').where({ email }).first<UserDatabaseRow>()
 
-    if (!row) {
-      return null
-    }
+    if (!row) return null
+
+    return this.toDomain(row)
+  }
+
+  async findById(id: string): Promise<User | null> {
+    const row = await this.db('users').where({ id }).first<UserDatabaseRow>()
+
+    if (!row) return null
 
     return this.toDomain(row)
   }
