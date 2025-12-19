@@ -1,0 +1,13 @@
+import { ConflictError } from '../errors'
+
+export function duplicateError(err: unknown, table: string, value: string) {
+  const duplicateMessage = `"${table}_${value}_unique"`
+  if (
+    err instanceof Error &&
+    err.message.includes(
+      `duplicate key value violates unique contraint ${duplicateMessage}`
+    )
+  ) {
+    throw new ConflictError(`${value} already exists`)
+  }
+}
