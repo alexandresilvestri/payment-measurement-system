@@ -7,7 +7,7 @@ import { ArrowLeft, Save, Plus, Trash2, X } from 'lucide-react'
 import { Contract, ContractItem, Supplier } from '../types'
 
 interface NewItemDraft {
-  id: string // temp id for UI
+  id: string
   description: string
   unit: string
   quantityContracted: string
@@ -23,7 +23,6 @@ export const NewContract = () => {
   const isDirector = currentUser?.role === 'DIRETOR'
   const userSiteIds = currentUser?.linkedConstructionSiteIds || []
 
-  // Form State
   const [siteId, setSiteId] = useState('')
   const [supplierId, setSupplierId] = useState('')
   const [object, setObject] = useState('')
@@ -32,13 +31,11 @@ export const NewContract = () => {
   )
   const [endDate, setEndDate] = useState('')
 
-  // New Supplier Modal State
   const [showSupplierModal, setShowSupplierModal] = useState(false)
   const [newSupplierName, setNewSupplierName] = useState('')
   const [newSupplierDoc, setNewSupplierDoc] = useState('')
   const [newSupplierPix, setNewSupplierPix] = useState('')
 
-  // Items State
   const [items, setItems] = useState<NewItemDraft[]>([
     {
       id: '1',
@@ -50,7 +47,6 @@ export const NewContract = () => {
     },
   ])
 
-  // Filter available sites based on permission
   const availableSites = isDirector
     ? sites
     : sites.filter((s) => userSiteIds.includes(s.id))
@@ -82,7 +78,6 @@ export const NewContract = () => {
     )
   }
 
-  // Calculations
   const calculateTotal = (item: NewItemDraft) => {
     const qty = parseFloat(item.quantityContracted) || 0
     const mat = parseFloat(item.unitPriceMaterial) || 0
@@ -118,7 +113,7 @@ export const NewContract = () => {
       const lab = parseFloat(item.unitPriceLabor) || 0
       return {
         id: `ci-${Date.now()}-${index}`,
-        contractId: '', // assigned later theoretically
+        contractId: '',
         description: item.description,
         unit: item.unit,
         quantityContracted: parseFloat(item.quantityContracted) || 0,
@@ -160,10 +155,9 @@ export const NewContract = () => {
     }
 
     addSupplier(newSup)
-    setSupplierId(newSup.id) // Auto select
+    setSupplierId(newSup.id)
     setShowSupplierModal(false)
 
-    // Clear inputs
     setNewSupplierName('')
     setNewSupplierDoc('')
     setNewSupplierPix('')
@@ -183,7 +177,6 @@ export const NewContract = () => {
         </div>
       </header>
 
-      {/* Header Info */}
       <Card title="Dados do Contrato">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-4">
@@ -226,6 +219,7 @@ export const NewContract = () => {
                   onClick={() => setShowSupplierModal(true)}
                   className="w-[38px] px-0 flex items-center justify-center"
                 >
+                  +
                   <Plus className="w-5 h-5" />
                 </Button>
               </div>
@@ -269,7 +263,6 @@ export const NewContract = () => {
         </div>
       </Card>
 
-      {/* Items Table */}
       <Card title="Itens da Planilha Contratual">
         <Table>
           <Thead>
@@ -370,7 +363,6 @@ export const NewContract = () => {
         </div>
       </Card>
 
-      {/* Footer Actions */}
       <div className="fixed bottom-0 left-64 right-0 bg-white border-t border-border p-4 shadow-lg flex justify-end gap-4 z-20">
         <Button variant="ghost" onClick={() => navigate(-1)}>
           Cancelar
@@ -380,7 +372,6 @@ export const NewContract = () => {
         </Button>
       </div>
 
-      {/* New Supplier Modal */}
       {showSupplierModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 animate-in fade-in zoom-in duration-200">
