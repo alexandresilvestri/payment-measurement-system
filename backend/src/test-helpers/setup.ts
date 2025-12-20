@@ -18,7 +18,7 @@ beforeAll(async () => {
 beforeEach(async () => {})
 
 afterEach(async () => {
-  const tables = ['works', 'users', 'user_types']
+  const tables = ['works', 'users', 'user_types', 'suppliers']
 
   for (const table of tables) {
     try {

@@ -37,6 +37,16 @@ class SupplierRepository
       pix: data.pix,
     }
   }
+
+  protected toDomain(row: SupplierDatabaseRow): Supplier {
+    return {
+      id: row.id,
+      name: row.name,
+      typePerson: row.type_person,
+      document: row.document,
+      pix: row.pix,
+    }
+  }
 }
 
 export const supplierRepository = new SupplierRepository()

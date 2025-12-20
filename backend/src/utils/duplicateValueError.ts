@@ -5,7 +5,7 @@ export function duplicateError(err: unknown, table: string, value: string) {
   if (
     err instanceof Error &&
     err.message.includes(
-      `duplicate key value violates unique contraint ${duplicateMessage}`
+      `duplicate key value violates unique constraint ${duplicateMessage}`
     )
   ) {
     throw new ConflictError(`${value} already exists`)
