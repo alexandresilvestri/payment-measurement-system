@@ -189,4 +189,32 @@ describe('Supplier - integration crud test', () => {
       ).rejects.toThrow('suppliers not found')
     })
   })
+
+  describe('when deleting a supplier', () => {
+    it('deletes an existing supplier', async () => {
+      const createSupplierParams: CreateSupplierParams = {
+        name: 'Supplier to Delete',
+        typePerson: 'FISICA',
+        document: '11111111111',
+        pix: '47988887777',
+      }
+
+      const createdSupplier =
+        await supplierService.createSupplier(createSupplierParams)
+
+      await supplierService.deleteSupplier(createdSupplier.id)
+
+      const deletedSupplier = await supplierService.getSupplierById(
+        createdSupplier.id
+      )
+
+      expect(deletedSupplier).toBeNull()
+    })
+
+    it('throws error when trying to delete non-existent supplier', async () => {
+      await expect(
+        supplierService.deleteSupplier('00000000-0000-0000-0000-000000000000')
+      ).rejects.toThrow('suppliers not found')
+    })
+  })
 })

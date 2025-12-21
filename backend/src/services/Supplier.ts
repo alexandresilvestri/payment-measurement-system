@@ -64,4 +64,8 @@ export class SupplierService {
 
     return updatedSupplier
   }
+
+  async deleteSupplier(id: string): Promise<void> {
+    await this.supplierRepo.delete(id)
+  }
 }

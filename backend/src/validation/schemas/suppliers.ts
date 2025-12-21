@@ -93,3 +93,9 @@ export const updateSupplierSchema = z.object({
       }
     ),
 })
+
+export const deleteSupplierSchema = z.object({
+  params: z.object({
+    id: z.string().uuid('Invalid supplier ID'),
+  }),
+})

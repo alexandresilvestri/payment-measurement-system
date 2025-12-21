@@ -4,12 +4,14 @@ import {
   getSupplierHandler,
   getSuppliersHandler,
   updateSupplierHandler,
+  deleteSupplierHandler,
 } from '../controllers/suppliers'
 import { validate } from '../validation/middleware'
 import {
   createSupplierSchema,
   getSupplierSchema,
   updateSupplierSchema,
+  deleteSupplierSchema,
 } from '../validation/schemas/suppliers'
 
 const router = express.Router()
@@ -21,6 +23,11 @@ router.put(
   '/suppliers/:id',
   validate(updateSupplierSchema),
   updateSupplierHandler
+)
+router.delete(
+  '/suppliers',
+  validate(deleteSupplierSchema),
+  deleteSupplierHandler
 )
 
 export default router

@@ -11,6 +11,7 @@ export interface ISupplierRepository {
     id: string,
     updates: Partial<Omit<SupplierDatabaseRow, 'id'>>
   ): Promise<void>
+  delete(id: string): Promise<void>
 }
 
 class SupplierRepository

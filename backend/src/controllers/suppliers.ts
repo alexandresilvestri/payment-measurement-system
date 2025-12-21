@@ -33,3 +33,11 @@ export const updateSupplierHandler = asyncHandler(
     res.status(200).json(updatedSupplier)
   }
 )
+
+export const deleteSupplierHandler = asyncHandler(
+  async (req: Request, res: Response) => {
+    const id = req.params.id
+    await supplierService.deleteSupplier(id)
+    res.status(204).send()
+  }
+)
