@@ -1,11 +1,12 @@
-import { UserTypeDatabaseRow } from '../types/userTypes'
+import { UserType } from '../types/userTypes'
+import { UserTypeDatabaseRow } from '../types/database'
 import { BaseRepository } from './BaseRepository'
 import { ConflictError } from '../errors'
 
 export interface IUserTypeRepository {
-  create(userType: UserTypeDatabaseRow): Promise<void>
-  findById(id: string): Promise<UserTypeDatabaseRow | null>
-  findAll(): Promise<UserTypeDatabaseRow[]>
+  create(userType: UserType): Promise<void>
+  findById(id: string): Promise<UserType | null>
+  findAll(): Promise<UserType[]>
   update(
     id: string,
     updates: Partial<Omit<UserTypeDatabaseRow, 'id'>>
@@ -14,14 +15,14 @@ export interface IUserTypeRepository {
 }
 
 class UserTypeRepository
-  extends BaseRepository<UserTypeDatabaseRow>
+  extends BaseRepository<UserType, UserTypeDatabaseRow>
   implements IUserTypeRepository
 {
   constructor() {
     super('user_types')
   }
 
-  async create(userType: UserTypeDatabaseRow): Promise<void> {
+  async create(userType: UserType): Promise<void> {
     try {
       await super.create(userType)
     } catch (err) {
@@ -35,6 +36,24 @@ class UserTypeRepository
       }
 
       throw err
+    }
+  }
+
+  protected toDomain(row: UserTypeDatabaseRow): UserType {
+    return {
+      id: row.id,
+      name: row.name,
+      approveMeasurement: row.approve_measurement,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at,
+    }
+  }
+
+  protected toDatabase(data: UserType): UserTypeDatabaseRow {
+    return {
+      id: data.id,
+      name: data.name,
+      approve_measurement: data.approveMeasurement,
     }
   }
 }

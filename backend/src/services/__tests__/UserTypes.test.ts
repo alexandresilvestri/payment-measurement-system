@@ -7,7 +7,8 @@ describe('User Type - crud integration tests', () => {
   describe('when creating a new user type', () => {
     it('creates a user type in the database', async () => {
       const createUserTypeParams: CreateUserTypeParams = {
-        name: 'Admin',
+        name: 'Administrador',
+        approveMeasurement: true,
       }
 
       const createdUserType =
@@ -15,7 +16,10 @@ describe('User Type - crud integration tests', () => {
 
       expect(createdUserType).toEqual({
         id: expect.any(String),
-        name: 'Admin',
+        name: 'Administrador',
+        approveMeasurement: true,
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
       })
 
       const userTypeInDb = await db('user_types')
@@ -23,7 +27,7 @@ describe('User Type - crud integration tests', () => {
         .first()
 
       expect(userTypeInDb).toBeDefined()
-      expect(userTypeInDb.name).toBe('Admin')
+      expect(userTypeInDb.name).toBe('Administrador')
     })
   })
 
@@ -31,6 +35,7 @@ describe('User Type - crud integration tests', () => {
     it('throws an error', async () => {
       const createUserTypeParams: CreateUserTypeParams = {
         name: 'Supervisor',
+        approveMeasurement: false,
       }
 
       await userTypeService.createUserType(createUserTypeParams)
@@ -45,6 +50,7 @@ describe('User Type - crud integration tests', () => {
     it('updates user type', async () => {
       const userType = {
         name: 'Engenheiro',
+        approveMeasurement: true,
       }
 
       const createdUserType = await userTypeService.createUserType(userType)
@@ -61,8 +67,9 @@ describe('User Type - crud integration tests', () => {
       ).toEqual({
         id: expect.any(String),
         name: 'Administrador',
-        created_at: expect.any(Date),
-        updated_at: expect.any(Date),
+        approveMeasurement: true,
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
       })
     })
   })
@@ -71,6 +78,7 @@ describe('User Type - crud integration tests', () => {
     it('deletes user type', async () => {
       const userType = {
         name: 'Diretor',
+        approveMeasurement: true,
       }
 
       const createdUserType = await userTypeService.createUserType(userType)

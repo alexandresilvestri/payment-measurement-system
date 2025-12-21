@@ -10,6 +10,9 @@ export type UserDatabaseRow = {
 export type UserTypeDatabaseRow = {
   id: string
   name: string
+  approve_measurement: boolean
+  created_at?: Date
+  updated_at?: Date
 }
 
 export type WorkDatabaseRow = {

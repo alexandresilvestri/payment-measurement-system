@@ -1,28 +1,27 @@
 import { randomUUID } from 'node:crypto'
-import type {
-  UserTypeDatabaseRow,
-  UpdateUserTypeRequest,
-} from '../types/userTypes'
+import type { UserType } from '../types/userTypes'
+import type { UpdateUserTypeRequest } from '../types/api/userTypes'
 import type { IUserTypeRepository } from '../repository/userTypes'
 import { NotFoundError } from '../errors'
 
 export type CreateUserTypeParams = {
   name: string
+  approveMeasurement: boolean
 }
 
 export type UpdateUserTypeParams = {
-  name: string
+  name?: string
+  approveMeasurement?: boolean
 }
 
 export class UserTypeService {
   constructor(private userTypeRepo: IUserTypeRepository) {}
 
-  async createUserType(
-    params: CreateUserTypeParams
-  ): Promise<UserTypeDatabaseRow> {
-    const createUserTypeIntent: UserTypeDatabaseRow = {
+  async createUserType(params: CreateUserTypeParams): Promise<UserType> {
+    const createUserTypeIntent: UserType = {
       id: randomUUID(),
       name: params.name,
+      approveMeasurement: params.approveMeasurement,
     }
 
     await this.userTypeRepo.create(createUserTypeIntent)
@@ -32,26 +31,21 @@ export class UserTypeService {
 
     if (!createdUserType) throw new NotFoundError('Failed to create user type')
 
-    const userResponse: UserTypeDatabaseRow = {
-      id: createUserTypeIntent.id,
-      name: createUserTypeIntent.name,
-    }
-
-    return userResponse
+    return createdUserType
   }
 
-  async getUserTypeById(id: string): Promise<UserTypeDatabaseRow | null> {
+  async getUserTypeById(id: string): Promise<UserType | null> {
     return await this.userTypeRepo.findById(id)
   }
 
-  async getAllUserTypes(): Promise<UserTypeDatabaseRow[]> {
+  async getAllUserTypes(): Promise<UserType[]> {
     return await this.userTypeRepo.findAll()
   }
 
   async updateUserType(
     id: string,
     update: UpdateUserTypeRequest
-  ): Promise<UserTypeDatabaseRow | null> {
+  ): Promise<UserType | null> {
     await this.userTypeRepo.update(id, update)
 
     return await this.userTypeRepo.findById(id)

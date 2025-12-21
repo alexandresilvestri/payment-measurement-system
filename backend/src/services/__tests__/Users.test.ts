@@ -8,7 +8,10 @@ describe('User - integration crud tests', () => {
   let testUserTypeId: string
 
   beforeEach(async () => {
-    const userType = await userTypeService.createUserType({ name: 'Visitor' })
+    const userType = await userTypeService.createUserType({
+      name: 'Visitor',
+      approveMeasurement: false,
+    })
     testUserTypeId = userType.id
   })
 
@@ -31,6 +34,7 @@ describe('User - integration crud tests', () => {
         userType: expect.objectContaining({
           id: testUserTypeId,
           name: 'Visitor',
+          approveMeasurement: false,
         }),
       })
 
@@ -102,8 +106,9 @@ describe('User - integration crud tests', () => {
         userType: expect.objectContaining({
           id: expect.any(String),
           name: 'Visitor',
-          created_at: expect.any(Date),
-          updated_at: expect.any(Date),
+          approveMeasurement: false,
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
         }),
       })
     })

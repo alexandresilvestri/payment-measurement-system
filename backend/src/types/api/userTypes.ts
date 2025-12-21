@@ -4,6 +4,7 @@ export type CreateUserTypeRequest = {
 
 export type UpdateUserTypeRequest = {
   name?: string
+  approveMeasurement?: boolean
 }
 
 export type UserTypeResponse = {
