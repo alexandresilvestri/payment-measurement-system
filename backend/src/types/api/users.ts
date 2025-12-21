@@ -1,4 +1,4 @@
-import { UserTypeDatabaseRow } from '../database'
+import { UserType } from '../userTypes'
 
 export type CreateUserRequest = {
   firstName: string
@@ -20,7 +20,7 @@ export type UserResponse = {
   id: string
   fullName: string
   email: string
-  userType: UserTypeDatabaseRow | string | null
+  userType: UserType | null
 }
 
 export type UserListResponse = {
