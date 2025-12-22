@@ -11,6 +11,7 @@ import { MeasurementDetail } from './pages/MeasurementDetail'
 import { NewContract } from './pages/NewContract'
 import { Works } from './pages/Works'
 import { RealizedMeasurements } from './pages/RealizedMeasurements'
+import { Suppliers } from './pages/Suppliers'
 
 // Protected Route Wrapper
 const ProtectedRoute = ({
@@ -80,6 +81,15 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <Works />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/suppliers"
+        element={
+          <ProtectedRoute>
+            <Suppliers />
           </ProtectedRoute>
         }
       />

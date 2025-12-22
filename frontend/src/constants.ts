@@ -41,21 +41,6 @@ export const SITES: ConstructionSite[] = [
   },
 ]
 
-export const SUPPLIERS: Supplier[] = [
-  {
-    id: 'f1',
-    corporateName: 'ConstruTudo Ltda',
-    cnpj: '12.345.678/0001-90',
-    bankInfo: 'Banco A, Ag 001, CC 1234-5',
-  },
-  {
-    id: 'f2',
-    corporateName: 'Elétrica Rápida SA',
-    cnpj: '98.765.432/0001-10',
-    bankInfo: 'Banco B, Ag 002, CC 9876-0',
-  },
-]
-
 export const CONTRACTS: Contract[] = [
   {
     id: 'c1',

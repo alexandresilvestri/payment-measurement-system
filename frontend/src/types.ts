@@ -27,6 +27,17 @@ export interface ConstructionSite {
 
 export interface Supplier {
   id: string
+  name: string
+  typePerson: 'FISICA' | 'JURIDICA'
+  document: string
+  pix?: string
+  createdAt?: string
+  updatedAt?: string
+}
+
+// Legacy interface for backward compatibility with old mock data
+export interface LegacySupplier {
+  id: string
   corporateName: string
   cnpj: string
   bankInfo: string

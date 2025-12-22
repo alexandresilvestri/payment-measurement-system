@@ -85,11 +85,11 @@ export const MeasurementDetail = () => {
 
     doc.setTextColor(0, 0, 0)
     doc.setFont('helvetica', 'normal')
-    doc.text(`Fornecedor: ${measurement.supplier.corporateName}`, 18, 90)
-    doc.text(`CNPJ: ${measurement.supplier.cnpj}`, 18, 95)
+    doc.text(`Fornecedor: ${measurement.supplier.name}`, 18, 90)
+    doc.text(`Documento: ${measurement.supplier.document}`, 18, 95)
 
     doc.setFont('helvetica', 'bold')
-    doc.text(`Dados Bancários: ${measurement.supplier.bankInfo}`, 18, 103)
+    doc.text(`Chave Pix: ${measurement.supplier.pix || 'N/A'}`, 18, 103)
 
     // Items Table
     const tableBody = measurement.items.map((item) => {
@@ -148,7 +148,7 @@ export const MeasurementDetail = () => {
       doc.save(
         `Medicao_${
           measurement.number
-        }_${measurement.supplier.corporateName.replace(/\s/g, '_')}.pdf`
+        }_${measurement.supplier.name.replace(/\s/g, '_')}.pdf`
       )
     }
 
@@ -276,10 +276,10 @@ export const MeasurementDetail = () => {
               <div>
                 <label className="text-textSec block mb-1">Fornecedor</label>
                 <p className="font-medium text-textMain">
-                  {measurement.supplier.corporateName}
+                  {measurement.supplier.name}
                 </p>
                 <p className="text-xs text-textSec">
-                  {measurement.supplier.cnpj}
+                  {measurement.supplier.document}
                 </p>
               </div>
               <div>
@@ -293,10 +293,10 @@ export const MeasurementDetail = () => {
               </div>
               <div className="bg-green-50 p-3 rounded-md border border-green-100">
                 <label className="text-primary font-bold block mb-1 flex items-center gap-1">
-                  <span>Dados Bancários</span>
+                  <span>Chave Pix</span>
                 </label>
                 <p className="text-sm text-textMain font-mono break-all">
-                  {measurement.supplier.bankInfo}
+                  {measurement.supplier.pix || 'Não informado'}
                 </p>
                 <p className="text-[10px] text-textSec mt-1">
                   Verificado para pagamentos.

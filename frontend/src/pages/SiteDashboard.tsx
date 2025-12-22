@@ -10,7 +10,6 @@ export const SiteDashboard = () => {
     useAppContext()
   const navigate = useNavigate()
 
-  // Filter sites this user is linked to
   const linkedSites = sites.filter((s) =>
     currentUser?.linkedConstructionSiteIds?.includes(s.id)
   )
@@ -18,7 +17,6 @@ export const SiteDashboard = () => {
     linkedSites[0]?.id || ''
   )
 
-  // Derived data
   const filteredContracts = contracts.filter(
     (c) => c.constructionSiteId === selectedSiteId && c.status === 'ATIVO'
   )
@@ -27,7 +25,6 @@ export const SiteDashboard = () => {
     (m) => m.contract.constructionSiteId === selectedSiteId
   )
 
-  // Contracts logic with progress
   const contractsWithData = filteredContracts.map((c) => {
     const sup = suppliers.find((s) => s.id === c.supplierId)
     const ms = allMeasurements.filter(
@@ -35,7 +32,7 @@ export const SiteDashboard = () => {
     )
     const measured = ms.reduce((acc, curr) => acc + curr.totalValue, 0)
     const pct = (measured / c.totalValue) * 100
-    return { ...c, supplierName: sup?.corporateName, measured, pct }
+    return { ...c, supplierName: sup?.name, measured, pct }
   })
 
   return (
@@ -48,7 +45,6 @@ export const SiteDashboard = () => {
           </p>
         </div>
 
-        {/* Site Selector */}
         <div className="flex items-center gap-2 bg-white p-2 rounded-[6px] border border-border shadow-sm">
           <span className="text-sm text-textSec font-medium pl-2">Obra:</span>
           <select
@@ -65,7 +61,6 @@ export const SiteDashboard = () => {
         </div>
       </header>
 
-      {/* Contracts Card */}
       <Card
         title="Contratos Disponíveis"
         action={
@@ -121,7 +116,6 @@ export const SiteDashboard = () => {
         </Table>
       </Card>
 
-      {/* Recent Measurements */}
       <Card title="Histórico de Medições Recentes">
         <Table>
           <Thead>
@@ -149,7 +143,7 @@ export const SiteDashboard = () => {
                 <Td>
                   <div className="flex flex-col">
                     <span className="font-medium">
-                      {m.supplier.corporateName}
+                      {m.supplier.name}
                     </span>
                     <span className="text-xs text-textSec">
                       {m.contract.object}

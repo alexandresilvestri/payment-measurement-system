@@ -22,7 +22,7 @@ import {
   Trash2,
 } from 'lucide-react'
 import { ConstructionSite } from '../types'
-import { worksApi } from '../services/works'
+import { worksApi } from './services/works'
 import { AxiosError } from 'axios'
 
 export const Works = () => {

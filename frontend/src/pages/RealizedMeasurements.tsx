@@ -15,14 +15,12 @@ export const RealizedMeasurements = () => {
 
   const isDirector = currentUser?.role === 'DIRETOR'
 
-  // Filter sites based on permissions
   const availableSites = isDirector
     ? sites
     : sites.filter((s) =>
         currentUser?.linkedConstructionSiteIds?.includes(s.id)
       )
 
-  // Get all measurements that are APPROVED
   const realizedMeasurements = useMemo(() => {
     let list = getEnrichedMeasurements().filter((m) => m.status === 'APROVADA')
 
@@ -31,10 +29,6 @@ export const RealizedMeasurements = () => {
         (m) => m.contract.constructionSiteId === selectedSiteId
       )
     } else {
-      // If no site is selected, and user is not director, still restrict list?
-      // Let's restrict by default if not site selected to empty to force selection (UI requirement)
-      // Or show all if Director.
-      // Prompt says "selecionando primeiro a obra". Let's wait for selection.
       return []
     }
 
@@ -45,10 +39,8 @@ export const RealizedMeasurements = () => {
     return list
   }, [getEnrichedMeasurements, selectedSiteId, selectedSupplierId])
 
-  // Derived list of suppliers present in the current site (for the filter)
   const availableSuppliersForSite = useMemo(() => {
     if (!selectedSiteId) return []
-    // Find suppliers that have measurements in this site
     const relevantSupplierIds = new Set(
       getEnrichedMeasurements()
         .filter(
@@ -72,7 +64,6 @@ export const RealizedMeasurements = () => {
         </p>
       </header>
 
-      {/* Filters */}
       <Card>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
           <div className="flex flex-col gap-2">
@@ -84,7 +75,7 @@ export const RealizedMeasurements = () => {
               value={selectedSiteId}
               onChange={(e) => {
                 setSelectedSiteId(e.target.value)
-                setSelectedSupplierId('') // Reset supplier filter
+                setSelectedSupplierId('')
               }}
             >
               <option value="">Selecione...</option>
@@ -109,7 +100,7 @@ export const RealizedMeasurements = () => {
               <option value="">Todos os Fornecedores</option>
               {availableSuppliersForSite.map((s) => (
                 <option key={s.id} value={s.id}>
-                  {s.corporateName}
+                  {s.name}
                 </option>
               ))}
             </select>
@@ -117,7 +108,6 @@ export const RealizedMeasurements = () => {
         </div>
       </Card>
 
-      {/* Results Table */}
       {selectedSiteId && (
         <Card
           title={`Medições Aprovadas - ${
@@ -150,9 +140,8 @@ export const RealizedMeasurements = () => {
                     onClick={() => navigate(`/measurement/${m.id}`)}
                   >
                     <Td className="font-bold">#{m.number}</Td>
-                    {/* Using createdAt as proxy for approval date in mock, ideally use a specific approvalDate field */}
                     <Td>{new Date(m.createdAt).toLocaleDateString()}</Td>
-                    <Td>{m.supplier.corporateName}</Td>
+                    <Td>{m.supplier.name}</Td>
                     <Td className="text-sm text-textSec">
                       {m.contract.object}
                     </Td>

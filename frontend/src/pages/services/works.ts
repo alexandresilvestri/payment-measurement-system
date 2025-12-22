@@ -1,4 +1,4 @@
-import { ConstructionSite } from '../types'
+import { ConstructionSite } from '../../types'
 import { api } from './api'
 
 export const worksApi = {

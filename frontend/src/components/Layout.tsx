@@ -9,6 +9,7 @@ import {
   ScrollText,
   HardHat,
   ClipboardCheck,
+  Users,
 } from 'lucide-react'
 
 export const Layout = ({ children }: { children?: React.ReactNode }) => {
@@ -67,6 +68,18 @@ export const Layout = ({ children }: { children?: React.ReactNode }) => {
           >
             <HardHat className="w-5 h-5" />
             Obras
+          </Link>
+
+          <Link
+            to="/suppliers"
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${
+              location.pathname.includes('/suppliers')
+                ? 'bg-surfaceHighlight text-primary'
+                : 'text-textSec hover:bg-gray-50 hover:text-textMain'
+            }`}
+          >
+            <Users className="w-5 h-5" />
+            Fornecedores
           </Link>
 
           <Link

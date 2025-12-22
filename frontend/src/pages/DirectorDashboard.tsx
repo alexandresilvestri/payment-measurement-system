@@ -13,14 +13,12 @@ export const DirectorDashboard = () => {
     (m) => m.status === 'PENDENTE'
   )
 
-  // Helper for contract overview
   const activeContracts = contracts
     .filter((c) => c.status === 'ATIVO')
     .map((c) => {
       const site = sites.find((s) => s.id === c.constructionSiteId)
       const supplier = suppliers.find((s) => s.id === c.supplierId)
 
-      // Calculate progress
       const measurementsForContract = allMeasurements.filter(
         (m) => m.contractId === c.id && m.status === 'APROVADA'
       )
@@ -33,7 +31,7 @@ export const DirectorDashboard = () => {
       return {
         ...c,
         siteName: site?.name || 'N/A',
-        supplierName: supplier?.corporateName || 'N/A',
+        supplierName: supplier?.name || 'N/A',
         totalMeasured,
         percentage,
       }
@@ -48,7 +46,6 @@ export const DirectorDashboard = () => {
         </p>
       </header>
 
-      {/* Pending Measurements */}
       <Card
         title="Medições Pendentes de Aprovação"
         className="border-l-4 border-l-statusPending"
@@ -74,7 +71,7 @@ export const DirectorDashboard = () => {
               {pendingMeasurements.map((m) => (
                 <Tr key={m.id} onClick={() => navigate(`/measurement/${m.id}`)}>
                   <Td className="font-medium text-textMain">{m.site.name}</Td>
-                  <Td>{m.supplier.corporateName}</Td>
+                  <Td>{m.supplier.name}</Td>
                   <Td>{m.contract.object}</Td>
                   <Td>#{m.number}</Td>
                   <Td>{new Date(m.createdAt).toLocaleDateString()}</Td>
@@ -100,7 +97,6 @@ export const DirectorDashboard = () => {
         )}
       </Card>
 
-      {/* Active Contracts Overview */}
       <Card title="Contratos Ativos e Avanço Físico-Financeiro">
         <Table>
           <Thead>

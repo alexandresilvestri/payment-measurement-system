@@ -17,25 +17,21 @@ export const NewMeasurement = () => {
     addMeasurement,
   } = useAppContext()
 
-  // Local state for form
   const [selectedSiteId, setSelectedSiteId] = useState<string>('')
   const [selectedContractId, setSelectedContractId] = useState<string>('')
   const [observation, setObservation] = useState('')
 
-  // We need to store quantity input for each item
   const [inputQuantities, setInputQuantities] = useState<
     Record<string, number>
   >({})
 
   const isDirector = currentUser?.role === 'DIRETOR'
 
-  // 1. Filter Available Sites based on Role
   const userSiteIds = currentUser?.linkedConstructionSiteIds || []
   const availableSites = isDirector
     ? sites
     : sites.filter((s) => userSiteIds.includes(s.id))
 
-  // 2. Filter Contracts based on Selected Site
   const availableContracts = useMemo(() => {
     if (!selectedSiteId) return []
     return contracts.filter(
@@ -44,19 +40,15 @@ export const NewMeasurement = () => {
   }, [selectedSiteId, contracts])
 
   const selectedContract = contracts.find((c) => c.id === selectedContractId)
-  // Re-fetch site and supplier to ensure we display correct info regardless of context
-
-  // Compute logic for the table (Previous accumulated, Balance, etc.)
+  
   const contractMath = useMemo(() => {
     if (!selectedContract) return []
 
-    // Get all APPROVED previous measurements for this contract
     const approvedMeasurements = measurements.filter(
       (m) => m.contractId === selectedContract.id && m.status === 'APROVADA'
     )
 
     return selectedContract.items.map((item) => {
-      // Sum quantity from approved measurements
       const accumulatedQty = approvedMeasurements.reduce((acc, m) => {
         const mItem = m.items.find((mi) => mi.contractItemId === item.id)
         return acc + (mItem?.currentQuantity || 0)
@@ -83,7 +75,6 @@ export const NewMeasurement = () => {
   )
   const totalContractedValue = selectedContract?.totalValue || 0
 
-  // Previous accumulated value
   const previousAccumulatedValue = useMemo(() => {
     if (!selectedContract) return 0
     return measurements
@@ -105,7 +96,6 @@ export const NewMeasurement = () => {
   const handleSave = (status: Measurement['status']) => {
     if (!selectedContract || !currentUser) return
 
-    // Validate
     const hasInvalid = contractMath.some((i) => !i.isValid)
     if (hasInvalid) {
       alert('Existem itens com quantidade superior ao saldo!')
@@ -117,12 +107,11 @@ export const NewMeasurement = () => {
       return
     }
 
-    // Build items payload
     const itemsPayload: MeasurementItem[] = contractMath
       .filter((i) => i.currentQty > 0)
       .map((i) => ({
         id: `mi-${Date.now()}-${i.id}`,
-        measurementId: '', // assigned later theoretically, but we do full object here
+        measurementId: '',
         contractItemId: i.id,
         currentQuantity: i.currentQty,
         unitPrice: i.unitPriceTotal,
@@ -168,11 +157,9 @@ export const NewMeasurement = () => {
         </div>
       </header>
 
-      {/* Selection Area */}
       <Card>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="flex flex-col gap-4">
-            {/* 1. Site Selector */}
             <div className="flex flex-col gap-2">
               <label className="text-sm font-medium text-textSec">Obra</label>
               <select
@@ -180,8 +167,8 @@ export const NewMeasurement = () => {
                 value={selectedSiteId}
                 onChange={(e) => {
                   setSelectedSiteId(e.target.value)
-                  setSelectedContractId('') // reset contract
-                  setInputQuantities({}) // reset inputs
+                  setSelectedContractId('')
+                  setInputQuantities({})
                 }}
               >
                 <option value="">Selecione a obra...</option>
@@ -193,7 +180,6 @@ export const NewMeasurement = () => {
               </select>
             </div>
 
-            {/* 2. Contract Selector */}
             <div className="flex flex-col gap-2">
               <label className="text-sm font-medium text-textSec">
                 Contrato
@@ -203,7 +189,7 @@ export const NewMeasurement = () => {
                 value={selectedContractId}
                 onChange={(e) => {
                   setSelectedContractId(e.target.value)
-                  setInputQuantities({}) // reset inputs
+                  setInputQuantities({})
                 }}
                 disabled={!selectedSiteId}
               >
@@ -216,7 +202,7 @@ export const NewMeasurement = () => {
                   const sup = suppliers.find((sup) => sup.id === c.supplierId)
                   return (
                     <option key={c.id} value={c.id}>
-                      {sup?.corporateName} - {c.object}
+                      {sup?.name} - {c.object}
                     </option>
                   )
                 })}
@@ -349,7 +335,6 @@ export const NewMeasurement = () => {
             />
           </Card>
 
-          {/* Sticky Footer */}
           <div className="fixed bottom-0 left-64 right-0 bg-white border-t border-border p-4 shadow-lg flex justify-end gap-4 z-20">
             <Button variant="ghost" onClick={() => handleSave('RASCUNHO')}>
               <Save className="w-4 h-4 mr-2" /> Salvar Rascunho
