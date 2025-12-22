@@ -10,26 +10,7 @@ const nameSchema = z
   .refine((val) => !/\d/.test(val), 'cannot contain numbers')
   .refine((val) => !/["'`<>\\;]/.test(val), 'contains invalid characters')
 
-const emailSchema = z
-  .string()
-  .trim()
-  .min(1, 'Email is required')
-  .max(100, 'Email must be at most 100 characters')
-  .email('Invalid email format')
-  .refine((val) => !/\s/.test(val), 'Email cannot contain spaces')
-  .refine(
-    (val) => !val.includes("'") && !val.includes('"') && !val.includes('`'),
-    'Email cannot contain quotes'
-  )
-  .refine(
-    (val) => !/[<>\\;()[\]{}|~!#$%^&*=+]/.test(val),
-    'Email contains invalid characters'
-  )
-  .refine((val) => !val.includes('..'), 'Email cannot contain consecutive dots')
-  .refine(
-    (val) => /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(val),
-    'Invalid email format'
-  )
+const emailSchema = z.email()
 
 const passwordSchema = z
   .string()
