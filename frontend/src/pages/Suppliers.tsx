@@ -1,14 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  Card,
-  Button,
-  Table,
-  Thead,
-  Th,
-  Tr,
-  Td,
-} from '../components/UI'
+import { Card, Button, Table, Thead, Th, Tr, Td } from '../components/UI'
 import { ArrowLeft, Plus, Loader2, Pencil, Trash2 } from 'lucide-react'
 import { Supplier } from '../types'
 import { SupplierModal } from '../components/SupplierModal'
@@ -163,9 +155,7 @@ export const Suppliers = () => {
             <tbody>
               {suppliers.map((supplier) => (
                 <Tr key={supplier.id}>
-                  <Td className="font-medium text-textMain">
-                    {supplier.name}
-                  </Td>
+                  <Td className="font-medium text-textMain">{supplier.name}</Td>
                   <Td className="text-sm">
                     {supplier.typePerson === 'JURIDICA' ? 'PJ' : 'PF'}
                   </Td>

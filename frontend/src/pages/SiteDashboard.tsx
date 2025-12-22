@@ -142,9 +142,7 @@ export const SiteDashboard = () => {
                 <Td>{new Date(m.createdAt).toLocaleDateString()}</Td>
                 <Td>
                   <div className="flex flex-col">
-                    <span className="font-medium">
-                      {m.supplier.name}
-                    </span>
+                    <span className="font-medium">{m.supplier.name}</span>
                     <span className="text-xs text-textSec">
                       {m.contract.object}
                     </span>

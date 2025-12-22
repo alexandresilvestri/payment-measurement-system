@@ -22,7 +22,9 @@ export const SupplierModal = ({
 }: SupplierModalProps) => {
   const [submitting, setSubmitting] = useState(false)
   const [name, setName] = useState('')
-  const [typePerson, setTypePerson] = useState<'FISICA' | 'JURIDICA'>('JURIDICA')
+  const [typePerson, setTypePerson] = useState<'FISICA' | 'JURIDICA'>(
+    'JURIDICA'
+  )
   const [document, setDocument] = useState('')
   const [pix, setPix] = useState('')
   const [nameError, setNameError] = useState('')

@@ -2,7 +2,6 @@ import {
   ConstructionSite,
   Contract,
   Measurement,
-  Supplier,
   User,
 } from './types'
 

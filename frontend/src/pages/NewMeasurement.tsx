@@ -40,7 +40,7 @@ export const NewMeasurement = () => {
   }, [selectedSiteId, contracts])
 
   const selectedContract = contracts.find((c) => c.id === selectedContractId)
-  
+
   const contractMath = useMemo(() => {
     if (!selectedContract) return []
 
