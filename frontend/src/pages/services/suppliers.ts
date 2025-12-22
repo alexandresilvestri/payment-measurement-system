@@ -40,6 +40,6 @@ export const suppliersApi = {
   },
 
   delete: async (id: string): Promise<void> => {
-    await api.delete(`/suppliers?id=${id}`)
+    await api.delete(`/suppliers/${id}`)
   },
 }

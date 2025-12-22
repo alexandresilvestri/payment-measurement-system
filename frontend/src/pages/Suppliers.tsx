@@ -9,6 +9,7 @@ import {
   CreateSupplierRequest,
   UpdateSupplierRequest,
 } from './services/suppliers'
+import { AxiosError } from 'axios'
 
 export const Suppliers = () => {
   const navigate = useNavigate()
@@ -24,6 +25,7 @@ export const Suppliers = () => {
     null
   )
   const [deleting, setDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   useEffect(() => {
     fetchSuppliers()
@@ -87,6 +89,7 @@ export const Suppliers = () => {
 
   const handleDeleteClick = (supplier: Supplier) => {
     setSupplierToDelete(supplier)
+    setDeleteError(null)
     setShowDeleteModal(true)
   }
 
@@ -95,13 +98,46 @@ export const Suppliers = () => {
 
     try {
       setDeleting(true)
+      setDeleteError(null)
       await suppliersApi.delete(supplierToDelete.id)
       setSuppliers(suppliers.filter((s) => s.id !== supplierToDelete.id))
       setShowDeleteModal(false)
       setSupplierToDelete(null)
     } catch (err) {
       console.error('Error deleting supplier:', err)
-      alert('Erro ao excluir fornecedor. Tente novamente.')
+
+      // Handle specific error cases
+      if (err && typeof err === 'object' && 'response' in err) {
+        const axiosError = err as AxiosError<{ message?: string }>
+
+        // Handle 409 Conflict (supplier is being used)
+        if (axiosError.response?.status === 409) {
+          setDeleteError(
+            'Não é possível excluir este fornecedor pois ele está vinculado a contratos existentes.'
+          )
+          return
+        }
+
+        // Handle 404 Not Found
+        if (axiosError.response?.status === 404) {
+          setDeleteError('Fornecedor não encontrado.')
+          return
+        }
+
+        // Handle 400 Bad Request
+        if (axiosError.response?.status === 400) {
+          setDeleteError(
+            axiosError.response.data?.message ||
+              'Dados inválidos. Verifique e tente novamente.'
+          )
+          return
+        }
+      }
+
+      // Generic error
+      setDeleteError(
+        'Erro ao excluir fornecedor. Verifique sua conexão e tente novamente.'
+      )
     } finally {
       setDeleting(false)
     }
@@ -110,6 +146,7 @@ export const Suppliers = () => {
   const handleDeleteCancel = () => {
     setShowDeleteModal(false)
     setSupplierToDelete(null)
+    setDeleteError(null)
   }
 
   return (
@@ -228,6 +265,12 @@ export const Suppliers = () => {
                 {supplierToDelete.document}
               </p>
             </div>
+
+            {deleteError && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+                <p className="text-sm text-red-600">{deleteError}</p>
+              </div>
+            )}
 
             <div className="flex justify-end gap-3">
               <Button

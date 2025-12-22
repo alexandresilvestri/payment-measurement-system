@@ -25,7 +25,7 @@ router.put(
   updateSupplierHandler
 )
 router.delete(
-  '/suppliers',
+  '/suppliers/:id',
   validate(deleteSupplierSchema),
   deleteSupplierHandler
 )

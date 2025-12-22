@@ -3,6 +3,7 @@ import {
   Contract,
   Measurement,
   User,
+  Supplier,
 } from './types'
 
 export const USERS: User[] = [
@@ -37,6 +38,23 @@ export const SITES: ConstructionSite[] = [
     address: 'Rua Funchal, 500',
     contractor: 'Investimentos B',
     status: 'ATIVA',
+  },
+]
+
+export const SUPPLIERS: Supplier[] = [
+  {
+    id: 'f1',
+    name: 'Construtora Silva Ltda',
+    typePerson: 'JURIDICA',
+    document: '12345678000190',
+    pix: 'construtora@silva.com.br',
+  },
+  {
+    id: 'f2',
+    name: 'Elétrica Santos',
+    typePerson: 'JURIDICA',
+    document: '98765432000110',
+    pix: '11987654321',
   },
 ]
 

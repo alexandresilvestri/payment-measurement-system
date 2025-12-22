@@ -6,6 +6,7 @@ import {
   UpdateSupplierRequest,
 } from '../pages/services/suppliers'
 import { Supplier } from '../types'
+import { AxiosError } from 'axios'
 
 interface SupplierModalProps {
   isOpen: boolean
@@ -29,6 +30,7 @@ export const SupplierModal = ({
   const [pix, setPix] = useState('')
   const [nameError, setNameError] = useState('')
   const [docError, setDocError] = useState('')
+  const [pixError, setPixError] = useState('')
   const [formError, setFormError] = useState('')
 
   useEffect(() => {
@@ -45,6 +47,7 @@ export const SupplierModal = ({
     }
     setNameError('')
     setDocError('')
+    setPixError('')
     setFormError('')
   }, [editingSupplier, isOpen])
 
@@ -53,16 +56,50 @@ export const SupplierModal = ({
 
     setNameError('')
     setDocError('')
+    setPixError('')
     setFormError('')
 
+    // Validate name
     if (!name.trim()) {
       setNameError('O nome/razão social é obrigatório')
       isValid = false
+    } else if (name.trim().length < 3) {
+      setNameError('O nome deve ter no mínimo 3 caracteres')
+      isValid = false
+    } else if (name.trim().length > 60) {
+      setNameError('O nome deve ter no máximo 60 caracteres')
+      isValid = false
     }
 
+    // Validate document
     if (!document.trim()) {
-      setDocError('O CNPJ/CPF é obrigatório')
+      setDocError(
+        typePerson === 'JURIDICA'
+          ? 'O CNPJ é obrigatório'
+          : 'O CPF é obrigatório'
+      )
       isValid = false
+    } else {
+      const docLength = document.replace(/\D/g, '').length
+
+      if (typePerson === 'JURIDICA' && docLength !== 14) {
+        setDocError('O CNPJ deve ter exatamente 14 dígitos')
+        isValid = false
+      } else if (typePerson === 'FISICA' && docLength !== 11) {
+        setDocError('O CPF deve ter exatamente 11 dígitos')
+        isValid = false
+      }
+    }
+
+    // Validate PIX (optional)
+    if (pix.trim()) {
+      if (pix.trim().length < 8) {
+        setPixError('A chave PIX deve ter no mínimo 8 caracteres')
+        isValid = false
+      } else if (pix.trim().length > 45) {
+        setPixError('A chave PIX deve ter no máximo 45 caracteres')
+        isValid = false
+      }
     }
 
     return isValid
@@ -102,8 +139,53 @@ export const SupplierModal = ({
       setPix('')
       setNameError('')
       setDocError('')
+      setPixError('')
     } catch (err) {
       console.error('Error saving supplier:', err)
+
+      // Handle backend validation errors
+      if (err && typeof err === 'object' && 'response' in err) {
+        const axiosError = err as AxiosError<{
+          message?: string
+          errors?: Array<{ path: string[]; message: string }>
+        }>
+
+        // Handle 409 Conflict (duplicate supplier)
+        if (axiosError.response?.status === 409) {
+          setNameError('Já existe um fornecedor com este nome')
+          return
+        }
+
+        // Handle 400 Bad Request (validation errors)
+        if (axiosError.response?.status === 400) {
+          const responseData = axiosError.response.data
+
+          // Check if backend returned field-specific errors
+          if (responseData?.errors && Array.isArray(responseData.errors)) {
+            responseData.errors.forEach((error) => {
+              const fieldPath = error.path[error.path.length - 1]
+
+              if (fieldPath === 'name') {
+                setNameError(error.message)
+              } else if (fieldPath === 'document') {
+                setDocError(error.message)
+              } else if (fieldPath === 'pix') {
+                setPixError(error.message)
+              } else if (fieldPath === 'typePerson') {
+                setFormError(error.message)
+              }
+            })
+            return
+          }
+
+          // Fallback to generic message
+          setFormError(
+            responseData?.message || 'Erro de validação. Verifique os campos.'
+          )
+          return
+        }
+      }
+
       setFormError('Erro ao salvar fornecedor. Tente novamente.')
     } finally {
       setSubmitting(false)
@@ -117,6 +199,7 @@ export const SupplierModal = ({
     setPix('')
     setNameError('')
     setDocError('')
+    setPixError('')
     setFormError('')
     onClose()
   }
@@ -165,9 +248,11 @@ export const SupplierModal = ({
             <Select
               label="Tipo de Pessoa *"
               value={typePerson}
-              onChange={(e) =>
+              onChange={(e) => {
                 setTypePerson(e.target.value as 'FISICA' | 'JURIDICA')
-              }
+                // Clear document error when type changes
+                if (docError) setDocError('')
+              }}
               disabled={submitting}
               options={[
                 { value: 'JURIDICA', label: 'Pessoa Jurídica (CNPJ)' },
@@ -175,28 +260,44 @@ export const SupplierModal = ({
               ]}
             />
 
-            <Input
-              label={typePerson === 'JURIDICA' ? 'CNPJ *' : 'CPF *'}
-              placeholder={
-                typePerson === 'JURIDICA'
-                  ? '00.000.000/0000-00'
-                  : '000.000.000-00'
-              }
-              value={document}
-              onChange={(e) => {
-                setDocument(e.target.value)
-                if (docError) setDocError('')
-              }}
-              disabled={submitting}
-              error={docError}
-            />
+            <div>
+              <Input
+                label={typePerson === 'JURIDICA' ? 'CNPJ *' : 'CPF *'}
+                placeholder={
+                  typePerson === 'JURIDICA'
+                    ? '00.000.000/0000-00'
+                    : '000.000.000-00'
+                }
+                value={document}
+                onChange={(e) => {
+                  const value = e.target.value
+                  // Allow only numbers and common document separators
+                  const sanitized = value.replace(/[^\d./-]/g, '')
+                  setDocument(sanitized)
+                  if (docError) setDocError('')
+                }}
+                disabled={submitting}
+                error={docError}
+              />
+              {!docError && (
+                <p className="text-xs text-textSec mt-1">
+                  {typePerson === 'JURIDICA'
+                    ? 'Digite apenas números (14 dígitos)'
+                    : 'Digite apenas números (11 dígitos)'}
+                </p>
+              )}
+            </div>
 
             <Input
               label="Chave Pix"
               placeholder="E-mail, CPF, CNPJ ou Aleatória"
               value={pix}
-              onChange={(e) => setPix(e.target.value)}
+              onChange={(e) => {
+                setPix(e.target.value)
+                if (pixError) setPixError('')
+              }}
               disabled={submitting}
+              error={pixError}
             />
           </div>
 

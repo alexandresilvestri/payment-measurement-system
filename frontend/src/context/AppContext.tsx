@@ -46,6 +46,7 @@ export const AppProvider = ({ children }: { children?: ReactNode }) => {
 
   // Now using state for Sites and Suppliers to allow adding new ones
   const [sites, setSites] = useState<ConstructionSite[]>(SITES)
+  // Initialize with mock data, but can be replaced with API data
   const [suppliers, setSuppliers] = useState<Supplier[]>(SUPPLIERS)
 
   const login = (role: 'DIRETOR' | 'OBRA') => {
