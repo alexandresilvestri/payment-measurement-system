@@ -12,12 +12,12 @@ export const NewMeasurement = () => {
     currentUser,
     contracts,
     suppliers,
-    sites,
+    works,
     measurements,
     addMeasurement,
   } = useAppContext()
 
-  const [selectedSiteId, setSelectedSiteId] = useState<string>('')
+  const [selectedWorkId, setSelectedWorkId] = useState<string>('')
   const [selectedContractId, setSelectedContractId] = useState<string>('')
   const [observation, setObservation] = useState('')
 
@@ -27,17 +27,17 @@ export const NewMeasurement = () => {
 
   const isDirector = currentUser?.role === 'DIRETOR'
 
-  const userSiteIds = currentUser?.linkedConstructionSiteIds || []
-  const availableSites = isDirector
-    ? sites
-    : sites.filter((s) => userSiteIds.includes(s.id))
+  const userWorkIds = currentUser?.linkedConstructionSiteIds || []
+  const availableWorks = isDirector
+    ? works
+    : works.filter((s) => userWorkIds.includes(s.id))
 
   const availableContracts = useMemo(() => {
-    if (!selectedSiteId) return []
+    if (!selectedWorkId) return []
     return contracts.filter(
-      (c) => c.constructionSiteId === selectedSiteId && c.status === 'ATIVO'
+      (c) => c.constructionSiteId === selectedWorkId && c.status === 'ATIVO'
     )
-  }, [selectedSiteId, contracts])
+  }, [selectedWorkId, contracts])
 
   const selectedContract = contracts.find((c) => c.id === selectedContractId)
 
@@ -164,15 +164,15 @@ export const NewMeasurement = () => {
               <label className="text-sm font-medium text-textSec">Obra</label>
               <select
                 className="h-[38px] px-3 rounded-[4px] border border-border bg-white text-textMain text-sm focus:ring-2 focus:ring-secondary outline-none"
-                value={selectedSiteId}
+                value={selectedWorkId}
                 onChange={(e) => {
-                  setSelectedSiteId(e.target.value)
+                  setSelectedWorkId(e.target.value)
                   setSelectedContractId('')
                   setInputQuantities({})
                 }}
               >
                 <option value="">Selecione a obra...</option>
-                {availableSites.map((s) => (
+                {availableWorks.map((s) => (
                   <option key={s.id} value={s.id}>
                     {s.name}
                   </option>
@@ -191,10 +191,10 @@ export const NewMeasurement = () => {
                   setSelectedContractId(e.target.value)
                   setInputQuantities({})
                 }}
-                disabled={!selectedSiteId}
+                disabled={!selectedWorkId}
               >
                 <option value="">
-                  {!selectedSiteId
+                  {!selectedWorkId
                     ? 'Selecione uma obra primeiro...'
                     : 'Selecione o contrato...'}
                 </option>

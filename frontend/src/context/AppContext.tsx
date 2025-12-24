@@ -12,7 +12,7 @@ import {
   USERS,
   MOCK_MEASUREMENTS,
   CONTRACTS,
-  SITES,
+  WORKS,
   SUPPLIERS,
 } from '../constants'
 
@@ -29,8 +29,8 @@ interface AppContextType {
   ) => void
   contracts: Contract[]
   addContract: (contract: Contract) => void
-  sites: ConstructionSite[]
-  addSite: (site: ConstructionSite) => void
+  works: ConstructionSite[]
+  addWork: (work: ConstructionSite) => void
   suppliers: Supplier[]
   addSupplier: (supplier: Supplier) => void
   getEnrichedMeasurements: () => EnrichedMeasurement[]
@@ -44,7 +44,7 @@ export const AppProvider = ({ children }: { children?: ReactNode }) => {
     useState<Measurement[]>(MOCK_MEASUREMENTS)
   const [contracts, setContracts] = useState<Contract[]>(CONTRACTS)
 
-  const [sites, setSites] = useState<ConstructionSite[]>(SITES)
+  const [works, setWorks] = useState<ConstructionSite[]>(WORKS)
   const [suppliers, setSuppliers] = useState<Supplier[]>(SUPPLIERS)
 
   const login = (role: 'DIRETOR' | 'OBRA') => {
@@ -62,8 +62,8 @@ export const AppProvider = ({ children }: { children?: ReactNode }) => {
     setContracts((prev) => [...prev, contract])
   }
 
-  const addSite = (site: ConstructionSite) => {
-    setSites((prev) => [...prev, site])
+  const addWork = (work: ConstructionSite) => {
+    setWorks((prev) => [...prev, work])
   }
 
   const addSupplier = (supplier: Supplier) => {
@@ -94,7 +94,7 @@ export const AppProvider = ({ children }: { children?: ReactNode }) => {
     return measurements
       .map((m) => {
         const contract = contracts.find((c) => c.id === m.contractId)!
-        const site = sites.find((s) => s.id === contract.constructionSiteId)!
+        const work = works.find((s) => s.id === contract.constructionSiteId)!
         const supplier = suppliers.find(
           (sup) => sup.id === contract.supplierId
         )!
@@ -102,7 +102,7 @@ export const AppProvider = ({ children }: { children?: ReactNode }) => {
         return {
           ...m,
           contract,
-          site,
+          site: work,
           supplier,
           creatorName: creator ? creator.name : 'Desconhecido',
         }
@@ -124,8 +124,8 @@ export const AppProvider = ({ children }: { children?: ReactNode }) => {
         updateMeasurementStatus,
         contracts,
         addContract,
-        sites,
-        addSite,
+        works,
+        addWork,
         suppliers,
         addSupplier,
         getEnrichedMeasurements,

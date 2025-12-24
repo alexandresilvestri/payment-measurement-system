@@ -5,24 +5,24 @@ import { Card, Table, Thead, Th, Tr, Td, Badge, Button } from '../components/UI'
 import { formatCurrency } from '../utils'
 import { Plus } from 'lucide-react'
 
-export const SiteDashboard = () => {
-  const { currentUser, sites, contracts, suppliers, getEnrichedMeasurements } =
+export const Dashboard = () => {
+  const { currentUser, works, contracts, suppliers, getEnrichedMeasurements } =
     useAppContext()
   const navigate = useNavigate()
 
-  const linkedSites = sites.filter((s) =>
+  const linkedWorks = works.filter((s) =>
     currentUser?.linkedConstructionSiteIds?.includes(s.id)
   )
-  const [selectedSiteId, setSelectedSiteId] = useState<string>(
-    linkedSites[0]?.id || ''
+  const [selectedWorkId, setSelectedWorkId] = useState<string>(
+    linkedWorks[0]?.id || ''
   )
 
   const filteredContracts = contracts.filter(
-    (c) => c.constructionSiteId === selectedSiteId && c.status === 'ATIVO'
+    (c) => c.constructionSiteId === selectedWorkId && c.status === 'ATIVO'
   )
   const allMeasurements = getEnrichedMeasurements()
-  const siteMeasurements = allMeasurements.filter(
-    (m) => m.contract.constructionSiteId === selectedSiteId
+  const workMeasurements = allMeasurements.filter(
+    (m) => m.contract.constructionSiteId === selectedWorkId
   )
 
   const contractsWithData = filteredContracts.map((c) => {
@@ -48,11 +48,11 @@ export const SiteDashboard = () => {
         <div className="flex items-center gap-2 bg-white p-2 rounded-[6px] border border-border shadow-sm">
           <span className="text-sm text-textSec font-medium pl-2">Obra:</span>
           <select
-            value={selectedSiteId}
-            onChange={(e) => setSelectedSiteId(e.target.value)}
+            value={selectedWorkId}
+            onChange={(e) => setSelectedWorkId(e.target.value)}
             className="bg-transparent font-semibold text-primary outline-none cursor-pointer"
           >
-            {linkedSites.map((s) => (
+            {linkedWorks.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.name}
               </option>
@@ -129,14 +129,14 @@ export const SiteDashboard = () => {
             </Tr>
           </Thead>
           <tbody>
-            {siteMeasurements.length === 0 && (
+            {workMeasurements.length === 0 && (
               <Tr>
                 <Td className="text-center py-4 text-textSec" colSpan={6}>
                   Nenhuma medição encontrada.
                 </Td>
               </Tr>
             )}
-            {siteMeasurements.map((m) => (
+            {workMeasurements.map((m) => (
               <Tr key={m.id} onClick={() => navigate(`/measurement/${m.id}`)}>
                 <Td className="font-bold">#{m.number}</Td>
                 <Td>{new Date(m.createdAt).toLocaleDateString()}</Td>

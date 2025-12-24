@@ -7,26 +7,26 @@ import { Search, Eye } from 'lucide-react'
 
 export const RealizedMeasurements = () => {
   const navigate = useNavigate()
-  const { currentUser, sites, suppliers, getEnrichedMeasurements } =
+  const { currentUser, works, suppliers, getEnrichedMeasurements } =
     useAppContext()
 
-  const [selectedSiteId, setSelectedSiteId] = useState('')
+  const [selectedWorkId, setSelectedWorkId] = useState('')
   const [selectedSupplierId, setSelectedSupplierId] = useState('')
 
   const isDirector = currentUser?.role === 'DIRETOR'
 
-  const availableSites = isDirector
-    ? sites
-    : sites.filter((s) =>
+  const availableWorks = isDirector
+    ? works
+    : works.filter((s) =>
         currentUser?.linkedConstructionSiteIds?.includes(s.id)
       )
 
   const realizedMeasurements = useMemo(() => {
     let list = getEnrichedMeasurements().filter((m) => m.status === 'APROVADA')
 
-    if (selectedSiteId) {
+    if (selectedWorkId) {
       list = list.filter(
-        (m) => m.contract.constructionSiteId === selectedSiteId
+        (m) => m.contract.constructionSiteId === selectedWorkId
       )
     } else {
       return []
@@ -37,21 +37,21 @@ export const RealizedMeasurements = () => {
     }
 
     return list
-  }, [getEnrichedMeasurements, selectedSiteId, selectedSupplierId])
+  }, [getEnrichedMeasurements, selectedWorkId, selectedSupplierId])
 
-  const availableSuppliersForSite = useMemo(() => {
-    if (!selectedSiteId) return []
+  const availableSuppliersForWork = useMemo(() => {
+    if (!selectedWorkId) return []
     const relevantSupplierIds = new Set(
       getEnrichedMeasurements()
         .filter(
           (m) =>
             m.status === 'APROVADA' &&
-            m.contract.constructionSiteId === selectedSiteId
+            m.contract.constructionSiteId === selectedWorkId
         )
         .map((m) => m.contract.supplierId)
     )
     return suppliers.filter((s) => relevantSupplierIds.has(s.id))
-  }, [selectedSiteId, suppliers, getEnrichedMeasurements])
+  }, [selectedWorkId, suppliers, getEnrichedMeasurements])
 
   return (
     <div className="space-y-6 pb-20">
@@ -72,14 +72,14 @@ export const RealizedMeasurements = () => {
             </label>
             <select
               className="h-[38px] px-3 rounded-[4px] border border-border bg-white text-textMain text-sm focus:ring-2 focus:ring-secondary outline-none"
-              value={selectedSiteId}
+              value={selectedWorkId}
               onChange={(e) => {
-                setSelectedSiteId(e.target.value)
+                setSelectedWorkId(e.target.value)
                 setSelectedSupplierId('')
               }}
             >
               <option value="">Selecione...</option>
-              {availableSites.map((s) => (
+              {availableWorks.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
                 </option>
@@ -95,10 +95,10 @@ export const RealizedMeasurements = () => {
               className="h-[38px] px-3 rounded-[4px] border border-border bg-white text-textMain text-sm focus:ring-2 focus:ring-secondary outline-none disabled:bg-gray-50 disabled:text-gray-400"
               value={selectedSupplierId}
               onChange={(e) => setSelectedSupplierId(e.target.value)}
-              disabled={!selectedSiteId}
+              disabled={!selectedWorkId}
             >
               <option value="">Todos os Fornecedores</option>
-              {availableSuppliersForSite.map((s) => (
+              {availableSuppliersForWork.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
                 </option>
@@ -108,10 +108,10 @@ export const RealizedMeasurements = () => {
         </div>
       </Card>
 
-      {selectedSiteId && (
+      {selectedWorkId && (
         <Card
           title={`Medições Aprovadas - ${
-            availableSites.find((s) => s.id === selectedSiteId)?.name
+            availableWorks.find((s) => s.id === selectedWorkId)?.name
           }`}
         >
           <Table>
@@ -168,7 +168,7 @@ export const RealizedMeasurements = () => {
         </Card>
       )}
 
-      {!selectedSiteId && (
+      {!selectedWorkId && (
         <div className="flex flex-col items-center justify-center py-20 bg-white rounded-lg border border-dashed border-gray-300">
           <Search className="w-12 h-12 text-gray-300 mb-4" />
           <p className="text-textSec font-medium">

@@ -4,7 +4,7 @@ import { Card, Table, Thead, Th, Tr, Td, Button } from '../components/UI'
 import { formatCurrency } from '../utils'
 
 export const DirectorDashboard = () => {
-  const { getEnrichedMeasurements, contracts, sites, suppliers } =
+  const { getEnrichedMeasurements, contracts, works, suppliers } =
     useAppContext()
   const navigate = useNavigate()
 
@@ -16,7 +16,7 @@ export const DirectorDashboard = () => {
   const activeContracts = contracts
     .filter((c) => c.status === 'ATIVO')
     .map((c) => {
-      const site = sites.find((s) => s.id === c.constructionSiteId)
+      const work = works.find((s) => s.id === c.constructionSiteId)
       const supplier = suppliers.find((s) => s.id === c.supplierId)
 
       const measurementsForContract = allMeasurements.filter(
@@ -30,7 +30,7 @@ export const DirectorDashboard = () => {
 
       return {
         ...c,
-        siteName: site?.name || 'N/A',
+        workName: work?.name || 'N/A',
         supplierName: supplier?.name || 'N/A',
         totalMeasured,
         percentage,
@@ -112,7 +112,7 @@ export const DirectorDashboard = () => {
           <tbody>
             {activeContracts.map((c) => (
               <Tr key={c.id}>
-                <Td className="font-medium">{c.siteName}</Td>
+                <Td className="font-medium">{c.workName}</Td>
                 <Td>{c.supplierName}</Td>
                 <Td>{c.object}</Td>
                 <Td className="text-right">{formatCurrency(c.totalValue)}</Td>

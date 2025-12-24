@@ -22,7 +22,7 @@ export const USERS: User[] = [
   },
 ]
 
-export const SITES: ConstructionSite[] = [
+export const WORKS: ConstructionSite[] = [
   {
     id: 's1',
     name: 'Residencial Horizonte',

@@ -5,7 +5,7 @@ import { Layout } from './components/Layout'
 import { Login } from './pages/Login'
 import { Register } from './pages/Register'
 import { DirectorDashboard } from './pages/DirectorDashboard'
-import { SiteDashboard } from './pages/SiteDashboard'
+import { Dashboard } from './pages/Dashboard'
 import { NewMeasurement } from './pages/NewMeasurement'
 import { MeasurementDetail } from './pages/MeasurementDetail'
 import { NewContract } from './pages/NewContract'
@@ -13,7 +13,6 @@ import { Works } from './pages/Works'
 import { RealizedMeasurements } from './pages/RealizedMeasurements'
 import { Suppliers } from './pages/Suppliers'
 
-// Protected Route Wrapper
 const ProtectedRoute = ({
   children,
   requiredRole,
@@ -28,7 +27,6 @@ const ProtectedRoute = ({
   }
 
   if (requiredRole && currentUser.role !== requiredRole) {
-    // Redirect to their appropriate dashboard if role mismatch
     return (
       <Navigate
         to={currentUser.role === 'DIRETOR' ? '/director' : '/site'}
@@ -46,7 +44,6 @@ const AppRoutes = () => {
       <Route path="/" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
-      {/* Director Routes */}
       <Route
         path="/director"
         element={
@@ -56,17 +53,15 @@ const AppRoutes = () => {
         }
       />
 
-      {/* Site User Routes */}
       <Route
         path="/site"
         element={
           <ProtectedRoute requiredRole="OBRA">
-            <SiteDashboard />
+            <Dashboard />
           </ProtectedRoute>
         }
       />
 
-      {/* Shared Routes */}
       <Route
         path="/new-contract"
         element={
