@@ -20,7 +20,11 @@ export abstract class BaseRepository<TDomain, TDatabase = TDomain> {
    * @returns The domain object or null if not found
    */
   async findById(id: string): Promise<TDomain | null> {
-    const row = (await this.db(this.tableName).where({ id }).first()) as
+    return this.findBy({ id })
+  }
+
+  async findBy(conditions: Record<string, unknown>): Promise<TDomain | null> {
+    const row = (await this.db(this.tableName).where(conditions).first()) as
       | TDatabase
       | undefined
 

@@ -23,20 +23,10 @@ class UserRepository
   }
 
   async create(user: User): Promise<void> {
-    try {
-      await super.create(user)
-    } catch (err) {
-      if (
-        err instanceof Error &&
-        err.message.includes(
-          'duplicate key value violates unique constraint "users_email_unique"'
-        )
-      ) {
-        throw new ConflictError('Email already exists')
-      }
+    if (await this.findByEmail(user.email))
+      throw new ConflictError('Email already exists')
 
-      throw err
-    }
+    await super.create(user)
   }
 
   async update(
