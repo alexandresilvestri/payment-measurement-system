@@ -23,20 +23,11 @@ class UserTypeRepository
   }
 
   async create(userType: UserType): Promise<void> {
-    try {
-      await super.create(userType)
-    } catch (err) {
-      if (
-        err instanceof Error &&
-        err.message.includes(
-          'duplicate key value violates unique constraint "user_types_name_unique"'
-        )
-      ) {
-        throw new ConflictError('User type already exists')
-      }
-
-      throw err
+    if (await this.findBy({ name: userType.name })) {
+      throw new ConflictError('User type already exists')
     }
+
+    await super.create(userType)
   }
 
   protected toDomain(row: UserTypeDatabaseRow): UserType {

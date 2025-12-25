@@ -1,5 +1,6 @@
 import React from 'react'
 import { useLocation, Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import { useAppContext } from '../context/AppContext'
 import {
   LayoutDashboard,
@@ -13,18 +14,24 @@ import {
 } from 'lucide-react'
 
 export const Layout = ({ children }: { children?: React.ReactNode }) => {
-  const { currentUser, logout } = useAppContext()
+  const { user: authUser, logout } = useAuth()
+  const { currentUser } = useAppContext()
   const location = useLocation()
   const navigate = useNavigate()
 
-  if (!currentUser) return <>{children}</>
-
-  const handleLogout = () => {
-    logout()
+  const handleLogout = async () => {
+    await logout()
     navigate('/')
   }
 
-  const isDirector = currentUser.role === 'DIRETOR'
+  // If no currentUser yet, show loading
+  if (!currentUser) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-bgMain">
+        <div className="text-textMain">Carregando...</div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex min-h-screen bg-bgMain font-sans">
@@ -46,9 +53,9 @@ export const Layout = ({ children }: { children?: React.ReactNode }) => {
           </div>
 
           <Link
-            to={isDirector ? '/director' : '/site'}
+            to="/dashboard"
             className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${
-              location.pathname === (isDirector ? '/director' : '/site')
+              location.pathname === '/dashboard'
                 ? 'bg-surfaceHighlight text-primary'
                 : 'text-textSec hover:bg-gray-50 hover:text-textMain'
             }`}
@@ -128,7 +135,7 @@ export const Layout = ({ children }: { children?: React.ReactNode }) => {
                 {currentUser.name}
               </p>
               <p className="text-xs text-textSec truncate">
-                {isDirector ? 'Diretoria' : 'Eng. Obra'}
+                {authUser?.userTypeName || currentUser.email}
               </p>
             </div>
             <button

@@ -1,5 +1,4 @@
-/* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useState, ReactNode } from 'react'
+import { createContext, useContext, useState, ReactNode, useMemo } from 'react'
 import {
   User,
   Measurement,
@@ -12,14 +11,14 @@ import {
   USERS,
   MOCK_MEASUREMENTS,
   CONTRACTS,
-  SITES,
+  WORKS,
   SUPPLIERS,
 } from '../constants'
+import { useAuth } from './AuthContext'
+import { convertAuthUserToUser } from '../utils/authAdapter'
 
 interface AppContextType {
   currentUser: User | null
-  login: (role: 'DIRETOR' | 'OBRA') => void
-  logout: () => void
   measurements: Measurement[]
   addMeasurement: (measurement: Measurement) => void
   updateMeasurementStatus: (
@@ -29,8 +28,8 @@ interface AppContextType {
   ) => void
   contracts: Contract[]
   addContract: (contract: Contract) => void
-  sites: ConstructionSite[]
-  addSite: (site: ConstructionSite) => void
+  works: ConstructionSite[]
+  addWork: (work: ConstructionSite) => void
   suppliers: Supplier[]
   addSupplier: (supplier: Supplier) => void
   getEnrichedMeasurements: () => EnrichedMeasurement[]
@@ -39,20 +38,18 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined)
 
 export const AppProvider = ({ children }: { children?: ReactNode }) => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const { user: authUser } = useAuth()
+
+  const currentUser = useMemo(() => {
+    return authUser ? convertAuthUserToUser(authUser) : null
+  }, [authUser])
+
   const [measurements, setMeasurements] =
     useState<Measurement[]>(MOCK_MEASUREMENTS)
   const [contracts, setContracts] = useState<Contract[]>(CONTRACTS)
 
-  const [sites, setSites] = useState<ConstructionSite[]>(SITES)
+  const [works, setWorks] = useState<ConstructionSite[]>(WORKS)
   const [suppliers, setSuppliers] = useState<Supplier[]>(SUPPLIERS)
-
-  const login = (role: 'DIRETOR' | 'OBRA') => {
-    const user = USERS.find((u) => u.role === role)
-    if (user) setCurrentUser(user)
-  }
-
-  const logout = () => setCurrentUser(null)
 
   const addMeasurement = (measurement: Measurement) => {
     setMeasurements((prev) => [measurement, ...prev])
@@ -62,8 +59,8 @@ export const AppProvider = ({ children }: { children?: ReactNode }) => {
     setContracts((prev) => [...prev, contract])
   }
 
-  const addSite = (site: ConstructionSite) => {
-    setSites((prev) => [...prev, site])
+  const addWork = (work: ConstructionSite) => {
+    setWorks((prev) => [...prev, work])
   }
 
   const addSupplier = (supplier: Supplier) => {
@@ -94,7 +91,7 @@ export const AppProvider = ({ children }: { children?: ReactNode }) => {
     return measurements
       .map((m) => {
         const contract = contracts.find((c) => c.id === m.contractId)!
-        const site = sites.find((s) => s.id === contract.constructionSiteId)!
+        const work = works.find((s) => s.id === contract.constructionSiteId)!
         const supplier = suppliers.find(
           (sup) => sup.id === contract.supplierId
         )!
@@ -102,7 +99,7 @@ export const AppProvider = ({ children }: { children?: ReactNode }) => {
         return {
           ...m,
           contract,
-          site,
+          site: work,
           supplier,
           creatorName: creator ? creator.name : 'Desconhecido',
         }
@@ -117,15 +114,13 @@ export const AppProvider = ({ children }: { children?: ReactNode }) => {
     <AppContext.Provider
       value={{
         currentUser,
-        login,
-        logout,
         measurements,
         addMeasurement,
         updateMeasurementStatus,
         contracts,
         addContract,
-        sites,
-        addSite,
+        works,
+        addWork,
         suppliers,
         addSupplier,
         getEnrichedMeasurements,
@@ -136,6 +131,7 @@ export const AppProvider = ({ children }: { children?: ReactNode }) => {
   )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAppContext = () => {
   const context = useContext(AppContext)
   if (!context) throw new Error('useAppContext must be used within AppProvider')

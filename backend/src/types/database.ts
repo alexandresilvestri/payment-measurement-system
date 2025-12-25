@@ -35,3 +35,12 @@ export type SupplierDatabaseRow = {
   created_at: Date
   updated_at: Date
 }
+
+export type RefreshTokenDatabaseRow = {
+  id: string
+  user_id: string
+  token: string
+  expires_at: Date
+  created_at: Date
+  revoked_at: Date | null
+}

@@ -1,19 +1,35 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAppContext } from '../context/AppContext'
+import { useAuth } from '../context/AuthContext'
 import { Button, Input, Card } from '../components/UI'
-import { Building, Briefcase } from 'lucide-react'
 
 export const Login = () => {
-  const { login } = useAppContext()
+  const { login, isAuthenticated, isLoading } = useAuth()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  const handleLogin = (role: 'DIRETOR' | 'OBRA') => {
-    login(role)
-    if (role === 'DIRETOR') navigate('/director')
-    else navigate('/site')
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard')
+    }
+  }, [isAuthenticated, navigate])
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
+
+    try {
+      await login(email, password)
+      navigate('/dashboard')
+    } catch (err) {
+      setError('Email ou senha inválidos. Por favor, tente novamente.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -21,7 +37,7 @@ export const Login = () => {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-3xl mx-auto mb-4">
-            C
+            ✓
           </div>
           <h1 className="text-3xl font-bold text-textMain tracking-tight">
             CONFERIR
@@ -30,13 +46,15 @@ export const Login = () => {
         </div>
 
         <Card className="shadow-lg border-0">
-          <div className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <Input
                 label="E-mail Corporativo"
                 placeholder="nome@empresa.com.br"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={loading || isLoading}
+                required
               />
               <Input
                 label="Senha"
@@ -44,33 +62,26 @@ export const Login = () => {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={loading || isLoading}
+                required
               />
             </div>
 
-            <div className="pt-4 space-y-3">
-              <p className="text-xs text-center text-textSec uppercase font-semibold tracking-wider">
-                Simular Acesso como:
-              </p>
-              <div className="grid grid-cols-2 gap-4">
-                <Button
-                  onClick={() => handleLogin('DIRETOR')}
-                  variant="primary"
-                  className="w-full flex flex-col h-auto py-4 gap-2"
-                >
-                  <Briefcase className="w-6 h-6" />
-                  <span>Diretoria</span>
-                </Button>
-                <Button
-                  onClick={() => handleLogin('OBRA')}
-                  variant="secondary"
-                  className="w-full flex flex-col h-auto py-4 gap-2"
-                >
-                  <Building className="w-6 h-6" />
-                  <span>Eng. Obra</span>
-                </Button>
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
+                {error}
               </div>
-            </div>
-          </div>
+            )}
+
+            <Button
+              type="submit"
+              variant="primary"
+              className="w-full"
+              disabled={loading || isLoading}
+            >
+              {loading || isLoading ? 'Entrando...' : 'Entrar'}
+            </Button>
+          </form>
         </Card>
 
         <div className="text-center mt-6">

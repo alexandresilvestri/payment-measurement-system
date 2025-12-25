@@ -60,6 +60,7 @@ services:
       DB_TEST_PASSWORD: ${DB_TEST_PASSWORD:-postgres}
       DB_TEST_NAME: ${DB_TEST_NAME:-conf_test}
       PORT: ${BACKEND_PORT:-3000}
+      AUTH_ENABLED: ${AUTH_ENABLED:-true}
     ports:
       - "${BACKEND_PORT:-3000}:3000"
     volumes:

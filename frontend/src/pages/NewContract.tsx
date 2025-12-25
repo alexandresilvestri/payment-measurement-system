@@ -23,14 +23,14 @@ interface NewItemDraft {
 
 export const NewContract = () => {
   const navigate = useNavigate()
-  const { currentUser, sites, addContract } = useAppContext()
+  const { currentUser, works, addContract } = useAppContext()
 
   const [suppliers, setSuppliers] = useState<Supplier[]>([])
 
   const isDirector = currentUser?.role === 'DIRETOR'
-  const userSiteIds = currentUser?.linkedConstructionSiteIds || []
+  const userWorkIds = currentUser?.linkedConstructionSiteIds || []
 
-  const [siteId, setSiteId] = useState('')
+  const [workId, setWorkId] = useState('')
   const [supplierId, setSupplierId] = useState('')
   const [object, setObject] = useState('')
   const [startDate, setStartDate] = useState(
@@ -64,9 +64,9 @@ export const NewContract = () => {
     }
   }
 
-  const availableSites = isDirector
-    ? sites
-    : sites.filter((s) => userSiteIds.includes(s.id))
+  const availableWorks = isDirector
+    ? works
+    : works.filter((s) => userWorkIds.includes(s.id))
 
   const selectedSupplier = suppliers.find((s) => s.id === supplierId)
 
@@ -108,7 +108,7 @@ export const NewContract = () => {
   )
 
   const handleSaveContract = () => {
-    if (!siteId || !supplierId || !object) {
+    if (!workId || !supplierId || !object) {
       alert('Preencha os campos obrigatórios: Obra, Fornecedor e Objeto.')
       return
     }
@@ -143,7 +143,7 @@ export const NewContract = () => {
 
     const newContract: Contract = {
       id: `c-${Date.now()}`,
-      constructionSiteId: siteId,
+      constructionSiteId: workId,
       supplierId: supplierId,
       object: object,
       totalValue: totalContractValue,
@@ -188,11 +188,11 @@ export const NewContract = () => {
               <label className="text-sm font-medium text-textSec">Obra *</label>
               <select
                 className="h-[38px] px-3 rounded-[4px] border border-border bg-white text-textMain text-sm focus:ring-2 focus:ring-secondary outline-none"
-                value={siteId}
-                onChange={(e) => setSiteId(e.target.value)}
+                value={workId}
+                onChange={(e) => setWorkId(e.target.value)}
               >
                 <option value="">Selecione a obra...</option>
-                {availableSites.map((s) => (
+                {availableWorks.map((s) => (
                   <option key={s.id} value={s.id}>
                     {s.name}
                   </option>
