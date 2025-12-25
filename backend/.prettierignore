@@ -1,28 +1,21 @@
-# Dependencies
 node_modules
 
-# Build output
 dist
 build
 coverage
 
-# Database
 *.db
 *.sqlite
 
-# Logs
 *.log
 npm-debug.log*
 
-# Environment
 .env
 .env.local
 .env.*.local
 
-# IDE
 .vscode
 .idea
 
-# Other
 *.min.js
 *.min.css
