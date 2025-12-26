@@ -1,4 +1,6 @@
 #!/bin/sh
+make format
+make lint
 cd backend
 npx lint-staged
 cd ..
