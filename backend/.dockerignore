@@ -10,6 +10,5 @@ dist
 .vscode
 .prettierrc
 .eslintrc.json
-tsconfig.json
 vitest.config.ts
 ```
