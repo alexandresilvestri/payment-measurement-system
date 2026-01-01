@@ -1,0 +1,31 @@
+{
+  "name": "Frontend (Client)",
+  "dockerComposeFile": "../../docker-compose.yml",
+  "service": "conf-client",
+  "workspaceFolder": "/app",
+
+  "runServices": [
+    "conf-postgres",
+    "conf-api",
+    "conf-client"
+  ],
+
+  "forwardPorts": [5173, 3000],
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "bradlc.vscode-tailwindcss",
+        "dbaeumer.vscode-eslint",
+        "docker.docker",
+        "eamodio.gitlens",
+        "esbenp.prettier-vscode",
+        "github.github-vscode-theme",
+        "github.vscode-pull-request-github",
+        "pkief.material-icon-theme"
+      ]
+    }
+  },
+
+  "postCreateCommand": "npm install"
+}
