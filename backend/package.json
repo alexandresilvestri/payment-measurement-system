@@ -8,6 +8,7 @@
     "dev:migrate": "npm run migrate:latest && npm run dev",
     "build": "tsc",
     "start": "node dist/index.js",
+    "railway:start": "npm run migrate:latest && npm run start",
     "prepare": "cd .. && git config core.hooksPath backend/.husky 2>/dev/null || true",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
