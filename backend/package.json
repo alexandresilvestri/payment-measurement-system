@@ -31,7 +31,8 @@
     "migrate:test:rollback": "NODE_ENV=test tsx node_modules/knex/bin/cli.js migrate:rollback --knexfile src/database/knexfile.ts",
     "migrate:test:rollback:all": "NODE_ENV=test tsx node_modules/knex/bin/cli.js migrate:rollback --all --knexfile src/database/knexfile.ts",
     "seed:make": "tsx node_modules/knex/bin/cli.js seed:make --knexfile src/database/knexfile.ts -x ts",
-    "seed:run": "tsx node_modules/knex/bin/cli.js seed:run --knexfile src/database/knexfile.ts"
+    "seed:run": "tsx node_modules/knex/bin/cli.js seed:run --knexfile src/database/knexfile.ts",
+    "seed:run:production": "NODE_ENV=production tsx node_modules/knex/bin/cli.js seed:run --knexfile src/database/knexfile.ts"
   },
   "lint-staged": {
     "*.ts": [
