@@ -1,4 +1,3 @@
 #!/bin/sh
-make format
-make lint
+npx lint-staged
 docker compose exec -T -e DB_TEST_HOST=conf-postgres-test conf-api npm test
