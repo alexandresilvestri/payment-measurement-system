@@ -53,6 +53,29 @@ const config: { [key: string]: Knex.Config } = {
       directory: path.resolve(__dirname, './seeds'),
     },
   },
+
+  production: {
+    client: 'pg',
+    connection: process.env.DATABASE_URL || {
+      host: process.env.DB_USER,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      port: Number(process.env.DB_PORT) || 5432,
+      ssl: { rejectUnauthorized: false },
+    },
+    pool: {
+      min: Number(process.env.DB_POOL_MIN) || 2,
+      max: Number(process.env.DB_POOL_MAX) || 10,
+    },
+    migrations: {
+      directory: path.resolve(__dirname, './migrations'),
+      extension: 'ts',
+    },
+    seeds: {
+      directory: path.resolve(__dirname, './seeds'),
+    },
+  },
 }
 
 export default config
