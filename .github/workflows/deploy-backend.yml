@@ -81,7 +81,7 @@ jobs:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: conferir-backend
-          environment_name: conferir-backend-prod
+          environment_name: conferir-backend-env
           version_label: ${{ github.sha }}-${{ steps.timestamp.outputs.time }}
           region: us-east-1
           deployment_package: backend/deploy.zip
