@@ -1,5 +1,11 @@
 import { beforeAll, afterAll, beforeEach, afterEach } from 'vitest'
 import { db } from '../database/db'
+import { execSync } from 'child_process'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 beforeAll(async () => {
   if (process.env.NODE_ENV !== 'test') {
@@ -7,7 +13,15 @@ beforeAll(async () => {
   }
 
   try {
-    await db.migrate.latest()
+    const knexfilePath = path.resolve(__dirname, '../database/knexfile.ts')
+    execSync(
+      `tsx node_modules/knex/bin/cli.js migrate:latest --knexfile ${knexfilePath}`,
+      {
+        cwd: path.resolve(__dirname, '../..'),
+        env: { ...process.env, NODE_ENV: 'test' },
+        stdio: 'inherit',
+      }
+    )
     console.log('Test database migrations completed')
   } catch (error) {
     console.error('Failed to run migrations:', error)

@@ -57,6 +57,7 @@ jobs:
           DB_TEST_PASSWORD: postgres
           DB_TEST_NAME: conf_test
           NODE_ENV: test
+          PGPASSWORD: postgres
 
       - name: Generate deployment timestamp
         id: timestamp
