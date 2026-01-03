@@ -1,11 +1,11 @@
 import { randomUUID } from 'node:crypto'
-import { UserResponse, UpdateUserRequest } from '../types/api/users'
-import type { User } from '../types/users'
-import type { IUserRepository } from '../repository/users'
-import type { IUserTypeRepository } from '../repository/userTypes'
-import { hashPassword } from '../utils/passwordHash'
-import { mapUpdateUserRequestToDb } from '../utils/mappers/userMapper'
-import { NotFoundError } from '../errors'
+import { UserResponse, UpdateUserRequest } from '../types/api/users.js'
+import type { User } from '../types/users.js'
+import type { IUserRepository } from '../repository/users.js'
+import type { IUserTypeRepository } from '../repository/userTypes.js'
+import { hashPassword } from '../utils/passwordHash.js'
+import { mapUpdateUserRequestToDb } from '../utils/mappers/userMapper.js'
+import { NotFoundError } from '../errors/index.js'
 
 export type CreateUserParams = {
   firstName: string

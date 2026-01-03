@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
-import { asyncHandler } from '../utils/asyncHandler'
-import { authService } from '../services/instances'
-import { LoginRequest, RefreshTokenRequest } from '../types/auth'
+import { asyncHandler } from '../utils/asyncHandler.js'
+import { authService } from '../services/instances.js'
+import { LoginRequest, RefreshTokenRequest } from '../types/auth.js'
 
 export const loginHandler = asyncHandler(
   async (req: Request, res: Response) => {

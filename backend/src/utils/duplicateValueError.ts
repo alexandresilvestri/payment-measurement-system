@@ -1,4 +1,4 @@
-import { ConflictError } from '../errors'
+import { ConflictError } from '../errors/index.js'
 
 export function duplicateError(err: unknown, table: string, value: string) {
   const duplicateMessage = `"${table}_${value}_unique"`

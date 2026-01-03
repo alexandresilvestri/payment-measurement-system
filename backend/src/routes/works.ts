@@ -5,14 +5,14 @@ import {
   getAllWorksHandler,
   updateWorkHandler,
   deleteWorkHandler,
-} from '../controllers/works'
-import { validate } from '../validation/middleware'
+} from '../controllers/works.js'
+import { validate } from '../validation/middleware.js'
 import {
   createWorkSchema,
   getWorkSchema,
   updateWorkSchema,
   deleteWorkSchema,
-} from '../validation/schemas/works'
+} from '../validation/schemas/works.js'
 
 const router = express.Router()
 

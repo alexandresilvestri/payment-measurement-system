@@ -4,14 +4,14 @@ import {
   getUserHandler,
   updateUserHandler,
   deleteUserHandler,
-} from '../controllers/users'
-import { validate } from '../validation/middleware'
+} from '../controllers/users.js'
+import { validate } from '../validation/middleware.js'
 import {
   createUserSchema,
   getUserSchema,
   updateUserSchema,
   deleteUserSchema,
-} from '../validation/schemas/users'
+} from '../validation/schemas/users.js'
 
 const router = express.Router()
 

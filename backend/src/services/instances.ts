@@ -1,13 +1,13 @@
-import { userRepository } from '../repository/users'
-import { userTypeRepository } from '../repository/userTypes'
-import { workRepository } from '../repository/works'
-import { supplierRepository } from '../repository/suppliers'
-import { refreshTokenRepository } from '../repository/refreshTokens'
-import { UserService } from './User'
-import { UserTypeService } from './UserType'
-import { WorkService } from './Work'
-import { SupplierService } from './Supplier'
-import { AuthService } from './Auth'
+import { userRepository } from '../repository/users.js'
+import { userTypeRepository } from '../repository/userTypes.js'
+import { workRepository } from '../repository/works.js'
+import { supplierRepository } from '../repository/suppliers.js'
+import { refreshTokenRepository } from '../repository/refreshTokens.js'
+import { UserService } from './User.js'
+import { UserTypeService } from './UserType.js'
+import { WorkService } from './Work.js'
+import { SupplierService } from './Supplier.js'
+import { AuthService } from './Auth.js'
 
 export const userService = new UserService(userRepository, userTypeRepository)
 export const userTypeService = new UserTypeService(userTypeRepository)

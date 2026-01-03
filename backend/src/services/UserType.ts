@@ -1,8 +1,8 @@
 import { randomUUID } from 'node:crypto'
-import type { UserType } from '../types/userTypes'
-import type { UpdateUserTypeRequest } from '../types/api/userTypes'
-import type { IUserTypeRepository } from '../repository/userTypes'
-import { NotFoundError } from '../errors'
+import type { UserType } from '../types/userTypes.js'
+import type { UpdateUserTypeRequest } from '../types/api/userTypes.js'
+import type { IUserTypeRepository } from '../repository/userTypes.js'
+import { NotFoundError } from '../errors/index.js'
 
 export type CreateUserTypeParams = {
   name: string

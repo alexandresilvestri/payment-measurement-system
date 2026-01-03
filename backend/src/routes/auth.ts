@@ -3,13 +3,13 @@ import {
   loginHandler,
   refreshTokenHandler,
   logoutHandler,
-} from '../controllers/auth'
-import { validate } from '../validation/middleware'
+} from '../controllers/auth.js'
+import { validate } from '../validation/middleware.js'
 import {
   loginSchema,
   refreshTokenSchema,
   logoutSchema,
-} from '../validation/schemas/auth'
+} from '../validation/schemas/auth.js'
 
 const router = express.Router()
 

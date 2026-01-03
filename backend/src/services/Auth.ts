@@ -1,21 +1,21 @@
 import { randomUUID } from 'crypto'
-import { IUserRepository } from '../repository/users'
-import { IUserTypeRepository } from '../repository/userTypes'
-import { IRefreshTokenRepository } from '../repository/refreshTokens'
-import { verifyPassword } from '../utils/passwordHash'
+import { IUserRepository } from '../repository/users.js'
+import { IUserTypeRepository } from '../repository/userTypes.js'
+import { IRefreshTokenRepository } from '../repository/refreshTokens.js'
+import { verifyPassword } from '../utils/passwordHash.js'
 import {
   generateAccessToken,
   generateRefreshToken,
   verifyRefreshToken,
-} from '../utils/jwt'
+} from '../utils/jwt.js'
 import {
   LoginRequest,
   LoginResponse,
   RefreshTokenRequest,
   RefreshTokenResponse,
   JwtPayload,
-} from '../types/auth'
-import { UnauthorizedError } from '../errors'
+} from '../types/auth.js'
+import { UnauthorizedError } from '../errors/index.js'
 
 export class AuthService {
   constructor(

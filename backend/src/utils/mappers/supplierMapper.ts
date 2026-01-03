@@ -1,4 +1,4 @@
-import { UpdateSupplierRequest } from '../../types/api/supplier'
+import { UpdateSupplierRequest } from '../../types/api/supplier.js'
 
 export function mapUpdateSupplierRequestToDb(updates: UpdateSupplierRequest): {
   name?: string

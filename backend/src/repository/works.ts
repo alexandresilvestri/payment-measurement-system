@@ -1,6 +1,6 @@
-import type { Work } from '../types/works'
-import type { WorkDatabaseRow } from '../types/database'
-import { BaseRepository } from './BaseRepository'
+import type { Work } from '../types/works.js'
+import type { WorkDatabaseRow } from '../types/database.js'
+import { BaseRepository } from './BaseRepository.js'
 
 export interface IWorkRepository {
   create(work: Work): Promise<void>

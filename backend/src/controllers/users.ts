@@ -1,8 +1,8 @@
 import { Request, Response } from 'express'
-import { userService } from '../services/instances'
-import { NotFoundError } from '../errors'
-import { asyncHandler } from '../utils/asyncHandler'
-import { UpdateUserRequest } from '../types/api/users'
+import { userService } from '../services/instances.js'
+import { NotFoundError } from '../errors/index.js'
+import { asyncHandler } from '../utils/asyncHandler.js'
+import { UpdateUserRequest } from '../types/api/users.js'
 
 export const createUserHandler = asyncHandler(
   async (req: Request, res: Response) => {

@@ -5,14 +5,14 @@ import {
   getAllUserTypesHandler,
   updateUserTypeHandler,
   deleteUserTypeHandler,
-} from '../controllers/userTypes'
-import { validate } from '../validation/middleware'
+} from '../controllers/userTypes.js'
+import { validate } from '../validation/middleware.js'
 import {
   createUserTypeSchema,
   getUserTypeSchema,
   updateUserTypeSchema,
-} from '../validation/schemas/userTypes'
-import { deleteUserSchema } from '../validation/schemas/users'
+} from '../validation/schemas/userTypes.js'
+import { deleteUserSchema } from '../validation/schemas/users.js'
 
 const router = express.Router()
 

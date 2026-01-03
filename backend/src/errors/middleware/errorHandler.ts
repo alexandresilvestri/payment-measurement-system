@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { AppError } from '../AppError'
+import { AppError } from '../AppError.js'
 
 export function errorHandler(err: Error, req: Request, res: Response) {
   if (err instanceof AppError) {

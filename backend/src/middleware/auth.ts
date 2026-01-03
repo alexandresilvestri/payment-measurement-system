@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
-import { verifyAccessToken } from '../utils/jwt'
-import { JwtPayload } from '../types/auth'
-import { UnauthorizedError } from '../errors'
+import { verifyAccessToken } from '../utils/jwt.js'
+import { JwtPayload } from '../types/auth.js'
+import { UnauthorizedError } from '../errors/index.js'
 import * as jose from 'jose'
 
 declare global {

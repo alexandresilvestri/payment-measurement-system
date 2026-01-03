@@ -1,9 +1,9 @@
 import { randomUUID } from 'node:crypto'
-import { Supplier } from '../types/supplier'
-import { ISupplierRepository } from '../repository/suppliers'
-import { NotFoundError } from '../errors'
-import { UpdateSupplierRequest } from '../types/api/supplier'
-import { mapUpdateSupplierRequestToDb } from '../utils/mappers/supplierMapper'
+import { Supplier } from '../types/supplier.js'
+import { ISupplierRepository } from '../repository/suppliers.js'
+import { NotFoundError } from '../errors/index.js'
+import { UpdateSupplierRequest } from '../types/api/supplier.js'
+import { mapUpdateSupplierRequestToDb } from '../utils/mappers/supplierMapper.js'
 
 export type CreateSupplierParams = {
   name: string

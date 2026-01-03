@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
-import { asyncHandler } from '../utils/asyncHandler'
-import { supplierService } from '../services/instances'
+import { asyncHandler } from '../utils/asyncHandler.js'
+import { supplierService } from '../services/instances.js'
 
 export const createSupplierHandler = asyncHandler(
   async (req: Request, res: Response) => {

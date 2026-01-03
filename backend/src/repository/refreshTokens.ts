@@ -1,5 +1,5 @@
-import { BaseRepository } from './BaseRepository'
-import { RefreshToken, RefreshTokenDatabaseRow } from '../types/auth'
+import { BaseRepository } from './BaseRepository.js'
+import { RefreshToken, RefreshTokenDatabaseRow } from '../types/auth.js'
 
 export interface IRefreshTokenRepository {
   create(token: RefreshToken): Promise<void>

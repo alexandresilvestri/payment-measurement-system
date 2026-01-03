@@ -2,8 +2,11 @@ import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
 import morgan from 'morgan'
-import routes from './routes'
-import { errorHandler, notFoundHandler } from './errors/middleware/errorHandler'
+import routes from './routes/index.js'
+import {
+  errorHandler,
+  notFoundHandler,
+} from './errors/middleware/errorHandler.js'
 
 const app = express()
 

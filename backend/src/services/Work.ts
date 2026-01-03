@@ -1,8 +1,11 @@
 import { randomUUID } from 'node:crypto'
-import type { Work } from '../types/works'
-import type { CreateWorkRequest, UpdateWorkRequest } from '../types/api/works'
-import type { IWorkRepository } from '../repository/works'
-import { ConflictError } from '../errors'
+import type { Work } from '../types/works.js'
+import type {
+  CreateWorkRequest,
+  UpdateWorkRequest,
+} from '../types/api/works.js'
+import type { IWorkRepository } from '../repository/works.js'
+import { ConflictError } from '../errors/index.js'
 
 export class WorkService {
   constructor(private workRepo: IWorkRepository) {}

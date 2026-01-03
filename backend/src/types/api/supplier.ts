@@ -1,4 +1,4 @@
-import { Supplier } from '../supplier'
+import { Supplier } from '../supplier.js'
 
 export type CreateSupplierRequest = {
   name: string

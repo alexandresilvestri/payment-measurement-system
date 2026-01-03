@@ -1,8 +1,8 @@
 import { Request, Response } from 'express'
-import { workService } from '../services/instances'
-import { NotFoundError } from '../errors'
-import { asyncHandler } from '../utils/asyncHandler'
-import { UpdateWorkRequest } from '../types/api/works'
+import { workService } from '../services/instances.js'
+import { NotFoundError } from '../errors/index.js'
+import { asyncHandler } from '../utils/asyncHandler.js'
+import { UpdateWorkRequest } from '../types/api/works.js'
 
 export const createWorkHandler = asyncHandler(
   async (req: Request, res: Response) => {

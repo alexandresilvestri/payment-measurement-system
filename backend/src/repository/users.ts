@@ -1,7 +1,7 @@
-import type { User } from '../types/users'
-import type { UserDatabaseRow } from '../types/database'
-import { BaseRepository } from './BaseRepository'
-import { ConflictError } from '../errors'
+import type { User } from '../types/users.js'
+import type { UserDatabaseRow } from '../types/database.js'
+import { BaseRepository } from './BaseRepository.js'
+import { ConflictError } from '../errors/index.js'
 
 export interface IUserRepository {
   create(user: User): Promise<void>

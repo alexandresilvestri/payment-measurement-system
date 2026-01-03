@@ -1,5 +1,5 @@
 import { beforeAll, afterAll, beforeEach, afterEach } from 'vitest'
-import { db } from '../database/db'
+import { db } from '../database/db.js'
 import { execSync } from 'child_process'
 import path from 'path'
 import { fileURLToPath } from 'url'

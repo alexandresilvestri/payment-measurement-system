@@ -5,14 +5,14 @@ import {
   getSuppliersHandler,
   updateSupplierHandler,
   deleteSupplierHandler,
-} from '../controllers/suppliers'
-import { validate } from '../validation/middleware'
+} from '../controllers/suppliers.js'
+import { validate } from '../validation/middleware.js'
 import {
   createSupplierSchema,
   getSupplierSchema,
   updateSupplierSchema,
   deleteSupplierSchema,
-} from '../validation/schemas/suppliers'
+} from '../validation/schemas/suppliers.js'
 
 const router = express.Router()
 

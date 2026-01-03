@@ -1,4 +1,4 @@
-import { UserType } from '../userTypes'
+import { UserType } from '../userTypes.js'
 
 export type CreateUserRequest = {
   firstName: string

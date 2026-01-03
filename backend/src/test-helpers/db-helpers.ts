@@ -1,6 +1,6 @@
-import { db } from '../database/db'
-import type { Work } from '../types/works'
-import type { UserDatabaseRow } from '../types/database'
+import { db } from '../database/db.js'
+import type { Work } from '../types/works.js'
+import type { UserDatabaseRow } from '../types/database.js'
 
 export async function createTestWork(overrides?: Partial<Work>): Promise<Work> {
   const defaultWork: Work = {
