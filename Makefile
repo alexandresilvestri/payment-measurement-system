@@ -7,7 +7,7 @@
 # =============================================================================
 
 # .PHONY tells make these aren't actual files, just command names
-.PHONY: help dev up down restart logs ps clean install test lint format migrate-make migrate-latest migrate-rollback migrate-status seed-make seed-run db-shell-test logs-db-test
+.PHONY: help dev up down restart logs ps clean install test lint format migrate-make migrate-latest migrate-rollback migrate-status seed-make seed-run db-shell-test logs-db-test update
 
 # Default target - runs when you just type 'make'
 .DEFAULT_GOAL := help
@@ -24,6 +24,7 @@ help:
 	@echo "  make down             Stop all services"
 	@echo "  make restart          Restart all services"
 	@echo "  make build            Rebuild all containers"
+	@echo "  make update           Rebuild containers with fresh dependencies (run after git pull)"
 	@echo ""
 	@echo "📊 Monitoring:"
 	@echo "  make logs             View logs from all services"
@@ -93,6 +94,16 @@ build:
 	@echo "🔨 Building all containers..."
 	docker compose up -d --build
 	@echo "✅ Containers built and started!"
+
+# Update containers with fresh dependencies (use after git pull or when dependencies change)
+update:
+	@echo "🔄 Updating containers with fresh dependencies..."
+	@echo "Step 1/2: Rebuilding containers..."
+	docker compose build
+	@echo "Step 2/2: Recreating containers with fresh volumes..."
+	docker compose up -d --force-recreate --renew-anon-volumes
+	@echo "✅ Update complete! Fresh dependencies installed."
+	@echo "💡 Tip: Run 'make test' to verify everything works."
 
 # 📊 MONITORING COMMANDS
 
