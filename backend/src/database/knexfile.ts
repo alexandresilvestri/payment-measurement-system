@@ -57,14 +57,19 @@ const config: { [key: string]: Knex.Config } = {
 
   production: {
     client: 'pg',
-    connection: process.env.DATABASE_URL || {
-      host: process.env.DB_USER,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      port: Number(process.env.DB_PORT) || 5432,
-      ssl: { rejectUnauthorized: false },
-    },
+    connection: process.env.DATABASE_URL
+      ? {
+          connectionString: process.env.DATABASE_URL,
+          ssl: { rejectUnauthorized: false },
+        }
+      : {
+          host: process.env.DB_HOST,
+          user: process.env.DB_USER,
+          password: process.env.DB_PASSWORD,
+          database: process.env.DB_NAME,
+          port: Number(process.env.DB_PORT) || 5432,
+          ssl: { rejectUnauthorized: false },
+        },
     pool: {
       min: Number(process.env.DB_POOL_MIN) || 2,
       max: Number(process.env.DB_POOL_MAX) || 10,
