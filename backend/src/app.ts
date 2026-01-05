@@ -2,7 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
 import morgan from 'morgan'
-import health from './routes/health'
+import health from './routes/health.js'
 import routes from './routes/index.js'
 import {
   errorHandler,
