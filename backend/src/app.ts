@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
 import morgan from 'morgan'
+import health from './routes/health'
 import routes from './routes/index.js'
 import {
   errorHandler,
@@ -45,6 +46,7 @@ app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+app.use(health)
 app.use('/api', routes)
 app.use(notFoundHandler)
 app.use(errorHandler)
