@@ -11,4 +11,3 @@ dist
 .eslintrc.json
 vitest.config.ts
 src/**/*.test.ts
-tsconfig.json
