@@ -10,7 +10,8 @@ npm run migrate:production
 
 echo "Migrations completed successfully"
 
-echo "Running database seeds..."
-npm run seed:run:production
+# Create admin user
+# echo "Running database seeds..."
+# npm run seed:run:production
 
 echo "Seeds completed successfully"
