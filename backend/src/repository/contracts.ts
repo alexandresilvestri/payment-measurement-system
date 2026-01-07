@@ -6,6 +6,7 @@ import { BaseRepository } from './BaseRepository.js'
 export interface IContractRepository {
   create(contract: Contract): Promise<void>
   findById(id: string): Promise<Contract | null>
+  findAll(): Promise<Contract[] | null>
 }
 
 class ContractRepository

@@ -57,4 +57,17 @@ export class ContractService {
 
     return contractResponse
   }
+
+  async getContracts(): Promise<Contract[] | null> {
+    const contracts = await this.contractRepo.findAll()
+
+    if (!contracts) return []
+
+    return contracts
+  }
+
+  async getContract(id: string): Promise<Contract | null> {
+    const contract = await this.contractRepo.findById(id)
+    return contract
+  }
 }

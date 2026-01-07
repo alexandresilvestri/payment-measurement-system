@@ -34,4 +34,10 @@ export const createContractSchema = z.object({
   }),
 })
 
+export const getContractSchema = z.object({
+  params: z.object({
+    id: z.string().uuid('Invalid contract ID')
+  })
+})
+
 export type CreateContractInput = z.infer<typeof createContractSchema>
