@@ -1,6 +1,10 @@
 import { db } from '../database/db.js'
 import type { Work } from '../types/works.js'
-import type { UserDatabaseRow } from '../types/database.js'
+import type {
+  UserDatabaseRow,
+  SupplierDatabaseRow,
+  ContractDatabaseRow,
+} from '../types/database.js'
 
 export async function createTestWork(overrides?: Partial<Work>): Promise<Work> {
   const defaultWork: Work = {
@@ -59,9 +63,54 @@ export async function createTestUser(
   return defaultUser
 }
 
+export async function createTestContract(): Promise<{
+  work: Work
+  supplier: SupplierDatabaseRow
+  contract: ContractDatabaseRow
+}> {
+  const workId = crypto.randomUUID()
+  const work: Work = {
+    id: workId,
+    name: 'Condomínio Residencial Jardim das Flores',
+    code: 1,
+    address: 'Rua das Acácias, 123 - Bairro Jardim - São Paulo/SP',
+    contractor: 'Construtora Alpha LTDA',
+    status: 'ATIVA',
+  }
+  await db('works').insert(work)
+
+  const supplierId = crypto.randomUUID()
+  const supplier: SupplierDatabaseRow = {
+    id: supplierId,
+    type_person: 'FISICA',
+    name: 'Pedro Almeida',
+    document: '123.456.789-00',
+    pix: '12345678900',
+    created_at: new Date(),
+    updated_at: new Date(),
+  }
+  await db('suppliers').insert(supplier)
+
+  const contractId = crypto.randomUUID()
+  const contract: ContractDatabaseRow = {
+    id: contractId,
+    work: workId,
+    supplier: supplierId,
+    service: 'Test Service',
+    total_value: 10000,
+    start_date: new Date(),
+    delivery_time: null,
+  }
+  await db('contracts').insert(contract)
+
+  return { work, supplier, contract }
+}
+
 export async function cleanDatabase(): Promise<void> {
-  await db('works').del()
+  await db('contracts').del()
   await db('users').del()
+  await db('suppliers').del()
+  await db('works').del()
   await db('user_types').del()
 }
 

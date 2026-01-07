@@ -3,11 +3,13 @@ import { userService, userTypeService } from '../instances'
 import type { CreateUserParams, UpdateUserParams } from '../User'
 import { db } from '../../database/db'
 import { verifyPassword } from '../../utils/passwordHash'
+import { cleanDatabase } from '../../test-helpers/db-helpers'
 
 describe('User - integration crud tests', () => {
   let testUserTypeId: string
 
   beforeEach(async () => {
+    await cleanDatabase()
     const userType = await userTypeService.createUserType({
       name: 'Visitor',
       approveMeasurement: false,

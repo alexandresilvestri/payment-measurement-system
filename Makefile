@@ -7,7 +7,7 @@
 # =============================================================================
 
 # .PHONY tells make these aren't actual files, just command names
-.PHONY: help dev up down restart logs ps clean install test lint format migrate-make migrate-latest migrate-rollback migrate-status seed-make seed-run db-shell-test logs-db-test update
+.PHONY: help dev up down restart logs ps clean install test test-single lint format migrate-make migrate-latest migrate-rollback migrate-status seed-make seed-run db-shell-test logs-db-test update
 
 # Default target - runs when you just type 'make'
 .DEFAULT_GOAL := help
@@ -37,6 +37,7 @@ help:
 	@echo "🧪 Testing:"
 	@echo "  make test             Run all tests"
 	@echo "  make test-backend     Run backend tests"
+	@echo "  make test-single      Run a single test file (use: file=path/to/test.ts)"
 	@echo "  make test-watch       Run tests in watch mode"
 	@echo "  make test-coverage    Run tests with coverage"
 	@echo ""
@@ -149,6 +150,15 @@ test: test-backend
 test-backend:
 	@echo "🧪 Running backend tests..."
 	docker compose exec -e DB_TEST_HOST=conf-postgres-test conf-api npm test
+
+test-single:
+	@if [ -z "$(file)" ]; then \
+		echo "❌ Error: Test file is required"; \
+		echo "Usage: make test-single file=src/services/__tests__/Contracts.test.ts"; \
+		exit 1; \
+	fi
+	@echo "🧪 Running test: $(file)..."
+	docker compose exec -e DB_TEST_HOST=conf-postgres-test conf-api npm test $(file)
 
 test-watch:
 	@echo "🧪 Running tests in watch mode..."
