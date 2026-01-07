@@ -35,7 +35,7 @@ export class ContractService {
       deliveryTime: params.deliveryDate ?? null,
     }
 
-    await this.contractRepo.createContract(createContractIntent)
+    await this.contractRepo.create(createContractIntent)
     const createdContract = await this.contractRepo.findById(
       createContractIntent.id
     )

@@ -36,6 +36,16 @@ export type SupplierDatabaseRow = {
   updated_at: Date
 }
 
+export type ContractDatabaseRow = {
+  id: string
+  work: string
+  supplier: string
+  service: string
+  total_value: number
+  start_date: Date
+  delivery_time: Date | null
+}
+
 export type RefreshTokenDatabaseRow = {
   id: string
   user_id: string
