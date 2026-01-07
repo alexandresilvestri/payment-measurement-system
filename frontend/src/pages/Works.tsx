@@ -108,7 +108,7 @@ export const Works = () => {
     setAddressError('')
 
     if (!name.trim()) {
-      setNameError('O nome do empreendimento é obrigatório')
+      setNameError('O nome do Local é obrigatório')
       isValid = false
     }
 
@@ -315,7 +315,7 @@ export const Works = () => {
             >
               <div className="space-y-4">
                 <Input
-                  label="Nome do Empreendimento *"
+                  label="Nome do Local *"
                   placeholder="Ex: Residencial Jardins"
                   value={name}
                   onChange={(e) => {

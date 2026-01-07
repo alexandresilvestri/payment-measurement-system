@@ -27,7 +27,7 @@ const config: { [key: string]: Knex.Config } = {
       extension: 'ts',
     },
     seeds: {
-      directory: path.resolve(__dirname, './seeds'),
+      directory: path.resolve(__dirname, './seeds/dev'),
     },
   },
 
@@ -51,7 +51,7 @@ const config: { [key: string]: Knex.Config } = {
       loadExtensions: ['.ts'],
     },
     seeds: {
-      directory: path.resolve(__dirname, './seeds'),
+      directory: path.resolve(__dirname, './seeds/dev'),
     },
   },
 
@@ -80,7 +80,7 @@ const config: { [key: string]: Knex.Config } = {
       loadExtensions: ['.js'],
     },
     seeds: {
-      directory: path.resolve(__dirname, './seeds'),
+      directory: path.resolve(__dirname, './seeds/prod'),
     },
   },
 }
