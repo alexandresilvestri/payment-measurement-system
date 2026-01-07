@@ -17,7 +17,15 @@ export async function seed(knex: Knex): Promise<void> {
     throw new Error('User types not found. Please run user_types seed first.')
   }
 
-  const hashedPassword = await argon2.hash('Password123!')
+  const generateHash = async (passwd: string): Promise<string> => {
+    const passwordHash = await argon2.hash(passwd)
+    return passwordHash
+  }
+
+  const passwdAlexandre = 'Alexandre10!'
+  const passwdJuan = 'Juan123!'
+  const passwdKariane = 'Kariane123!'
+  const passwdMauricio = 'Mauricio123!'
 
   await knex('users').insert([
     {
@@ -25,7 +33,7 @@ export async function seed(knex: Knex): Promise<void> {
       first_name: 'Maurício',
       last_name: 'de Carvalho',
       email: 'mauriciovcarvalho@hotmail.com',
-      password: hashedPassword,
+      password: await generateHash(passwdMauricio),
       type_user_id: engineerType.id,
     },
     {
@@ -33,7 +41,7 @@ export async function seed(knex: Knex): Promise<void> {
       first_name: 'Juan',
       last_name: 'Langer',
       email: 'juan.langer@gmail.com',
-      password: hashedPassword,
+      password: await generateHash(passwdJuan),
       type_user_id: lawyerType.id,
     },
     {
@@ -41,7 +49,7 @@ export async function seed(knex: Knex): Promise<void> {
       first_name: 'Kariane',
       last_name: 'Winter',
       email: 'administrativo@conferirengenharia.com',
-      password: hashedPassword,
+      password: await generateHash(passwdKariane),
       type_user_id: visitantType.id,
     },
     {
@@ -49,7 +57,7 @@ export async function seed(knex: Knex): Promise<void> {
       first_name: 'Alexandre',
       last_name: 'Silvestri',
       email: 'alexandretunni03@gmail.com',
-      password: hashedPassword,
+      password: await generateHash(passwdAlexandre),
       type_user_id: visitantType.id,
     },
   ])
