@@ -20,7 +20,7 @@ export type UpdateUserParams = {
   lastName?: string
   email?: string
   password?: string
-  typeUser?: string
+  userType?: string
 }
 
 export class UserService {
