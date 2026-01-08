@@ -17,7 +17,9 @@ router.use('/auth', authRoutes)
 router.post('/users', validate(createUserSchema), createUserHandler)
 router.get('/user-types', getAllUserTypesHandler)
 
-router.use(authenticate)
+if (process.env.NODE_ENV !== 'development') {
+  router.use(authenticate)
+}
 router.use(usersRoutes)
 router.use(userTypesRoutes)
 router.use(worksRoutes)
