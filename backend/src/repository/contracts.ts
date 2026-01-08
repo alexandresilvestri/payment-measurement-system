@@ -17,10 +17,6 @@ class ContractRepository
     super('contracts')
   }
 
-  async create(contract: Contract): Promise<void> {
-    await super.create(contract)
-  }
-
   protected toDomain(row: ContractDatabaseRow): Contract {
     return {
       id: row.id,
