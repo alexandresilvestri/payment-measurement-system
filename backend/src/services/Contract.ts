@@ -1,6 +1,6 @@
 import { Contract } from '../types/contracts.js'
+import { ContractItem } from '../types/contractItems.js'
 import { IContractRepository } from '../repository/contracts.js'
-import { NotFoundError } from '../errors/index.js'
 import { IWorkRepository } from '../repository/works.js'
 import { ISupplierRepository } from '../repository/suppliers.js'
 import { randomUUID } from 'crypto'
@@ -10,9 +10,12 @@ export type CreateContractParams = {
   workId: string
   supplierId: string
   service: string
-  totalValue: number
-  startDate: Date
-  deliveryDate?: Date
+  startDate: string
+  deliveryDate?: string
+  items: Omit<
+    ContractItem,
+    'id' | 'contract' | 'createdAt' | 'updatedAt' | 'totalItemValue'
+  >[]
 }
 
 export class ContractService {
@@ -22,37 +25,49 @@ export class ContractService {
     private supplierRepo: ISupplierRepository
   ) {}
 
-  async createContract(
+  async createContractWithItems(
     params: CreateContractParams
   ): Promise<ContractResponse> {
-    const createContractIntent: Contract = {
-      id: randomUUID(),
-      workId: params.workId,
-      supplierId: params.supplierId,
-      service: params.service.trim(),
-      totalValue: params.totalValue,
-      startDate: params.startDate,
-      deliveryTime: params.deliveryDate ?? null,
-    }
+    const contractId = randomUUID()
 
-    await this.contractRepo.create(createContractIntent)
-    const createdContract = await this.contractRepo.findById(
-      createContractIntent.id
+    const contractItems: ContractItem[] = params.items.map((item) => ({
+      id: randomUUID(),
+      contract: contractId,
+      unitMeasure: item.unitMeasure,
+      quantity: item.quantity,
+      unitLaborValue: item.unitLaborValue,
+      totalItemValue: item.quantity * item.unitLaborValue,
+      description: item.description,
+    }))
+
+    const totalValue = contractItems.reduce(
+      (sum, item) => sum + item.totalItemValue,
+      0
     )
 
-    if (!createdContract) throw new NotFoundError('Failoed to create contract')
+    const { contract: createdContract } =
+      await this.contractRepo.createContractWithItems({
+        id: contractId,
+        work: params.workId,
+        supplier: params.supplierId,
+        service: params.service.trim(),
+        totalValue: totalValue,
+        start_date: params.startDate,
+        delivery_time: params.deliveryDate,
+        items: contractItems,
+      })
 
-    const workId = createContractIntent.workId
-    const supplierId = createContractIntent.supplierId
+    const workId = createdContract.workId
+    const supplierId = createdContract.supplierId
 
     const contractResponse: ContractResponse = {
-      id: createContractIntent.id,
+      id: createdContract.id,
       work: await this.workRepo.findById(workId),
       supplier: await this.supplierRepo.findById(supplierId),
-      service: createContractIntent.service,
-      totalValue: createContractIntent.totalValue,
-      startDate: createContractIntent.startDate,
-      deliveryTime: createContractIntent.deliveryTime || null,
+      service: createdContract.service,
+      totalValue: createdContract.totalValue,
+      startDate: createdContract.startDate,
+      deliveryTime: createdContract.deliveryTime || null,
     }
 
     return contractResponse

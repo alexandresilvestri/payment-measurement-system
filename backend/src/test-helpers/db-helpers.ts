@@ -78,6 +78,7 @@ export async function createTestSupplier(
 }
 
 export async function cleanDatabase(): Promise<void> {
+  await db('contract_items').del()
   await db('contracts').del()
   await db('users').del()
   await db('suppliers').del()

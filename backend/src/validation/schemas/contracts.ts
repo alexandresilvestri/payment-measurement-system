@@ -6,10 +6,6 @@ const service = z
   .string()
   .trim()
   .max(255, 'Description must be max 255 characters')
-const totalValue = z
-  .number()
-  .positive('Total value must be a positive number')
-  .finite('Total value must be a finite number')
 const startDate = z.coerce.date({
   message: 'Start date must be a valid date',
 })
@@ -28,7 +24,6 @@ export const createContractSchema = z.object({
     workId: workId,
     supplierId: supplierId,
     service: service,
-    totalValue: totalValue,
     startDate: startDate,
     deliveryTime: deliveryTime,
   }),
@@ -36,8 +31,8 @@ export const createContractSchema = z.object({
 
 export const getContractSchema = z.object({
   params: z.object({
-    id: z.string().uuid('Invalid contract ID')
-  })
+    id: z.string().uuid('Invalid contract ID'),
+  }),
 })
 
 export type CreateContractInput = z.infer<typeof createContractSchema>

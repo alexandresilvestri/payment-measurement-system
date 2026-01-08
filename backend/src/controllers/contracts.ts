@@ -5,7 +5,8 @@ import { contractService } from '../services/instances.js'
 export const createContractHandler = asyncHandler(
   async (req: Request, res: Response) => {
     const contractParams = req.body
-    const contract = await contractService.createContract(contractParams)
+    const contract =
+      await contractService.createContractWithItems(contractParams)
     res.status(201).json(contract)
   }
 )

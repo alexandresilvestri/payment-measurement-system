@@ -4,7 +4,6 @@ import { Supplier } from '../supplier'
 
 export type CreateContractRequest = {
   service: string
-  totalValue: number
   startDate: Date
   deliveryDate?: Date
 }

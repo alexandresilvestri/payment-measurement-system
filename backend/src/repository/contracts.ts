@@ -1,10 +1,18 @@
-import type { Contract } from '../types/contracts.js'
+import type {
+  Contract,
+  CreateContractInputRepository,
+} from '../types/contracts.js'
 import type { ContractDatabaseRow } from '../types/database.js'
+import type { ContractItem } from '../types/contractItems.js'
 import { BaseRepository } from './BaseRepository.js'
-// import { ConflictError } from '../errors/ConflictError.js'
+import { contractItemRepository } from './contractItems.js'
+import { ValidationError } from '../errors/ValidationError.js'
 
 export interface IContractRepository {
   create(contract: Contract): Promise<void>
+  createContractWithItems(
+    data: CreateContractInputRepository
+  ): Promise<{ contract: Contract; items: ContractItem[] }>
   findById(id: string): Promise<Contract | null>
   findAll(): Promise<Contract[] | null>
 }
@@ -15,6 +23,37 @@ class ContractRepository
 {
   constructor() {
     super('contracts')
+  }
+
+  async createContractWithItems(
+    data: CreateContractInputRepository
+  ): Promise<{ contract: Contract; items: ContractItem[] }> {
+    const contract: Contract = {
+      id: data.id,
+      workId: data.work,
+      supplierId: data.supplier,
+      service: data.service,
+      totalValue: data.totalValue,
+      startDate: new Date(data.start_date),
+      deliveryTime: data.delivery_time ? new Date(data.delivery_time) : null,
+    }
+
+    const contractItems: ContractItem[] = data.items
+
+    if (contractItems.length === 0) {
+      throw new ValidationError('Minimal one item per contract')
+    }
+
+    await this.db.transaction(async (trx) => {
+      await trx(this.tableName).insert(this.toDatabase(contract))
+
+      const itemsToInsert = contractItems.map((item) =>
+        contractItemRepository['toDatabase'](item)
+      )
+      await trx('contract_items').insert(itemsToInsert)
+    })
+
+    return { contract, items: contractItems }
   }
 
   protected toDomain(row: ContractDatabaseRow): Contract {
@@ -38,6 +77,8 @@ class ContractRepository
       total_value: data.totalValue,
       start_date: data.startDate,
       delivery_time: data.deliveryTime ?? null,
+      created_at: data.createdAt ?? new Date(),
+      updated_at: data.updatedAt ?? new Date(),
     }
   }
 }

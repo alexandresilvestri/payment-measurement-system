@@ -20,3 +20,9 @@ export type CreateContractInput = {
   delivery_time?: string
   items: Omit<ContractItem, 'id' | 'contract' | 'created_at' | 'updated_at'>[]
 }
+
+export type CreateContractInputRepository = CreateContractInput & {
+  id: string
+  totalValue: number
+  items: ContractItem[]
+}

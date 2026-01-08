@@ -44,6 +44,20 @@ export type ContractDatabaseRow = {
   total_value: number
   start_date: Date
   delivery_time: Date | null
+  created_at: Date
+  updated_at: Date
+}
+
+export type ContractItemDatabaseRow = {
+  id: string
+  contract: string
+  unit_measure: string
+  quantity: number
+  unit_labor_value: number
+  total_item_value: number
+  description: string
+  created_at: Date
+  updated_at: Date
 }
 
 export type RefreshTokenDatabaseRow = {

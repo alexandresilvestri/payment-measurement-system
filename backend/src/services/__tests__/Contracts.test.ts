@@ -23,20 +23,24 @@ describe('Contract - integration crud test', () => {
 
   describe('when creating a new contract', () => {
     it('create a new contract', async () => {
-      const startDate = new Date('2024-01-01')
-      const deliveryDate = new Date('2024-12-31')
-
       const createContractParams: CreateContractParams = {
         workId: testWork.id,
         supplierId: testSupplier.id,
         service: 'Colocação de tijolos refratários em churrasqueiras',
-        totalValue: 100000.0,
-        startDate,
-        deliveryDate,
+        startDate: '2024-01-01',
+        deliveryDate: '2024-12-31',
+        items: [
+          {
+            unitMeasure: 'm2',
+            quantity: 100,
+            unitLaborValue: 1000,
+            description: 'Item 1',
+          },
+        ],
       }
 
       const createdContract =
-        await contractService.createContract(createContractParams)
+        await contractService.createContractWithItems(createContractParams)
 
       expect(createdContract).toEqual({
         id: expect.any(String),
@@ -45,7 +49,7 @@ describe('Contract - integration crud test', () => {
           createContractParams.supplierId
         ),
         service: 'Colocação de tijolos refratários em churrasqueiras',
-        totalValue: 100000.0,
+        totalValue: 100000,
         startDate: expect.any(Date),
         deliveryTime: expect.any(Date),
       })
@@ -58,12 +62,19 @@ describe('Contract - integration crud test', () => {
         workId: testWork.id,
         supplierId: testSupplier.id,
         service: 'Test Service',
-        totalValue: 10000.0,
-        startDate: new Date('2024-01-01'),
+        startDate: '2024-01-01',
+        items: [
+          {
+            unitMeasure: 'm2',
+            quantity: 10,
+            unitLaborValue: 1000,
+            description: 'Item 1',
+          },
+        ],
       }
 
       const createdContract =
-        await contractService.createContract(createContractParams)
+        await contractService.createContractWithItems(createContractParams)
       const contract = await contractService.getContract(createdContract.id)
 
       expect(contract).toEqual({
@@ -90,29 +101,53 @@ describe('Contract - integration crud test', () => {
         workId: testWork.id,
         supplierId: testSupplier.id,
         service: 'Colocação de tijolos refratários',
-        totalValue: 100000.0,
-        startDate: new Date('2024-01-01'),
+        startDate: '2024-01-01',
+        items: [
+          {
+            unitMeasure: 'm2',
+            quantity: 100,
+            unitLaborValue: 1000,
+            description: 'Item 1',
+          },
+        ],
       }
 
       const contract2Params: CreateContractParams = {
         workId: testWork.id,
         supplierId: testSupplier.id,
         service: 'Instalação de janelas',
-        totalValue: 50000.0,
-        startDate: new Date('2024-02-01'),
+        startDate: '2024-02-01',
+        items: [
+          {
+            unitMeasure: 'm2',
+            quantity: 50,
+            unitLaborValue: 1000,
+            description: 'Item 1',
+          },
+        ],
       }
 
       const contract3Params: CreateContractParams = {
         workId: testWork.id,
         supplierId: testSupplier.id,
         service: 'Pintura externa',
-        totalValue: 25000.0,
-        startDate: new Date('2024-03-01'),
+        startDate: '2024-03-01',
+        items: [
+          {
+            unitMeasure: 'm2',
+            quantity: 25,
+            unitLaborValue: 1000,
+            description: 'Item 1',
+          },
+        ],
       }
 
-      const contract1 = await contractService.createContract(contract1Params)
-      const contract2 = await contractService.createContract(contract2Params)
-      const contract3 = await contractService.createContract(contract3Params)
+      const contract1 =
+        await contractService.createContractWithItems(contract1Params)
+      const contract2 =
+        await contractService.createContractWithItems(contract2Params)
+      const contract3 =
+        await contractService.createContractWithItems(contract3Params)
 
       const contracts = await contractService.getContracts()
 

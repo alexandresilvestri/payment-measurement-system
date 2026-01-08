@@ -32,7 +32,14 @@ beforeAll(async () => {
 beforeEach(async () => {})
 
 afterEach(async () => {
-  const tables = ['contracts', 'users', 'suppliers', 'works', 'user_types']
+  const tables = [
+    'contract_items',
+    'contracts',
+    'users',
+    'suppliers',
+    'works',
+    'user_types',
+  ]
 
   for (const table of tables) {
     try {
