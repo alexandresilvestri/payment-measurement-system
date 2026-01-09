@@ -15,6 +15,5 @@ export const convertAuthUserToUser = (authUser: AuthUser): User => {
     name: `${authUser.firstName} ${authUser.lastName}`.trim(),
     email: authUser.email,
     role: mapUserTypeToRole(authUser),
-    linkedConstructionSiteIds: authUser.linkedConstructionSiteIds,
   }
 }

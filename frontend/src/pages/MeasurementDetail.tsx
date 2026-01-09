@@ -70,7 +70,7 @@ export const MeasurementDetail = () => {
               <Badge status={measurement.status} />
             </div>
             <p className="text-textSec mt-1">
-              {measurement.site.name} • {measurement.contract.object}
+              {measurement.work.name} • {measurement.contract.service}
             </p>
           </div>
         </div>
@@ -108,7 +108,7 @@ export const MeasurementDetail = () => {
                     <Tr key={idx}>
                       <Td>{contractItem?.description || 'Item removido'}</Td>
                       <Td className="text-center text-textSec">
-                        {contractItem?.unit}
+                        {contractItem?.unitMeasure}
                       </Td>
                       <Td className="text-right font-medium">
                         {item.currentQuantity}

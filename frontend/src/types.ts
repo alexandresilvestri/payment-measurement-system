@@ -11,10 +11,9 @@ export interface User {
   name: string
   email: string
   role: UserRole
-  linkedConstructionSiteIds?: string[]
 }
 
-export interface ConstructionSite {
+export interface Work {
   id: string
   name: string
   code?: string
@@ -35,34 +34,25 @@ export interface Supplier {
   updatedAt?: string
 }
 
-export interface LegacySupplier {
-  id: string
-  corporateName: string
-  cnpj: string
-  bankInfo: string
-}
-
 export interface ContractItem {
   id: string
   contractId: string
   description: string
-  unit: string
-  quantityContracted: number
-  unitPriceMaterial: number
-  unitPriceLabor: number
-  unitPriceTotal: number
+  unitMeasure: string
+  quantity: number
+  unitLaborValue: number
   totalValue: number
 }
 
 export interface Contract {
   id: string
-  constructionSiteId: string
+  workId: string
   supplierId: string
-  object: string
+  service: string
   totalValue: number
-  startDate: string
-  endDate: string
-  status: 'ATIVO' | 'ENCERRADO'
+  startDate: Date
+  deliveryTime: Date | null
+  status: 'Ativo' | 'Encerrado'
   items: ContractItem[]
 }
 
@@ -79,7 +69,7 @@ export interface Measurement {
   id: string
   contractId: string
   number: number
-  createdAt: string // ISO Date
+  createdAt: string
   createdByUserId: string
   status: MeasurementStatus
   siteObservation?: string
@@ -90,7 +80,7 @@ export interface Measurement {
 
 export interface EnrichedMeasurement extends Measurement {
   contract: Contract
-  site: ConstructionSite
+  work: Work
   supplier: Supplier
   creatorName: string
 }

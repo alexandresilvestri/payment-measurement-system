@@ -8,25 +8,22 @@ import { Plus } from 'lucide-react'
 
 export const Dashboard = () => {
   const { user: authUser } = useAuth()
-  const { currentUser, works, contracts, suppliers, getEnrichedMeasurements } =
+  const { works, contracts, suppliers, getEnrichedMeasurements } =
     useAppContext()
   const navigate = useNavigate()
 
   const canApprove = authUser?.permissions?.approveMeasurement ?? false
 
-  const linkedWorks = works.filter((s) =>
-    currentUser?.linkedConstructionSiteIds?.includes(s.id)
-  )
   const [selectedWorkId, setSelectedWorkId] = useState<string>(
-    linkedWorks[0]?.id || ''
+    works[0]?.id || ''
   )
 
   const filteredContracts = contracts.filter(
-    (c) => c.constructionSiteId === selectedWorkId && c.status === 'ATIVO'
+    (c) => c.workId === selectedWorkId && c.status === 'Ativo'
   )
   const allMeasurements = getEnrichedMeasurements()
   const workMeasurements = allMeasurements.filter(
-    (m) => m.contract.constructionSiteId === selectedWorkId
+    (m) => m.contract.workId === selectedWorkId
   )
 
   const contractsWithData = filteredContracts.map((c) => {
@@ -44,9 +41,9 @@ export const Dashboard = () => {
   )
 
   const activeContracts = contracts
-    .filter((c) => c.status === 'ATIVO')
+    .filter((c) => c.status === 'Ativo')
     .map((c) => {
-      const work = works.find((s) => s.id === c.constructionSiteId)
+      const work = works.find((s) => s.id === c.workId)
       const supplier = suppliers.find((s) => s.id === c.supplierId)
 
       const measurementsForContract = allMeasurements.filter(
@@ -81,7 +78,7 @@ export const Dashboard = () => {
           </p>
         </div>
 
-        {!canApprove && linkedWorks.length > 0 && (
+        {!canApprove && works.length > 0 && (
           <div className="flex items-center gap-2 bg-white p-2 rounded-[6px] border border-border shadow-sm">
             <span className="text-sm text-textSec font-medium pl-2">Obra:</span>
             <select
@@ -89,7 +86,7 @@ export const Dashboard = () => {
               onChange={(e) => setSelectedWorkId(e.target.value)}
               className="bg-transparent font-semibold text-primary outline-none cursor-pointer"
             >
-              {linkedWorks.map((s) => (
+              {works.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
                 </option>
@@ -129,10 +126,10 @@ export const Dashboard = () => {
                       onClick={() => navigate(`/measurement/${m.id}`)}
                     >
                       <Td className="font-medium text-textMain">
-                        {m.site.name}
+                        {m.work.name}
                       </Td>
                       <Td>{m.supplier.name}</Td>
-                      <Td>{m.contract.object}</Td>
+                      <Td>{m.contract.service}</Td>
                       <Td>#{m.number}</Td>
                       <Td>{new Date(m.createdAt).toLocaleDateString()}</Td>
                       <Td className="text-right font-semibold">
@@ -174,7 +171,7 @@ export const Dashboard = () => {
                   <Tr key={c.id}>
                     <Td className="font-medium">{c.workName}</Td>
                     <Td>{c.supplierName}</Td>
-                    <Td>{c.object}</Td>
+                    <Td>{c.service}</Td>
                     <Td className="text-right">
                       {formatCurrency(c.totalValue)}
                     </Td>
@@ -202,7 +199,7 @@ export const Dashboard = () => {
         </>
       )}
 
-      {!canApprove && linkedWorks.length > 0 && (
+      {!canApprove && works.length > 0 && (
         <Card
           title="Contratos Disponíveis"
           action={
@@ -227,7 +224,7 @@ export const Dashboard = () => {
               {contractsWithData.map((c) => (
                 <Tr key={c.id}>
                   <Td className="font-medium">{c.supplierName}</Td>
-                  <Td>{c.object}</Td>
+                  <Td>{c.service}</Td>
                   <Td className="text-right">{formatCurrency(c.totalValue)}</Td>
                   <Td className="text-right text-textSec">
                     {formatCurrency(c.measured)}
@@ -259,7 +256,7 @@ export const Dashboard = () => {
         </Card>
       )}
 
-      {!canApprove && linkedWorks.length > 0 && (
+      {!canApprove && works.length > 0 && (
         <Card title="Histórico de Medições Recentes">
           <Table>
             <Thead>
@@ -288,7 +285,7 @@ export const Dashboard = () => {
                     <div className="flex flex-col">
                       <span className="font-medium">{m.supplier.name}</span>
                       <span className="text-xs text-textSec">
-                        {m.contract.object}
+                        {m.contract.service}
                       </span>
                     </div>
                   </Td>

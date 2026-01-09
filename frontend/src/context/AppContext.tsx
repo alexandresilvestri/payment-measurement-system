@@ -3,7 +3,7 @@ import {
   User,
   Measurement,
   Contract,
-  ConstructionSite,
+  Work,
   Supplier,
   EnrichedMeasurement,
 } from '../types'
@@ -28,8 +28,8 @@ interface AppContextType {
   ) => void
   contracts: Contract[]
   addContract: (contract: Contract) => void
-  works: ConstructionSite[]
-  addWork: (work: ConstructionSite) => void
+  works: Work[]
+  addWork: (work: Work) => void
   suppliers: Supplier[]
   addSupplier: (supplier: Supplier) => void
   getEnrichedMeasurements: () => EnrichedMeasurement[]
@@ -48,7 +48,7 @@ export const AppProvider = ({ children }: { children?: ReactNode }) => {
     useState<Measurement[]>(MOCK_MEASUREMENTS)
   const [contracts, setContracts] = useState<Contract[]>(CONTRACTS)
 
-  const [works, setWorks] = useState<ConstructionSite[]>(WORKS)
+  const [works, setWorks] = useState<Work[]>(WORKS)
   const [suppliers, setSuppliers] = useState<Supplier[]>(SUPPLIERS)
 
   const addMeasurement = (measurement: Measurement) => {
@@ -59,7 +59,7 @@ export const AppProvider = ({ children }: { children?: ReactNode }) => {
     setContracts((prev) => [...prev, contract])
   }
 
-  const addWork = (work: ConstructionSite) => {
+  const addWork = (work: Work) => {
     setWorks((prev) => [...prev, work])
   }
 
@@ -89,9 +89,17 @@ export const AppProvider = ({ children }: { children?: ReactNode }) => {
 
   const getEnrichedMeasurements = (): EnrichedMeasurement[] => {
     return measurements
+      .filter((m) => {
+        const contract = contracts.find((c) => c.id === m.contractId)
+        if (!contract) return false
+        const work = works.find((s) => s.id === contract.workId)
+        if (!work) return false
+        const supplier = suppliers.find((sup) => sup.id === contract.supplierId)
+        return !!supplier
+      })
       .map((m) => {
         const contract = contracts.find((c) => c.id === m.contractId)!
-        const work = works.find((s) => s.id === contract.constructionSiteId)!
+        const work = works.find((s) => s.id === contract.workId)!
         const supplier = suppliers.find(
           (sup) => sup.id === contract.supplierId
         )!
@@ -99,7 +107,7 @@ export const AppProvider = ({ children }: { children?: ReactNode }) => {
         return {
           ...m,
           contract,
-          site: work,
+          work,
           supplier,
           creatorName: creator ? creator.name : 'Desconhecido',
         }

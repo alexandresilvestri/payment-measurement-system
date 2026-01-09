@@ -1,10 +1,4 @@
-import {
-  ConstructionSite,
-  Contract,
-  Measurement,
-  User,
-  Supplier,
-} from './types'
+import { Work, Contract, Measurement, User, Supplier } from './types'
 
 export const USERS: User[] = [
   {
@@ -18,11 +12,10 @@ export const USERS: User[] = [
     name: 'João Engenheiro',
     email: 'joao@medcheck.com',
     role: 'OBRA',
-    linkedConstructionSiteIds: ['s1', 's2'],
   },
 ]
 
-export const WORKS: ConstructionSite[] = [
+export const WORKS: Work[] = [
   {
     id: 's1',
     name: 'Residencial Horizonte',
@@ -61,68 +54,60 @@ export const SUPPLIERS: Supplier[] = [
 export const CONTRACTS: Contract[] = [
   {
     id: 'c1',
-    constructionSiteId: 's1',
+    workId: 's1',
     supplierId: 'f1',
-    object: 'Alvenaria Estrutural Torre A',
+    service: 'Alvenaria Estrutural Torre A',
     totalValue: 150000,
-    startDate: '2023-01-01',
-    endDate: '2023-12-31',
-    status: 'ATIVO',
+    startDate: new Date('2023-01-01'),
+    deliveryTime: new Date('2023-12-31'),
+    status: 'Ativo',
     items: [
       {
         id: 'ci1',
         contractId: 'c1',
         description: 'Levantamento de paredes',
-        unit: 'm2',
-        quantityContracted: 1000,
-        unitPriceMaterial: 50,
-        unitPriceLabor: 50,
-        unitPriceTotal: 100,
+        unitMeasure: 'm2',
+        quantity: 1000,
+        unitLaborValue: 50,
         totalValue: 100000,
       },
       {
         id: 'ci2',
         contractId: 'c1',
         description: 'Encunhamento',
-        unit: 'm',
-        quantityContracted: 500,
-        unitPriceMaterial: 20,
-        unitPriceLabor: 80,
-        unitPriceTotal: 100,
+        unitMeasure: 'm',
+        quantity: 500,
+        unitLaborValue: 80,
         totalValue: 50000,
       },
     ],
   },
   {
     id: 'c2',
-    constructionSiteId: 's1',
+    workId: 's1',
     supplierId: 'f2',
-    object: 'Instalações Elétricas 1º Pav',
+    service: 'Instalações Elétricas 1º Pav',
     totalValue: 50000,
-    startDate: '2023-02-01',
-    endDate: '2023-06-30',
-    status: 'ATIVO',
+    startDate: new Date('2023-02-01'),
+    deliveryTime: new Date('2023-06-30'),
+    status: 'Ativo',
     items: [
       {
         id: 'ci3',
         contractId: 'c2',
         description: 'Pontos de tomada',
-        unit: 'un',
-        quantityContracted: 200,
-        unitPriceMaterial: 50,
-        unitPriceLabor: 50,
-        unitPriceTotal: 100,
+        unitMeasure: 'un',
+        quantity: 200,
+        unitLaborValue: 50,
         totalValue: 20000,
       },
       {
         id: 'ci4',
         contractId: 'c2',
         description: 'Quadro de distribuição',
-        unit: 'un',
-        quantityContracted: 10,
-        unitPriceMaterial: 1000,
-        unitPriceLabor: 2000,
-        unitPriceTotal: 3000,
+        unitMeasure: 'un',
+        quantity: 10,
+        unitLaborValue: 2000,
         totalValue: 30000,
       },
     ],

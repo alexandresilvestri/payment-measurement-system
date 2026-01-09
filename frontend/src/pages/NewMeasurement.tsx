@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import { useAppContext } from '../context/AppContext'
 import { Card, Table, Thead, Th, Tr, Td, Button } from '../components/UI'
 import { formatCurrency } from '../utils'
@@ -8,14 +9,9 @@ import { Measurement, MeasurementItem } from '../types'
 
 export const NewMeasurement = () => {
   const navigate = useNavigate()
-  const {
-    currentUser,
-    contracts,
-    suppliers,
-    works,
-    measurements,
-    addMeasurement,
-  } = useAppContext()
+  const { user: authUser } = useAuth()
+  const { contracts, suppliers, works, measurements, addMeasurement } =
+    useAppContext()
 
   const [selectedWorkId, setSelectedWorkId] = useState<string>('')
   const [selectedContractId, setSelectedContractId] = useState<string>('')
@@ -25,17 +21,13 @@ export const NewMeasurement = () => {
     Record<string, number>
   >({})
 
-  const isDirector = currentUser?.role === 'DIRETOR'
-
-  const userWorkIds = currentUser?.linkedConstructionSiteIds || []
-  const availableWorks = isDirector
-    ? works
-    : works.filter((s) => userWorkIds.includes(s.id))
+  const canApprove = authUser?.permissions?.approveMeasurement ?? false
+  const availableWorks = works
 
   const availableContracts = useMemo(() => {
     if (!selectedWorkId) return []
     return contracts.filter(
-      (c) => c.constructionSiteId === selectedWorkId && c.status === 'ATIVO'
+      (c) => c.workId === selectedWorkId && c.status === 'Ativo'
     )
   }, [selectedWorkId, contracts])
 
@@ -54,9 +46,9 @@ export const NewMeasurement = () => {
         return acc + (mItem?.currentQuantity || 0)
       }, 0)
 
-      const balanceQty = item.quantityContracted - accumulatedQty
+      const balanceQty = item.quantity - accumulatedQty
       const currentQty = inputQuantities[item.id] || 0
-      const currentTotal = currentQty * item.unitPriceTotal
+      const currentTotal = currentQty * item.unitLaborValue
 
       return {
         ...item,
@@ -90,11 +82,11 @@ export const NewMeasurement = () => {
   }
 
   const goBack = () => {
-    navigate(isDirector ? '/director' : '/site')
+    navigate(canApprove ? '/dashboard' : '/dashboard')
   }
 
   const handleSave = (status: Measurement['status']) => {
-    if (!selectedContract || !currentUser) return
+    if (!selectedContract || !authUser) return
 
     const hasInvalid = contractMath.some((i) => !i.isValid)
     if (hasInvalid) {
@@ -114,7 +106,7 @@ export const NewMeasurement = () => {
         measurementId: '',
         contractItemId: i.id,
         currentQuantity: i.currentQty,
-        unitPrice: i.unitPriceTotal,
+        unitPrice: i.unitLaborValue,
         totalValue: i.currentTotal,
       }))
 
@@ -125,7 +117,7 @@ export const NewMeasurement = () => {
         measurements.filter((m) => m.contractId === selectedContract.id)
           .length + 1,
       createdAt: new Date().toISOString(),
-      createdByUserId: currentUser.id,
+      createdByUserId: authUser.id,
       status: status,
       siteObservation: observation,
       totalValue: totalMeasurementValue,
@@ -134,7 +126,7 @@ export const NewMeasurement = () => {
 
     addMeasurement(newMeasurement)
 
-    if (status === 'PENDENTE' && isDirector) {
+    if (status === 'PENDENTE' && canApprove) {
       alert(
         'Medição criada com sucesso! Ela estará disponível na sua lista de aprovações.'
       )
@@ -202,7 +194,7 @@ export const NewMeasurement = () => {
                   const sup = suppliers.find((sup) => sup.id === c.supplierId)
                   return (
                     <option key={c.id} value={c.id}>
-                      {sup?.name} - {c.object}
+                      {sup?.name} - {c.service}
                     </option>
                   )
                 })}
@@ -273,8 +265,10 @@ export const NewMeasurement = () => {
                     <Td className="font-medium text-textMain">
                       {item.description}
                     </Td>
-                    <Td className="text-center text-textSec">{item.unit}</Td>
-                    <Td className="text-right">{item.quantityContracted}</Td>
+                    <Td className="text-center text-textSec">
+                      {item.unitMeasure}
+                    </Td>
+                    <Td className="text-right">{item.quantity}</Td>
                     <Td className="text-right text-textSec">
                       {item.accumulatedQty}
                     </Td>
@@ -304,7 +298,7 @@ export const NewMeasurement = () => {
                       )}
                     </Td>
                     <Td className="text-right text-textSec">
-                      {formatCurrency(item.unitPriceTotal)}
+                      {formatCurrency(item.totalValue)}
                     </Td>
                     <Td className="text-right font-bold text-textMain">
                       {formatCurrency(item.currentTotal)}

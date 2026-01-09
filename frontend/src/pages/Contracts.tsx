@@ -11,7 +11,7 @@ import {
   Select,
 } from '../components/UI'
 import { ArrowLeft, Loader2 } from 'lucide-react'
-import { ContractListItem, ConstructionSite, Supplier } from '../types'
+import { ContractListItem, Work, Supplier } from '../types'
 import { contractsApi } from './services/contracts'
 import { worksApi } from './services/works'
 import { suppliersApi } from './services/suppliers'
@@ -20,7 +20,7 @@ export const Contracts = () => {
   const navigate = useNavigate()
 
   const [contracts, setContracts] = useState<ContractListItem[]>([])
-  const [works, setWorks] = useState<ConstructionSite[]>([])
+  const [works, setWorks] = useState<Work[]>([])
   const [suppliers, setSuppliers] = useState<Supplier[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

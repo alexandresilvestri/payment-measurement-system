@@ -21,25 +21,23 @@ import {
   Pencil,
   Trash2,
 } from 'lucide-react'
-import { ConstructionSite } from '../types'
+import { Work } from '../types'
 import { worksApi } from './services/works'
 import { FetchError } from '../lib/fetchClient'
 
 export const Works = () => {
   const navigate = useNavigate()
 
-  const [works, setWorks] = useState<ConstructionSite[]>([])
+  const [works, setWorks] = useState<Work[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   const [showModal, setShowModal] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-  const [editingWork, setEditingWork] = useState<ConstructionSite | null>(null)
+  const [editingWork, setEditingWork] = useState<Work | null>(null)
 
   const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [workToDelete, setWorkToDelete] = useState<ConstructionSite | null>(
-    null
-  )
+  const [workToDelete, setWorkToDelete] = useState<Work | null>(null)
   const [deleting, setDeleting] = useState(false)
 
   const [name, setName] = useState('')
@@ -69,7 +67,7 @@ export const Works = () => {
     }
   }
 
-  const handleOpenModal = (work?: ConstructionSite) => {
+  const handleOpenModal = (work?: Work) => {
     if (work) {
       setEditingWork(work)
       setName(work.name)
@@ -175,7 +173,7 @@ export const Works = () => {
     }
   }
 
-  const handleDeleteClick = (work: ConstructionSite) => {
+  const handleDeleteClick = (work: Work) => {
     setWorkToDelete(work)
     setShowDeleteModal(true)
   }

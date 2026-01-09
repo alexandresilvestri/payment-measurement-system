@@ -1,29 +1,29 @@
-import { ConstructionSite } from '../../types'
+import { Work } from '../../types'
 import { api } from './api'
 
 export const worksApi = {
-  getAll: async (): Promise<ConstructionSite[]> => {
-    const response = await api.get<ConstructionSite[]>('/works')
+  getAll: async (): Promise<Work[]> => {
+    const response = await api.get<Work[]>('/works')
     return response.data
   },
 
-  getById: async (id: string): Promise<ConstructionSite> => {
-    const response = await api.get<ConstructionSite>(`/works/${id}`)
+  getById: async (id: string): Promise<Work> => {
+    const response = await api.get<Work>(`/works/${id}`)
     return response.data
   },
 
   create: async (
-    data: Omit<ConstructionSite, 'id' | 'createdAt' | 'updatedAt' | 'code'>
-  ): Promise<ConstructionSite> => {
-    const response = await api.post<ConstructionSite>('/works', data)
+    data: Omit<Work, 'id' | 'createdAt' | 'updatedAt' | 'code'>
+  ): Promise<Work> => {
+    const response = await api.post<Work>('/works', data)
     return response.data
   },
 
   update: async (
     id: string,
-    data: Partial<Omit<ConstructionSite, 'id' | 'createdAt' | 'updatedAt'>>
-  ): Promise<ConstructionSite> => {
-    const response = await api.put<ConstructionSite>(`/works/${id}`, data)
+    data: Partial<Omit<Work, 'id' | 'createdAt' | 'updatedAt'>>
+  ): Promise<Work> => {
+    const response = await api.put<Work>(`/works/${id}`, data)
     return response.data
   },
 

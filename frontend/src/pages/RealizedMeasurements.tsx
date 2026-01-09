@@ -7,27 +7,18 @@ import { Search, Eye } from 'lucide-react'
 
 export const RealizedMeasurements = () => {
   const navigate = useNavigate()
-  const { currentUser, works, suppliers, getEnrichedMeasurements } =
-    useAppContext()
+  const { works, suppliers, getEnrichedMeasurements } = useAppContext()
 
   const [selectedWorkId, setSelectedWorkId] = useState('')
   const [selectedSupplierId, setSelectedSupplierId] = useState('')
 
-  const isDirector = currentUser?.role === 'DIRETOR'
-
-  const availableWorks = isDirector
-    ? works
-    : works.filter((s) =>
-        currentUser?.linkedConstructionSiteIds?.includes(s.id)
-      )
+  const availableWorks = works
 
   const realizedMeasurements = useMemo(() => {
     let list = getEnrichedMeasurements().filter((m) => m.status === 'APROVADA')
 
     if (selectedWorkId) {
-      list = list.filter(
-        (m) => m.contract.constructionSiteId === selectedWorkId
-      )
+      list = list.filter((m) => m.contract.workId === selectedWorkId)
     } else {
       return []
     }
@@ -44,9 +35,7 @@ export const RealizedMeasurements = () => {
     const relevantSupplierIds = new Set(
       getEnrichedMeasurements()
         .filter(
-          (m) =>
-            m.status === 'APROVADA' &&
-            m.contract.constructionSiteId === selectedWorkId
+          (m) => m.status === 'APROVADA' && m.contract.workId === selectedWorkId
         )
         .map((m) => m.contract.supplierId)
     )
@@ -143,7 +132,7 @@ export const RealizedMeasurements = () => {
                     <Td>{new Date(m.createdAt).toLocaleDateString()}</Td>
                     <Td>{m.supplier.name}</Td>
                     <Td className="text-sm text-textSec">
-                      {m.contract.object}
+                      {m.contract.service}
                     </Td>
                     <Td className="text-right font-medium text-primary">
                       {formatCurrency(m.totalValue)}

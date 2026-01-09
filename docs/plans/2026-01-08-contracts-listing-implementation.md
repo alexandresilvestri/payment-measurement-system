@@ -13,6 +13,7 @@
 ## Task 1: Add ContractListItem type to frontend
 
 **Files:**
+
 - Modify: `frontend/src/types.ts:97`
 
 **Step 1: Add ContractListItem interface**
@@ -50,6 +51,7 @@ git commit -m "feat: add ContractListItem type for contracts listing"
 ## Task 2: Create contracts API service
 
 **Files:**
+
 - Create: `frontend/src/pages/services/contracts.ts`
 
 **Step 1: Create the contracts service file**
@@ -93,6 +95,7 @@ git commit -m "feat: add contracts API service with filtering"
 ## Task 3: Create Contracts listing page component
 
 **Files:**
+
 - Create: `frontend/src/pages/Contracts.tsx`
 
 **Step 1: Create the Contracts component file**
@@ -104,7 +107,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Card, Button, Table, Thead, Th, Tr, Td } from '../components/UI'
 import { ArrowLeft, Loader2, FileText } from 'lucide-react'
-import { ContractListItem, ConstructionSite, Supplier } from '../types'
+import { ContractListItem, , Supplier } from '../types'
 import { contractsApi } from './services/contracts'
 import { worksApi } from './services/works'
 import { suppliersApi } from './services/suppliers'
@@ -113,7 +116,7 @@ export const Contracts = () => {
   const navigate = useNavigate()
 
   const [contracts, setContracts] = useState<ContractListItem[]>([])
-  const [works, setWorks] = useState<ConstructionSite[]>([])
+  const [works, setWorks] = useState<Works[]>([])
   const [suppliers, setSuppliers] = useState<Supplier[]>([])
 
   const [loading, setLoading] = useState(true)
@@ -318,6 +321,7 @@ git commit -m "feat: add Contracts listing page with filters"
 ## Task 4: Add Contratos link to sidebar navigation
 
 **Files:**
+
 - Modify: `frontend/src/components/Layout.tsx:88`
 
 **Step 1: Add FileText import at top of file**
@@ -329,17 +333,17 @@ The FileText icon is already imported at line 7, so no change needed here.
 After line 88 (the closing Link tag for Fornecedores), add:
 
 ```typescript
-          <Link
-            to="/contracts"
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${
-              location.pathname.includes('/contracts')
-                ? 'bg-surfaceHighlight text-primary'
-                : 'text-textSec hover:bg-gray-50 hover:text-textMain'
-            }`}
-          >
-            <FileText className="w-5 h-5" />
-            Contratos
-          </Link>
+<Link
+  to="/contracts"
+  className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${
+    location.pathname.includes('/contracts')
+      ? 'bg-surfaceHighlight text-primary'
+      : 'text-textSec hover:bg-gray-50 hover:text-textMain'
+  }`}
+>
+  <FileText className="w-5 h-5" />
+  Contratos
+</Link>
 ```
 
 **Step 3: Verify the UI compiles**
@@ -359,6 +363,7 @@ git commit -m "feat: add Contratos link to sidebar navigation"
 ## Task 5: Add /contracts route to App.tsx
 
 **Files:**
+
 - Modify: `frontend/src/App.tsx:14-76`
 
 **Step 1: Import Contracts component**
@@ -374,14 +379,14 @@ import { Contracts } from './pages/Contracts'
 After line 76 (the closing Route tag for /suppliers), add:
 
 ```typescript
-      <Route
-        path="/contracts"
-        element={
-          <ProtectedRoute>
-            <Contracts />
-          </ProtectedRoute>
-        }
-      />
+<Route
+  path="/contracts"
+  element={
+    <ProtectedRoute>
+      <Contracts />
+    </ProtectedRoute>
+  }
+/>
 ```
 
 **Step 3: Verify the routing compiles**
@@ -401,6 +406,7 @@ git commit -m "feat: add /contracts route with ProtectedRoute wrapper"
 ## Task 6: Manual testing
 
 **Files:**
+
 - N/A (manual testing)
 
 **Step 1: Start the development servers**
@@ -451,6 +457,7 @@ Create notes of any issues found or improvements needed
 ## Implementation Complete
 
 All tasks from the design document have been implemented:
+
 - ✅ ContractListItem type added
 - ✅ Contracts API service created
 - ✅ Contracts listing page built

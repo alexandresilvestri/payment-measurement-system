@@ -4,32 +4,28 @@ import { useAppContext } from '../context/AppContext'
 import { Card, Table, Thead, Th, Tr, Td, Button, Input } from '../components/UI'
 import { formatCurrency } from '../utils'
 import { ArrowLeft, Save, Plus, Trash2 } from 'lucide-react'
-import { Contract, ContractItem, Supplier } from '../types'
+import { Supplier } from '../types'
 import { SupplierModal } from '../components/SupplierModal'
 import {
   suppliersApi,
   CreateSupplierRequest,
   UpdateSupplierRequest,
 } from './services/suppliers'
+import { CreateContractRequest, contractsApi } from './services/contracts'
 
-interface NewItemDraft {
+type NewItemDraft = {
   id: string
   description: string
   unit: string
   quantityContracted: string
-  unitPriceMaterial: string
   unitPriceLabor: string
 }
 
 export const NewContract = () => {
   const navigate = useNavigate()
-  const { currentUser, works, addContract } = useAppContext()
+  const { works } = useAppContext()
 
   const [suppliers, setSuppliers] = useState<Supplier[]>([])
-
-  const isDirector = currentUser?.role === 'DIRETOR'
-  const userWorkIds = currentUser?.linkedConstructionSiteIds || []
-
   const [workId, setWorkId] = useState('')
   const [supplierId, setSupplierId] = useState('')
   const [object, setObject] = useState('')
@@ -46,7 +42,6 @@ export const NewContract = () => {
       description: '',
       unit: '',
       quantityContracted: '',
-      unitPriceMaterial: '',
       unitPriceLabor: '',
     },
   ])
@@ -64,10 +59,6 @@ export const NewContract = () => {
     }
   }
 
-  const availableWorks = isDirector
-    ? works
-    : works.filter((s) => userWorkIds.includes(s.id))
-
   const selectedSupplier = suppliers.find((s) => s.id === supplierId)
 
   const addItemRow = () => {
@@ -78,7 +69,6 @@ export const NewContract = () => {
         description: '',
         unit: '',
         quantityContracted: '',
-        unitPriceMaterial: '',
         unitPriceLabor: '',
       },
     ])
@@ -97,9 +87,8 @@ export const NewContract = () => {
 
   const calculateTotal = (item: NewItemDraft) => {
     const qty = parseFloat(item.quantityContracted) || 0
-    const mat = parseFloat(item.unitPriceMaterial) || 0
     const lab = parseFloat(item.unitPriceLabor) || 0
-    return qty * (mat + lab)
+    return qty * lab
   }
 
   const totalContractValue = items.reduce(
@@ -107,7 +96,7 @@ export const NewContract = () => {
     0
   )
 
-  const handleSaveContract = () => {
+  const handleSaveContract = async () => {
     if (!workId || !supplierId || !object) {
       alert('Preencha os campos obrigatórios: Obra, Fornecedor e Objeto.')
       return
@@ -115,47 +104,34 @@ export const NewContract = () => {
 
     if (
       items.some(
-        (i) =>
-          !i.description ||
-          !i.quantityContracted ||
-          (!i.unitPriceMaterial && !i.unitPriceLabor)
+        (i) => !i.description || !i.quantityContracted || !i.unitPriceLabor
       )
     ) {
       alert('Preencha corretamente todos os itens do contrato.')
       return
     }
 
-    const newContractItems: ContractItem[] = items.map((item, index) => {
-      const mat = parseFloat(item.unitPriceMaterial) || 0
-      const lab = parseFloat(item.unitPriceLabor) || 0
-      return {
-        id: `ci-${Date.now()}-${index}`,
-        contractId: '',
-        description: item.description,
-        unit: item.unit,
-        quantityContracted: parseFloat(item.quantityContracted) || 0,
-        unitPriceMaterial: mat,
-        unitPriceLabor: lab,
-        unitPriceTotal: mat + lab,
-        totalValue: (parseFloat(item.quantityContracted) || 0) * (mat + lab),
+    try {
+      const contractData: CreateContractRequest = {
+        workId,
+        supplierId,
+        service: object,
+        startDate,
+        deliveryTime: endDate || undefined,
+        items: items.map((item) => ({
+          description: item.description,
+          unitMeasure: item.unit,
+          quantity: parseFloat(item.quantityContracted),
+          unitLaborValue: parseFloat(item.unitPriceLabor),
+        })),
       }
-    })
 
-    const newContract: Contract = {
-      id: `c-${Date.now()}`,
-      constructionSiteId: workId,
-      supplierId: supplierId,
-      object: object,
-      totalValue: totalContractValue,
-      startDate: startDate,
-      endDate: endDate || startDate,
-      status: 'ATIVO',
-      items: newContractItems,
+      await contractsApi.create(contractData)
+      alert('Contrato criado com sucesso!')
+    } catch (err) {
+      console.error('Error creating contract:', err)
+      alert('Erro ao criar contrato. Verifique os dados e tente novamente.')
     }
-
-    addContract(newContract)
-    alert('Contrato criado com sucesso!')
-    navigate(isDirector ? '/director' : '/site')
   }
 
   const handleSaveSupplier = async (
@@ -192,7 +168,7 @@ export const NewContract = () => {
                 onChange={(e) => setWorkId(e.target.value)}
               >
                 <option value="">Selecione a obra...</option>
-                {availableWorks.map((s) => (
+                {works.map((s) => (
                   <option key={s.id} value={s.id}>
                     {s.name}
                   </option>
@@ -274,7 +250,6 @@ export const NewContract = () => {
               <Th>Descrição do Item</Th>
               <Th className="w-20 text-center">Und</Th>
               <Th className="w-24 text-right">Qtd.</Th>
-              <Th className="w-32 text-right">Unit. Mat.</Th>
               <Th className="w-32 text-right">Unit. M.O.</Th>
               <Th className="w-32 text-right">Total</Th>
               <Th className="w-16 text-center">Ação</Th>
@@ -311,17 +286,6 @@ export const NewContract = () => {
                     value={item.quantityContracted}
                     onChange={(e) =>
                       updateItem(item.id, 'quantityContracted', e.target.value)
-                    }
-                  />
-                </Td>
-                <Td className="p-2">
-                  <input
-                    type="number"
-                    className="w-full text-right bg-transparent border-b border-gray-200 focus:border-primary outline-none py-1"
-                    placeholder="0.00"
-                    value={item.unitPriceMaterial}
-                    onChange={(e) =>
-                      updateItem(item.id, 'unitPriceMaterial', e.target.value)
                     }
                   />
                 </Td>

@@ -5,7 +5,6 @@ export interface AuthUser {
   email: string
   userType: string
   userTypeName: string
-  linkedConstructionSiteIds?: string[]
   permissions: {
     approveMeasurement: boolean
   }
