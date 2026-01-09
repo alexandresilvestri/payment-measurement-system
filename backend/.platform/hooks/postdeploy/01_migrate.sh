@@ -6,8 +6,6 @@ cd /var/app/current
 
 export NODE_ENV=production
 
-npm run build
-
 npm run migrate:production
 
 echo "Migrations completed successfully"
