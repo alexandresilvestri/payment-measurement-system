@@ -271,3 +271,144 @@ export const Td = ({
     {children}
   </td>
 )
+
+interface DateInputProps {
+  label?: string
+  error?: string
+  className?: string
+  placeholder?: string
+  value?: string
+  onChange?: (value: string) => void
+  disabled?: boolean
+}
+
+export const DateInput = ({
+  label,
+  error,
+  className = '',
+  placeholder = 'DD/MM/AAAA',
+  value = '',
+  onChange,
+  disabled = false,
+}: DateInputProps) => {
+  const inputRef = React.useRef<HTMLInputElement>(null)
+
+  const formatToDisplay = (isoDate: string): string => {
+    if (!isoDate) return ''
+    const [year, month, day] = isoDate.split('-')
+    return `${day}/${month}/${year}`
+  }
+
+  const formatToISO = (displayDate: string): string => {
+    const digitsOnly = displayDate.replace(/\D/g, '')
+    if (digitsOnly.length !== 8) return ''
+
+    const day = digitsOnly.slice(0, 2)
+    const month = digitsOnly.slice(2, 4)
+    const year = digitsOnly.slice(4, 8)
+
+    return `${year}-${month}-${day}`
+  }
+
+  const [displayValue, setDisplayValue] = useState(formatToDisplay(value))
+
+  React.useEffect(() => {
+    setDisplayValue(formatToDisplay(value))
+  }, [value])
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value
+    const digitsOnly = newValue.replace(/\D/g, '').slice(0, 8)
+
+    let masked = ''
+    for (let i = 0; i < digitsOnly.length; i++) {
+      if (i === 2 || i === 4) {
+        masked += '/'
+      }
+      masked += digitsOnly[i]
+    }
+
+    if (
+      newValue.endsWith('/') &&
+      (digitsOnly.length === 2 || digitsOnly.length === 4)
+    ) {
+      if (!masked.endsWith('/')) {
+        masked += '/'
+      }
+    }
+
+    setDisplayValue(masked)
+
+    if (digitsOnly.length === 8) {
+      const isoDate = formatToISO(masked)
+      const date = new Date(isoDate)
+      if (!isNaN(date.getTime()) && onChange) {
+        onChange(isoDate)
+      }
+    } else if (digitsOnly.length === 0 && onChange) {
+      onChange('')
+    }
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const input = inputRef.current
+    if (!input) return
+
+    const cursorPos = input.selectionStart || 0
+
+    if (e.key === 'ArrowRight' && (cursorPos === 2 || cursorPos === 5)) {
+      e.preventDefault()
+      input.setSelectionRange(cursorPos + 1, cursorPos + 1)
+    }
+
+    if (e.key === 'ArrowLeft' && (cursorPos === 3 || cursorPos === 6)) {
+      e.preventDefault()
+      input.setSelectionRange(cursorPos - 1, cursorPos - 1)
+    }
+
+    if (
+      !/^\d$/.test(e.key) &&
+      !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', '/'].includes(
+        e.key
+      )
+    ) {
+      if (!e.metaKey && !e.ctrlKey) {
+        e.preventDefault()
+      }
+    }
+  }
+
+  const handleBlur = () => {
+    if (displayValue) {
+      const digitsOnly = displayValue.replace(/\D/g, '')
+      if (digitsOnly.length === 8) {
+        const isoDate = formatToISO(displayValue)
+        const date = new Date(isoDate)
+        if (!isNaN(date.getTime())) {
+          setDisplayValue(formatToDisplay(isoDate))
+        }
+      }
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-1.5 w-full">
+      {label && (
+        <label className="text-[14px] text-textSec font-medium">{label}</label>
+      )}
+      <input
+        ref={inputRef}
+        type="text"
+        className={`h-[38px] px-3 rounded-[4px] border border-border bg-white text-textMain text-sm focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary disabled:bg-gray-50 ${error ? 'border-statusRejected' : ''} ${className}`}
+        placeholder={placeholder}
+        value={displayValue}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        onBlur={handleBlur}
+        disabled={disabled}
+        maxLength={10}
+      />
+      {error && <span className="text-xs text-statusRejected">{error}</span>}
+    </div>
+  )
+}

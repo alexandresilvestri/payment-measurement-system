@@ -13,6 +13,7 @@ import { Works } from './pages/Works'
 import { RealizedMeasurements } from './pages/RealizedMeasurements'
 import { Suppliers } from './pages/Suppliers'
 import { Contracts } from './pages/Contracts'
+import { ContractDetails } from './pages/ContractDetails'
 
 const ProtectedRoute = ({ children }: { children?: React.ReactNode }) => {
   const { isAuthenticated } = useAuth()
@@ -81,6 +82,15 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <Contracts />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/contracts/:id"
+        element={
+          <ProtectedRoute>
+            <ContractDetails />
           </ProtectedRoute>
         }
       />

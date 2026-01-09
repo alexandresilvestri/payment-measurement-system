@@ -10,6 +10,7 @@ import {
   UpdateSupplierRequest,
 } from './services/suppliers'
 import { FetchError } from '../lib/fetchClient'
+import { formatDocument } from '../utils'
 
 export const Suppliers = () => {
   const navigate = useNavigate()
@@ -190,7 +191,9 @@ export const Suppliers = () => {
                   <Td className="text-sm">
                     {supplier.typePerson === 'JURIDICA' ? 'PJ' : 'PF'}
                   </Td>
-                  <Td className="font-mono text-sm">{supplier.document}</Td>
+                  <Td className="font-mono text-sm">
+                    {formatDocument(supplier.document)}
+                  </Td>
                   <Td className="text-sm text-textSec">
                     {supplier.pix || '-'}
                   </Td>
@@ -256,7 +259,7 @@ export const Suppliers = () => {
               </p>
               <p className="text-xs text-textSec">
                 {supplierToDelete.typePerson === 'JURIDICA' ? 'CNPJ' : 'CPF'}:{' '}
-                {supplierToDelete.document}
+                {formatDocument(supplierToDelete.document)}
               </p>
             </div>
 

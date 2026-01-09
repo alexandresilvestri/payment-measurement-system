@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Card, Table, Thead, Th, Tr, Td, Button, Badge } from '../components/UI'
 import { formatCurrency } from '../utils'
-import { ArrowLeft, Loader2, FileText } from 'lucide-react'
+import { ArrowLeft, Loader2, FileText, Download } from 'lucide-react'
 import { contractsApi, ContractResponse } from './services/contracts'
 
 export const ContractDetails = () => {
@@ -71,19 +71,25 @@ export const ContractDetails = () => {
 
   return (
     <div className="space-y-6 pb-20 relative">
-      <header className="flex items-center gap-4">
-        <Button variant="ghost" onClick={() => navigate(-1)}>
-          <ArrowLeft className="w-5 h-5" />
-        </Button>
-        <div className="flex items-center gap-3">
-          <FileText className="w-6 h-6 text-primary" />
-          <div>
-            <h1 className="text-2xl font-bold text-textMain">
-              Detalhes do Contrato
-            </h1>
-            <p className="text-textSec">{contract.service}</p>
+      <header className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" onClick={() => navigate(-1)}>
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+          <div className="flex items-center gap-3">
+            <FileText className="w-6 h-6 text-primary" />
+            <div>
+              <h1 className="text-2xl font-bold text-textMain">
+                Detalhes do Contrato
+              </h1>
+              <p className="text-textSec">{contract.service}</p>
+            </div>
           </div>
         </div>
+        <Button variant="primary" className="flex items-center gap-2">
+          <Download className="w-5 h-5" />
+          Gerar PDF
+        </Button>
       </header>
 
       <Card title="Informações do Contrato">
