@@ -12,7 +12,6 @@ export async function seed(knex: Knex): Promise<void> {
       name: 'Administrator',
       approve_measurement: true,
     })
-    console.log('✓ Administrator user type created')
   } else {
     console.log('✓ Administrator user type already exists (skipping)')
   }

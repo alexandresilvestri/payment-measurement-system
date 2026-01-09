@@ -6,7 +6,7 @@ export async function seed(knex: Knex): Promise<void> {
   await knex('contract_items').del()
   await knex('contracts').del()
 
-  const contract1Id = 'b1111111-1111-1111-1111-111111111111'
+  const contract1Id = 'b1111111-1111-4111-8111-111111111111'
   await knex('contracts').insert({
     id: contract1Id,
     work_id: WORK_IDS.COND_JARDIM_FLORES,
@@ -20,7 +20,7 @@ export async function seed(knex: Knex): Promise<void> {
 
   await knex('contract_items').insert([
     {
-      id: 'd1111111-1111-1111-1111-111111111111',
+      id: 'd1111111-1111-4111-8111-111111111111',
       contract_id: contract1Id,
       unit_measure: 'm³',
       quantity: 150,
@@ -29,7 +29,7 @@ export async function seed(knex: Knex): Promise<void> {
       description: 'Concretagem de lajes',
     },
     {
-      id: 'd1111111-1111-1111-1111-111111111112',
+      id: 'd1111111-1111-4111-8111-111111111112',
       contract_id: contract1Id,
       unit_measure: 'kg',
       quantity: 12500,
@@ -38,7 +38,7 @@ export async function seed(knex: Knex): Promise<void> {
       description: 'Fornecimento e instalação de ferragem',
     },
     {
-      id: 'd1111111-1111-1111-1111-111111111113',
+      id: 'd1111111-1111-4111-8111-111111111113',
       contract_id: contract1Id,
       unit_measure: 'm²',
       quantity: 850,
@@ -48,7 +48,7 @@ export async function seed(knex: Knex): Promise<void> {
     },
   ])
 
-  const contract2Id = 'b2222222-2222-2222-2222-222222222222'
+  const contract2Id = 'b2222222-2222-4222-8222-222222222222'
   await knex('contracts').insert({
     id: contract2Id,
     work_id: WORK_IDS.ESCOLA_EDUARDO_DIAZ,
@@ -62,7 +62,7 @@ export async function seed(knex: Knex): Promise<void> {
 
   await knex('contract_items').insert([
     {
-      id: 'd2222222-2222-2222-2222-222222222221',
+      id: 'd2222222-2222-4222-8222-222222222221',
       contract_id: contract2Id,
       unit_measure: 'm',
       quantity: 2500,
@@ -71,7 +71,7 @@ export async function seed(knex: Knex): Promise<void> {
       description: 'Cabeamento elétrico',
     },
     {
-      id: 'd2222222-2222-2222-2222-222222222222',
+      id: 'd2222222-2222-4222-8222-222222222222',
       contract_id: contract2Id,
       unit_measure: 'un',
       quantity: 85,
@@ -80,7 +80,7 @@ export async function seed(knex: Knex): Promise<void> {
       description: 'Quadros de distribuição',
     },
     {
-      id: 'd2222222-2222-2222-2222-222222222223',
+      id: 'd2222222-2222-4222-8222-222222222223',
       contract_id: contract2Id,
       unit_measure: 'un',
       quantity: 320,
@@ -89,7 +89,7 @@ export async function seed(knex: Knex): Promise<void> {
       description: 'Pontos de tomada e interruptores',
     },
     {
-      id: 'd2222222-2222-2222-2222-222222222224',
+      id: 'd2222222-2222-4222-8222-222222222224',
       contract_id: contract2Id,
       unit_measure: 'un',
       quantity: 125,
@@ -99,7 +99,7 @@ export async function seed(knex: Knex): Promise<void> {
     },
   ])
 
-  const contract3Id = 'b3333333-3333-3333-3333-333333333333'
+  const contract3Id = 'b3333333-3333-4333-8333-333333333333'
   await knex('contracts').insert({
     id: contract3Id,
     work_id: WORK_IDS.SHOPPING_NORTE_PLAZA,
@@ -113,7 +113,7 @@ export async function seed(knex: Knex): Promise<void> {
 
   await knex('contract_items').insert([
     {
-      id: 'd3333333-3333-3333-3333-333333333331',
+      id: 'd3333333-3333-4333-8333-333333333331',
       contract_id: contract3Id,
       unit_measure: 'm²',
       quantity: 3500,
@@ -122,7 +122,7 @@ export async function seed(knex: Knex): Promise<void> {
       description: 'Estrutura metálica e telhas',
     },
     {
-      id: 'd3333333-3333-3333-3333-333333333332',
+      id: 'd3333333-3333-4333-8333-333333333332',
       contract_id: contract3Id,
       unit_measure: 'm',
       quantity: 850,
@@ -131,7 +131,7 @@ export async function seed(knex: Knex): Promise<void> {
       description: 'Calhas e rufos',
     },
     {
-      id: 'd3333333-3333-3333-3333-333333333333',
+      id: 'd3333333-3333-4333-8333-333333333333',
       contract_id: contract3Id,
       unit_measure: 'un',
       quantity: 45,
@@ -141,7 +141,7 @@ export async function seed(knex: Knex): Promise<void> {
     },
   ])
 
-  const contract4Id = 'b4444444-4444-4444-4444-444444444444'
+  const contract4Id = 'b4444444-4444-4444-8444-444444444444'
   await knex('contracts').insert({
     id: contract4Id,
     work_id: WORK_IDS.PONTE_RIO_TIETE,
@@ -155,7 +155,7 @@ export async function seed(knex: Knex): Promise<void> {
 
   await knex('contract_items').insert([
     {
-      id: 'd4444444-4444-4444-4444-444444444441',
+      id: 'd4444444-4444-4444-8444-444444444441',
       contract_id: contract4Id,
       unit_measure: 'm²',
       quantity: 1200,
@@ -164,7 +164,7 @@ export async function seed(knex: Knex): Promise<void> {
       description: 'Preparação e tratamento de superfície',
     },
     {
-      id: 'd4444444-4444-4444-4444-444444444442',
+      id: 'd4444444-4444-4444-8444-444444444442',
       contract_id: contract4Id,
       unit_measure: 'm²',
       quantity: 1200,
@@ -174,7 +174,7 @@ export async function seed(knex: Knex): Promise<void> {
     },
   ])
 
-  const contract5Id = 'b5555555-5555-5555-5555-555555555555'
+  const contract5Id = 'b5555555-5555-4555-8555-555555555555'
   await knex('contracts').insert({
     id: contract5Id,
     work_id: WORK_IDS.COMPLEXO_MAIS_VIDA,
@@ -188,7 +188,7 @@ export async function seed(knex: Knex): Promise<void> {
 
   await knex('contract_items').insert([
     {
-      id: 'd5555555-5555-5555-5555-555555555551',
+      id: 'd5555555-5555-4555-8555-555555555551',
       contract_id: contract5Id,
       unit_measure: 'un',
       quantity: 180,
@@ -197,7 +197,7 @@ export async function seed(knex: Knex): Promise<void> {
       description: 'Portas de ferro',
     },
     {
-      id: 'd5555555-5555-5555-5555-555555555552',
+      id: 'd5555555-5555-4555-8555-555555555552',
       contract_id: contract5Id,
       unit_measure: 'un',
       quantity: 240,
@@ -206,7 +206,7 @@ export async function seed(knex: Knex): Promise<void> {
       description: 'Janelas de alumínio',
     },
     {
-      id: 'd5555555-5555-5555-5555-555555555553',
+      id: 'd5555555-5555-4555-8555-555555555553',
       contract_id: contract5Id,
       unit_measure: 'm',
       quantity: 420,

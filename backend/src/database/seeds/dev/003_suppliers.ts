@@ -1,21 +1,19 @@
 import type { Knex } from 'knex'
 
-// Fixed UUIDs for consistent references in other seeds
 export const SUPPLIER_IDS = {
-  CONSTRUTORA_ALPHA: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
-  MATERIAIS_BETA: 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
-  EQUIPAMENTOS_GAMMA: 'cccccccc-cccc-cccc-cccc-cccccccccccc',
-  TRANSPORTADORA_DELTA: 'dddddddd-dddd-dddd-dddd-dddddddddddd',
-  FERRAGENS_OMEGA: 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee',
-  PEDRO_ALMEIDA: 'a1111111-1111-1111-1111-111111111111',
-  LUCIA_FERNANDES: 'a2222222-2222-2222-2222-222222222222',
-  ROBERTO_CARDOSO: 'a3333333-3333-3333-3333-333333333333',
-  FERNANDA_LIMA: 'a4444444-4444-4444-4444-444444444444',
-  RICARDO_MENDES: 'a5555555-5555-5555-5555-555555555555',
+  CONSTRUTORA_ALPHA: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+  MATERIAIS_BETA: 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
+  EQUIPAMENTOS_GAMMA: 'cccccccc-cccc-4ccc-8ccc-cccccccccccc',
+  TRANSPORTADORA_DELTA: 'dddddddd-dddd-4ddd-8ddd-dddddddddddd',
+  FERRAGENS_OMEGA: 'eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee',
+  PEDRO_ALMEIDA: 'a1111111-1111-4111-8111-111111111111',
+  LUCIA_FERNANDES: 'a2222222-2222-4222-8222-222222222222',
+  ROBERTO_CARDOSO: 'a3333333-3333-4333-8333-333333333333',
+  FERNANDA_LIMA: 'a4444444-4444-4444-8444-444444444444',
+  RICARDO_MENDES: 'a5555555-5555-4555-8555-555555555555',
 }
 
 export async function seed(knex: Knex): Promise<void> {
-  // Delete dependent tables first to avoid FK constraint violations
   await knex('contract_items').del()
   await knex('contracts').del()
 
