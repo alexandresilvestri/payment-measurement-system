@@ -24,6 +24,15 @@ export type ContractResponse = {
   startDate: Date
   deliveryTime: Date | null
   status: string
+  items: {
+    id: string
+    contractId: string
+    description: string
+    unitMeasure: string
+    quantity: number
+    unitLaborValue: number
+    totalValue: number
+  }[]
 }
 
 export const contractsApi = {
@@ -41,8 +50,15 @@ export const contractsApi = {
     if (filters?.supplierId) params.append('supplierId', filters.supplierId)
 
     const queryString = params.toString()
-    const url = queryString ? `/contracts?${queryString}` : '/contracts'
+    const url = queryString
+      ? `/contracts/details?${queryString}`
+      : '/contracts/details'
     const response = await api.get<ContractListItem[]>(url)
+    return response.data
+  },
+
+  getById: async (id: string): Promise<ContractResponse> => {
+    const response = await api.get<ContractResponse>(`/contracts/${id}`)
     return response.data
   },
 }

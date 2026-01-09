@@ -1,8 +1,18 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Card, Table, Thead, Th, Tr, Td, Button, Input } from '../components/UI'
-import { formatCurrency } from '../utils'
-import { ArrowLeft, Save, Plus, Trash2 } from 'lucide-react'
+import {
+  Card,
+  Table,
+  Thead,
+  Th,
+  Tr,
+  Td,
+  Button,
+  Input,
+  DateInput,
+} from '../components/UI'
+import { formatCurrency, formatDocument } from '../utils'
+import { ArrowLeft, Save, Plus, Trash2, CheckCircle } from 'lucide-react'
 import { Supplier, Work } from '../types'
 import { SupplierModal } from '../components/SupplierModal'
 import {
@@ -12,12 +22,13 @@ import {
 } from './services/suppliers'
 import { CreateContractRequest, contractsApi } from './services/contracts'
 import { worksApi } from './services/works'
+import { FetchError } from '../lib/fetchClient'
 
 type NewItemDraft = {
   id: string
   description: string
   unit: string
-  quantityContracted: string
+  quantity: string
   unitPriceLabor: string
 }
 
@@ -28,20 +39,27 @@ export const NewContract = () => {
   const [suppliers, setSuppliers] = useState<Supplier[]>([])
   const [workId, setWorkId] = useState('')
   const [supplierId, setSupplierId] = useState('')
-  const [object, setObject] = useState('')
+  const [service, setService] = useState('')
   const [startDate, setStartDate] = useState(
     new Date().toISOString().split('T')[0]
   )
   const [endDate, setEndDate] = useState('')
 
   const [showSupplierModal, setShowSupplierModal] = useState(false)
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [createdContractId, setCreatedContractId] = useState<string | null>(
+    null
+  )
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
+  const [deliveryDateError, setDeliveryDateError] = useState<string>('')
 
   const [items, setItems] = useState<NewItemDraft[]>([
     {
       id: '1',
       description: '',
       unit: '',
-      quantityContracted: '',
+      quantity: '',
       unitPriceLabor: '',
     },
   ])
@@ -78,7 +96,7 @@ export const NewContract = () => {
         id: Date.now().toString(),
         description: '',
         unit: '',
-        quantityContracted: '',
+        quantity: '',
         unitPriceLabor: '',
       },
     ])
@@ -96,7 +114,7 @@ export const NewContract = () => {
   }
 
   const calculateTotal = (item: NewItemDraft) => {
-    const qty = parseFloat(item.quantityContracted) || 0
+    const qty = parseFloat(item.quantity) || 0
     const lab = parseFloat(item.unitPriceLabor) || 0
     return qty * lab
   }
@@ -106,41 +124,113 @@ export const NewContract = () => {
     0
   )
 
+  const validateDeliveryDate = (
+    deliveryDate: string,
+    startDateValue: string
+  ): string => {
+    if (!deliveryDate) return ''
+
+    if (!startDateValue) return ''
+
+    const start = new Date(startDateValue)
+    const delivery = new Date(deliveryDate)
+
+    if (delivery < start) {
+      return 'O prazo de entrega não pode ser anterior à data de início'
+    }
+
+    return ''
+  }
+
+  const handleDeliveryDateChange = (value: string) => {
+    setEndDate(value)
+    const error = validateDeliveryDate(value, startDate)
+    setDeliveryDateError(error)
+  }
+
+  const handleStartDateChange = (value: string) => {
+    setStartDate(value)
+    if (endDate) {
+      const error = validateDeliveryDate(endDate, value)
+      setDeliveryDateError(error)
+    }
+  }
+
   const handleSaveContract = async () => {
-    if (!workId || !supplierId || !object) {
-      alert('Preencha os campos obrigatórios: Obra, Fornecedor e Objeto.')
+    setSaveError(null)
+    setDeliveryDateError('')
+
+    if (!workId || !supplierId || !service || !items) {
+      setSaveError(
+        'Preencha os campos obrigatórios: Obra, Fornecedor, Serviço e Item.'
+      )
       return
     }
 
-    if (
-      items.some(
-        (i) => !i.description || !i.quantityContracted || !i.unitPriceLabor
-      )
-    ) {
-      alert('Preencha corretamente todos os itens do contrato.')
+    if (items.some((i) => !i.description || !i.quantity || !i.unitPriceLabor)) {
+      setSaveError('Preencha corretamente todos os itens do contrato.')
       return
+    }
+
+    // Validate delivery date
+    if (endDate) {
+      const dateError = validateDeliveryDate(endDate, startDate)
+      if (dateError) {
+        setDeliveryDateError(dateError)
+        setSaveError('Corrija os erros nos campos antes de salvar.')
+        return
+      }
     }
 
     try {
+      setSaving(true)
       const contractData: CreateContractRequest = {
         workId,
         supplierId,
-        service: object,
+        service: service,
         startDate,
         deliveryTime: endDate || undefined,
         items: items.map((item) => ({
           description: item.description,
           unitMeasure: item.unit,
-          quantity: parseFloat(item.quantityContracted),
+          quantity: parseFloat(item.quantity),
           unitLaborValue: parseFloat(item.unitPriceLabor),
         })),
       }
 
-      await contractsApi.create(contractData)
-      alert('Contrato criado com sucesso!')
+      const createdContract = await contractsApi.create(contractData)
+      setCreatedContractId(createdContract.id)
+      setShowSuccessModal(true)
     } catch (err) {
       console.error('Error creating contract:', err)
-      alert('Erro ao criar contrato. Verifique os dados e tente novamente.')
+
+      if (err && typeof err === 'object' && 'response' in err) {
+        const fetchError = err as FetchError<{ message?: string }>
+
+        if (fetchError.response?.status === 400) {
+          setSaveError(
+            fetchError.response?.data?.message ||
+              'Dados inválidos. Verifique os campos e tente novamente.'
+          )
+          return
+        }
+
+        if (fetchError.response?.status === 404) {
+          setSaveError('Obra ou fornecedor não encontrado. Verifique os dados.')
+          return
+        }
+
+        if (fetchError.response?.status === 409) {
+          setSaveError('Já existe um contrato com estes dados.')
+          return
+        }
+      }
+
+      setSaveError(
+        'Erro ao criar contrato. Verifique sua conexão e tente novamente.'
+      )
+    } finally {
+      setSaving(false)
     }
   }
 
@@ -221,7 +311,7 @@ export const NewContract = () => {
                   Documento Selecionado
                 </span>
                 <span className="font-mono text-sm font-medium text-textMain">
-                  {selectedSupplier.document}
+                  {formatDocument(selectedSupplier.document)}
                 </span>
               </div>
             )}
@@ -229,24 +319,23 @@ export const NewContract = () => {
 
           <div className="space-y-4">
             <Input
-              label="Serviço / Objeto do Contrato *"
+              label="Serviço / Objetivo do Contrato *"
               placeholder="Ex: Instalações Elétricas Torre B"
-              value={object}
-              onChange={(e) => setObject(e.target.value)}
+              value={service}
+              onChange={(e) => setService(e.target.value)}
             />
 
             <div className="grid grid-cols-2 gap-4">
-              <Input
-                label="Data Início"
-                type="date"
+              <DateInput
+                label="Data Início *"
                 value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
+                onChange={handleStartDateChange}
               />
-              <Input
-                label="Data Fim"
-                type="date"
+              <DateInput
+                label="Prazo de entrega"
                 value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
+                onChange={handleDeliveryDateChange}
+                error={deliveryDateError}
               />
             </div>
           </div>
@@ -286,28 +375,37 @@ export const NewContract = () => {
                     onChange={(e) =>
                       updateItem(item.id, 'unit', e.target.value)
                     }
+                    maxLength={8}
                   />
                 </Td>
                 <Td className="p-2">
                   <input
                     type="number"
-                    className="w-full text-right bg-transparent border-b border-gray-200 focus:border-primary outline-none py-1"
+                    className="w-full text-right bg-transparent border-b border-gray-200 focus:border-primary outline-none py-1 
+                              [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     placeholder="0"
-                    value={item.quantityContracted}
-                    onChange={(e) =>
-                      updateItem(item.id, 'quantityContracted', e.target.value)
-                    }
+                    value={item.quantity}
+                    onChange={(e) => {
+                      const val = e.target.value
+                      if (val === '' || parseFloat(val) >= 0) {
+                        updateItem(item.id, 'quantity', val)
+                      }
+                    }}
                   />
                 </Td>
                 <Td className="p-2">
                   <input
                     type="number"
-                    className="w-full text-right bg-transparent border-b border-gray-200 focus:border-primary outline-none py-1"
+                    className="w-full text-right bg-transparent border-b border-gray-200 focus:border-primary outline-none py-1
+                              [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     placeholder="0.00"
                     value={item.unitPriceLabor}
-                    onChange={(e) =>
-                      updateItem(item.id, 'unitPriceLabor', e.target.value)
-                    }
+                    onChange={(e) => {
+                      const val = e.target.value
+                      if (val === '' || parseFloat(val) >= 0) {
+                        updateItem(item.id, 'unitPriceLabor', val)
+                      }
+                    }}
                   />
                 </Td>
                 <Td className="text-right font-semibold">
@@ -341,13 +439,31 @@ export const NewContract = () => {
         </div>
       </Card>
 
-      <div className="fixed bottom-0 left-64 right-0 bg-white border-t border-border p-4 shadow-lg flex justify-end gap-4 z-20">
-        <Button variant="ghost" onClick={() => navigate(-1)}>
-          Cancelar
-        </Button>
-        <Button variant="primary" onClick={handleSaveContract}>
-          <Save className="w-4 h-4 mr-2" /> Salvar Contrato
-        </Button>
+      <div className="fixed bottom-0 left-64 right-0 bg-white border-t border-border p-4 shadow-lg z-20">
+        <div className="flex justify-between items-center gap-4">
+          {saveError && (
+            <div className="flex-1 p-3 bg-red-50 border border-red-200 rounded-md">
+              <p className="text-sm text-red-600">{saveError}</p>
+            </div>
+          )}
+          <div className="flex gap-4 ml-auto">
+            <Button
+              variant="ghost"
+              onClick={() => navigate(-1)}
+              disabled={saving}
+            >
+              Cancelar
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleSaveContract}
+              disabled={saving}
+            >
+              <Save className="w-4 h-4 mr-2" />
+              {saving ? 'Salvando...' : 'Salvar Contrato'}
+            </Button>
+          </div>
+        </div>
       </div>
 
       <SupplierModal
@@ -355,6 +471,45 @@ export const NewContract = () => {
         onClose={() => setShowSupplierModal(false)}
         onSave={handleSaveSupplier}
       />
+
+      {showSuccessModal && createdContractId && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 animate-in fade-in zoom-in duration-200">
+            <div className="flex flex-col items-center text-center mb-6">
+              <div className="flex-shrink-0 w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-4">
+                <CheckCircle className="w-10 h-10 text-green-600" />
+              </div>
+              <h3 className="text-xl font-bold text-textMain mb-2">
+                Contrato Criado com Sucesso!
+              </h3>
+              <p className="text-sm text-textSec">
+                O contrato foi cadastrado no sistema e está disponível para
+                consulta.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <Button
+                variant="primary"
+                onClick={() => navigate(`/contracts/${createdContractId}`)}
+                className="w-full"
+              >
+                Ver Detalhes do Contrato
+              </Button>
+              <Button variant="secondary" onClick={() => {}} className="w-full">
+                Gerar PDF do Contrato
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={() => navigate('/dashboard')}
+                className="w-full"
+              >
+                Ir para Dashboard
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
