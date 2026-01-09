@@ -10,7 +10,8 @@ export const contractsApi = {
     if (filters?.workId) params.append('workId', filters.workId)
     if (filters?.supplierId) params.append('supplierId', filters.supplierId)
 
-    const url = `/contracts${params.toString() ? `?${params}` : ''}`
+    const queryString = params.toString()
+    const url = queryString ? `/contracts?${queryString}` : '/contracts'
     const response = await api.get<ContractListItem[]>(url)
     return response.data
   },
