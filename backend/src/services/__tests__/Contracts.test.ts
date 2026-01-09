@@ -86,13 +86,24 @@ describe('Contract - integration crud test', () => {
 
       expect(contract).toEqual({
         id: createdContract.id,
-        workId: testWork.id,
-        supplierId: testSupplier.id,
+        work: await workService.getWorkById(testWork.id),
+        supplier: await supplierService.getSupplierById(testSupplier.id),
         service: 'Test Service',
         totalValue: '10000.0000',
         startDate: expect.any(Date),
         status: 'Ativo',
         deliveryTime: null,
+        items: createContractParams.items.map((item) => ({
+          id: expect.any(String),
+          contractId: createdContract.id,
+          unitMeasure: item.unitMeasure,
+          quantity: String(item.quantity.toFixed(2)),
+          unitLaborValue: String(item.unitLaborValue.toFixed(4)),
+          totalValue: String((item.quantity * item.unitLaborValue).toFixed(2)),
+          description: item.description,
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+        })),
       })
     })
 

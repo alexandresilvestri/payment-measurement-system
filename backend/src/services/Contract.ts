@@ -3,6 +3,7 @@ import { ContractItem, ContractListItem } from '../types/contractItems.js'
 import { IContractRepository } from '../repository/contracts.js'
 import { IWorkRepository } from '../repository/works.js'
 import { ISupplierRepository } from '../repository/suppliers.js'
+import { IContractItemRepository } from '../repository/contractItems.js'
 import { randomUUID } from 'crypto'
 import { ContractResponse } from '../types/api/contracts.js'
 
@@ -22,7 +23,8 @@ export class ContractService {
   constructor(
     private contractRepo: IContractRepository,
     private workRepo: IWorkRepository,
-    private supplierRepo: ISupplierRepository
+    private supplierRepo: ISupplierRepository,
+    private contractItemRepo: IContractItemRepository
   ) {}
 
   async createContractWithItems(
@@ -87,8 +89,32 @@ export class ContractService {
     return contracts
   }
 
-  async getContract(id: string): Promise<Contract | null> {
+  async getContractInfo(id: string): Promise<Contract | null> {
     const contract = await this.contractRepo.findById(id)
     return contract
+  }
+
+  async getContract(id: string): Promise<ContractResponse | null> {
+    const contract = await this.contractRepo.findById(id)
+
+    if (!contract) return null
+
+    const work = await this.workRepo.findById(contract.workId)
+    const supplier = await this.supplierRepo.findById(contract.supplierId)
+    const items = await this.contractItemRepo.findByContractId(contract.id)
+
+    const contractResponse: ContractResponse = {
+      id: contract.id,
+      work: work,
+      supplier: supplier,
+      service: contract.service,
+      totalValue: contract.totalValue,
+      startDate: contract.startDate,
+      deliveryTime: contract.deliveryTime || null,
+      status: contract.status,
+      items: items,
+    }
+
+    return contractResponse
   }
 }
