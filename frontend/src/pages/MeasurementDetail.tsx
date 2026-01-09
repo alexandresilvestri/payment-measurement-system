@@ -160,7 +160,7 @@ export const MeasurementDetail = () => {
                 </p>
               </div>
               <div className="bg-green-50 p-3 rounded-md border border-green-100">
-                <label className="text-primary font-bold block mb-1 flex items-center gap-1">
+                <label className="text-primary font-bold mb-1 flex items-center gap-1">
                   <span>Chave Pix</span>
                 </label>
                 <p className="text-sm text-textMain font-mono break-all">

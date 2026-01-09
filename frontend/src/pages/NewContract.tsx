@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAppContext } from '../context/AppContext'
 import { Card, Table, Thead, Th, Tr, Td, Button, Input } from '../components/UI'
 import { formatCurrency } from '../utils'
 import { ArrowLeft, Save, Plus, Trash2 } from 'lucide-react'
-import { Supplier } from '../types'
+import { Supplier, Work } from '../types'
 import { SupplierModal } from '../components/SupplierModal'
 import {
   suppliersApi,
@@ -12,6 +11,7 @@ import {
   UpdateSupplierRequest,
 } from './services/suppliers'
 import { CreateContractRequest, contractsApi } from './services/contracts'
+import { worksApi } from './services/works'
 
 type NewItemDraft = {
   id: string
@@ -23,8 +23,8 @@ type NewItemDraft = {
 
 export const NewContract = () => {
   const navigate = useNavigate()
-  const { works } = useAppContext()
 
+  const [works, setWorks] = useState<Work[]>([])
   const [suppliers, setSuppliers] = useState<Supplier[]>([])
   const [workId, setWorkId] = useState('')
   const [supplierId, setSupplierId] = useState('')
@@ -47,8 +47,18 @@ export const NewContract = () => {
   ])
 
   useEffect(() => {
+    fetchWorks()
     fetchSuppliers()
   }, [])
+
+  const fetchWorks = async () => {
+    try {
+      const data = await worksApi.getAll()
+      setWorks(data)
+    } catch (err) {
+      console.error('Error fetching works:', err)
+    }
+  }
 
   const fetchSuppliers = async () => {
     try {
