@@ -94,3 +94,15 @@ export interface EnrichedMeasurement extends Measurement {
   supplier: Supplier
   creatorName: string
 }
+
+export interface ContractListItem {
+  id: string
+  work: { id: string; name: string }
+  supplier: { id: string; name: string }
+  service: string
+  totalValue: number
+  startDate: string
+  deliveryTime: string | null
+  status: 'Ativo' | 'Encerrado'
+  percentage: number
+}
