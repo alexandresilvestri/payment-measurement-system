@@ -68,7 +68,7 @@ Expected: AWS CLI version 2.x.x displayed
 
 Action: AWS Console → IAM → Users → "Create user"
 - Username: `deployer-cli`
-- Access type: ✅ "Access key - Programmatic access"
+- Access type: [x] "Access key - Programmatic access"
 - Permissions: "Attach existing policies directly" → Select `AdministratorAccess`
 
 Expected: User created with Access Key ID and Secret Access Key displayed
@@ -451,9 +451,9 @@ Expected: Logs download, check for errors
 **Step 8: Test database connection**
 
 The backend should try to connect on startup. Check logs for:
-- ✅ "Server running on port 8080"
-- ✅ "Database: conferir"
-- ❌ Connection errors
+- [x] "Server running on port 8080"
+- [x] "Database: conferir"
+- [ ] Connection errors
 
 Expected: Server running successfully
 
@@ -1076,7 +1076,7 @@ Expected: Automated backups enabled
 **Step 3: Enable RDS deletion protection**
 
 Action: RDS → `conferir-db` → Modify
-- Deletion protection: ✅ Enable
+- Deletion protection: [x] Enable
 
 Expected: Database protected from accidental deletion
 

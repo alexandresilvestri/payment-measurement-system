@@ -13,6 +13,6 @@ export async function seed(knex: Knex): Promise<void> {
       approve_measurement: true,
     })
   } else {
-    console.log('✓ Administrator user type already exists (skipping)')
+    console.log('OK: Administrator user type already exists (skipping)')
   }
 }

@@ -52,7 +52,7 @@ export const MeasurementDetail = () => {
   }
 
   const handleSendToFinance = () => {
-    alert('📧 PDF enviado novamente para o setor financeiro.')
+    alert('PDF enviado novamente para o setor financeiro.')
   }
 
   return (

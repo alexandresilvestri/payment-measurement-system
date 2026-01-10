@@ -13,23 +13,23 @@ NC='\033[0m' # No Color
 
 # 1. Verify pré requirements
 command -v docker >/dev/null 2>&1 || {
-    echo -e "${RED}❌ Install Docker on: https://docs.docker.com/get-docker/${NC}"
+    echo -e "${RED}ERROR: Install Docker on: https://docs.docker.com/get-docker/${NC}"
     exit 1
 }
 
 # 2. Create .env if not exists
 if [ -f .env ]; then
-    echo -e "${YELLOW}⚠️ .env already exists. You want overwriting it? (Y/N)${NC}"
+    echo -e "${YELLOW}WARNING: .env already exists. You want overwriting it? (Y/N)${NC}"
     read -r response
     if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
         cp .env.example .env
-        echo -e "${GREEN}✅ .env updated${NC}"
+        echo -e "${GREEN}OK: .env updated${NC}"
     else
-        echo -e "${BLUE}ℹ️ Kept current .env${NC}"
+        echo -e "${BLUE}INFO: Kept current .env${NC}"
     fi
 else
     cp .env.example .env
-    echo -e "${GREEN}✅ .env created${NC}"
+    echo -e "${GREEN}OK: .env created${NC}"
 fi
 
 # 3. Generate random JWT_SECRET
@@ -39,22 +39,22 @@ elif command -v node >/dev/null 2>&1; then
     JWT_SECRET=$(node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
 else
     JWT_SECRET="change_this_to_a_random_string_in_production"
-    echo -e "${YELLOW}⚠️  OpenSSL and Node.js not find. Using default JWT_SECRET.${NC}"
+    echo -e "${YELLOW}WARNING:  OpenSSL and Node.js not find. Using default JWT_SECRET.${NC}"
 fi
 
 # Add JWT_SECRET to .env if not exists
 if ! grep -q "^JWT_SECRET=" .env; then
     echo "JWT_SECRET=$JWT_SECRET" >> .env
-    echo -e "${GREEN}✅ Added JWT_SECRET to .env${NC}"
+    echo -e "${GREEN}OK: Added JWT_SECRET to .env${NC}"
 else
-    echo -e "${BLUE}ℹ️  JWT_SECRET already exists on .env${NC}"
+    echo -e "${BLUE}INFO:  JWT_SECRET already exists on .env${NC}"
 fi
 
 # 4. Setup Git hooks
-echo -e "${BLUE}⚙️  Setting up Git hooks...${NC}"
+echo -e "${BLUE}INFO:  Setting up Git hooks...${NC}"
 git config core.hooksPath backend/.husky
 chmod +x backend/.husky/pre-commit 2>/dev/null || true
-echo -e "${GREEN}✅ Git hooks configured (backend/.husky)${NC}"
+echo -e "${GREEN}OK: Git hooks configured (backend/.husky)${NC}"
 
 # 5. Estructure folders
 mkdir -p backend/src/database/{migrations,seeds}
@@ -66,11 +66,11 @@ check_port() {
     local service=$2
     
     if lsof -Pi :$port -sTCP:LISTEN -t >/dev/null 2>&1 || netstat -an | grep ":$port " >/dev/null 2>&1; then
-        echo -e "${YELLOW}⚠️  Porta $port ($service) already on use${NC}"
+        echo -e "${YELLOW}WARNING:  Porta $port ($service) already on use${NC}"
         echo -e "${YELLOW} You can change the port on .env${NC}"
         return 1
     else
-        echo -e "${GREEN}✅ Port $port ($service) is available${NC}"
+        echo -e "${GREEN}OK: Port $port ($service) is available${NC}"
         return 0
     fi
 }
@@ -82,9 +82,9 @@ check_port 5433 "PostgreSQL Test"
 
 # 7. Start containers
 if docker compose up -d --build; then
-    echo -e "${GREEN}✅ Started containers!${NC}"
+    echo -e "${GREEN}OK: Started containers!${NC}"
 else
-    echo -e "${RED}❌ Error to start containers${NC}"
+    echo -e "${RED}ERROR: Error to start containers${NC}"
     exit 1
 fi
 
@@ -93,47 +93,36 @@ sleep 5
 
 # 8. Verify postgres services
 if docker compose ps conf-postgres | grep -q "healthy"; then
-    echo -e "${GREEN}✅ Development database ready${NC}"
+    echo -e "${GREEN}OK: Development database ready${NC}"
 else
-    echo -e "${YELLOW}⏳ Development database starting...${NC}"
+    echo -e "${YELLOW}WAIT: Development database starting...${NC}"
     sleep 3
 fi
 
 if docker compose ps conf-postgres-test | grep -q "healthy"; then
-    echo -e "${GREEN}✅ Test database ready${NC}"
+    echo -e "${GREEN}OK: Test database ready${NC}"
 else
-    echo -e "${YELLOW}⏳ Test database starting...${NC}"
+    echo -e "${YELLOW}WAIT: Test database starting...${NC}"
     sleep 3
 fi
 
 # 9. Run migrations on test database
-echo -e "${BLUE}⚙️  Running migrations on test database...${NC}"
+echo -e "${BLUE}INFO:  Running migrations on test database...${NC}"
 cd backend
 if NODE_ENV=test npm run migrate:latest 2>/dev/null; then
-    echo -e "${GREEN}✅ Test database migrations completed${NC}"
+    echo -e "${GREEN}OK: Test database migrations completed${NC}"
 else
-    echo -e "${YELLOW}⚠️  Could not run migrations on test database (run 'npm run db:test:setup' later)${NC}"
+    echo -e "${YELLOW}WARNING:  Could not run migrations on test database (run 'npm run db:test:setup' later)${NC}"
 fi
 cd ..
 
-echo ""
-echo -e "${GREEN}"
-echo "╔═══════════════════════════╗"
-echo "║ Setup Finish With Sucess! ║"
-echo "╚═══════════════════════════╝"
-echo -e "${NC}"
-
-echo -e "${BLUE}📍 Access URLs:${NC}"
+echo -e "${BLUE}ACCESS: Access URLs:${NC}"
 echo "   • Frontend:       http://localhost:5173"
 echo "   • Backend:        http://localhost:3000"
 echo "   • PostgreSQL:     localhost:5432"
 echo "   • PostgreSQL Test: localhost:5433"
 echo ""
 
-echo -e "${BLUE}📚 Documentação:${NC}"
-echo "   • README.md - Documentação completa"
-echo "   • GUIA-ENV.md - Variáveis de ambiente"
-echo "   • Makefile - Comandos make disponíveis"
-echo ""
-
-echo -e "${YELLOW}⚠️  NEVER commit the .env file!${NC}"
+echo -e "${BLUE}DOCS: Documentation:${NC}"
+echo "   • README.md - Full Documentation"
+echo "   • Makefile - Make commands available"

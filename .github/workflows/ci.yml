@@ -176,7 +176,7 @@ jobs:
           if [ "${{ needs.backend.result }}" != "success" ] || \
              [ "${{ needs.frontend.result }}" != "success" ] || \
              [ "${{ needs.docker-build.result }}" != "success" ]; then
-            echo "❌ One or more jobs failed"
+            echo "ERROR: One or more jobs failed"
             exit 1
           fi
-          echo "✅ All checks passed!"
+          echo "OK: All checks passed!"

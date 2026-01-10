@@ -28,8 +28,8 @@ export async function seed(knex: Knex): Promise<void> {
       password: hashedPassword,
       type_user_id: adminUserType.id,
     })
-    console.log('✓ Admin user created (admin@conferir.com)')
+    console.log('OK: Admin user created (admin@conferir.com)')
   } else {
-    console.log('✓ Admin user already exists (skipping)')
+    console.log('OK: Admin user already exists (skipping)')
   }
 }

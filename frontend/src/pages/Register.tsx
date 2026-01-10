@@ -227,7 +227,7 @@ export const Register = () => {
                         : 'text-textSec'
                     }
                   >
-                    {formData.password.length >= 8 ? '✓' : '○'} Mínimo 8
+                    {formData.password.length >= 8 ? '[x]' : '[ ]'} Mínimo 8
                     caracteres
                   </div>
                   <div
@@ -240,8 +240,8 @@ export const Register = () => {
                   >
                     {/[a-z]/.test(formData.password) &&
                     /[A-Z]/.test(formData.password)
-                      ? '✓'
-                      : '○'}{' '}
+                      ? '[x]'
+                      : '[ ]'}{' '}
                     Maiúscula e minúscula
                   </div>
                   <div
@@ -251,7 +251,7 @@ export const Register = () => {
                         : 'text-textSec'
                     }
                   >
-                    {/\d/.test(formData.password) ? '✓' : '○'} Número
+                    {/\d/.test(formData.password) ? '[x]' : '[ ]'} Número
                   </div>
                   <div
                     className={
@@ -265,8 +265,8 @@ export const Register = () => {
                     {/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(
                       formData.password
                     )
-                      ? '✓'
-                      : '○'}{' '}
+                      ? '[x]'
+                      : '[ ]'}{' '}
                     Caractere especial
                   </div>
                 </div>

@@ -232,7 +232,7 @@ make pre-commit      # Run all checks before commit
 ```bash
 make db-shell        # Open PostgreSQL shell (dev database)
 make db-shell-test   # Open PostgreSQL shell (test database)
-make db-reset        # Reset database (⚠️ deletes all data!)
+make db-reset        # Reset database (WARNING: deletes all data!)
 make migrate-latest  # Run pending migrations
 make migrate-rollback # Rollback last migration
 make migrate-status  # Check migration status

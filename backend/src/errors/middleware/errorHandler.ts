@@ -9,7 +9,7 @@ export function errorHandler(err: Error, req: Request, res: Response) {
     })
   }
 
-  console.error('💥 Unexpected error:', err)
+  console.error('ERROR: Unexpected error:', err)
   return res.status(500).json({
     status: 'error',
     message: 'Internal server error',
