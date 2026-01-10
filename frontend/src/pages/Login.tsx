@@ -85,7 +85,7 @@ export const Login = () => {
 
         <div className="text-center mt-6">
           <button
-            onClick={() => navigate('/register')}
+            onClick={() => navigate('/')}
             className="text-sm text-textSec hover:text-textMain transition-colors"
           >
             Não tem uma conta? Cadastre-se
