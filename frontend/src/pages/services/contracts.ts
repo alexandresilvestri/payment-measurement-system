@@ -6,7 +6,7 @@ export type CreateContractRequest = {
   supplierId: string
   service: string
   startDate: string
-  deliveryTime?: string
+  deliveryTime: string
   items: {
     description: string
     unitMeasure: string
@@ -15,14 +15,24 @@ export type CreateContractRequest = {
   }[]
 }
 
+export type Supplier = {
+  id: string
+  name: string
+  typePerson: 'FISICA' | 'JURIDICA'
+  document: string
+  pix?: string
+  createdAt?: Date
+  updatedAt?: Date
+}
+
 export type ContractResponse = {
   id: string
   work: { id: string; name: string } | null
-  supplier: { id: string; name: string } | null
+  supplier: Supplier | null
   service: string
   totalValue: number
   startDate: Date
-  deliveryTime: Date | null
+  deliveryTime: Date
   status: string
   items: {
     id: string

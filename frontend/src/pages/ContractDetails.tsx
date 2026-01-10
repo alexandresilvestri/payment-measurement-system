@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Card, Table, Thead, Th, Tr, Td, Button, Badge } from '../components/UI'
-import { formatCurrency } from '../utils'
+import { formatCurrency, prepareContractData } from '../utils'
 import { ArrowLeft, Loader2, FileText, Download } from 'lucide-react'
+import { PDFDownloadLink } from '@react-pdf/renderer'
 import { contractsApi, ContractResponse } from './services/contracts'
+import { ContractDocument } from '../components/pdf/ContractDocument'
 
 export const ContractDetails = () => {
   const { id } = useParams<{ id: string }>()
@@ -86,10 +88,21 @@ export const ContractDetails = () => {
             </div>
           </div>
         </div>
-        <Button variant="primary" className="flex items-center gap-2">
-          <Download className="w-5 h-5" />
-          Gerar PDF
-        </Button>
+        <PDFDownloadLink
+          document={<ContractDocument data={prepareContractData(contract)} />}
+          fileName={`contrato-${contract.service}-${contract.id}.pdf`}
+        >
+          {({ loading }: { loading: boolean }) => (
+            <Button
+              variant="primary"
+              className="flex items-center gap-2"
+              disabled={loading}
+            >
+              <Download className="w-5 h-5" />
+              {loading ? 'Gerando PDF...' : 'Gerar PDF'}
+            </Button>
+          )}
+        </PDFDownloadLink>
       </header>
 
       <Card title="Informações do Contrato">
